@@ -7,6 +7,10 @@ module.exports = {
     extend: {
       colors: {
         'green': '#03AC0E'
+      },
+      flexDirections: {
+        'col' : ['column'],
+        'col-reverse' : ['column-reverse']
       }
     },
   },
