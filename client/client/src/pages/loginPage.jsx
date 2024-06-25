@@ -1,25 +1,37 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import GOOGLE from '../assets/img/google.png';
 import axios from 'axios';
-import { Link } from 'react-router-dom';
+import { Link, Navigate } from 'react-router-dom';
+import { UserContext } from '../UserContext';
+
 
 
 export default function LoginPage() {
 
+    // Port 
+    const PORT = 'http://localhost:5000'
     // Email Input
     const [email, setEmail] = useState('');
     // Password Input
     const [password, setPassword] = useState('');
-
+    // Redirect State
+    const [redirect, setRedirect] = useState(false);
+    const {setUser} =  useContext(UserContext);
     // Login Account 
     async function handleLoginSubmit(e) {
         e.preventDefault();
         try {
-            await axios.post('http://localhost:5000/login', {email,password});
+            const {data} = await axios.post(`${PORT}/login`, {email,password});
+            setUser(data);
             alert('Login Successful');
+            setRedirect(true);
         } catch (e) {
             alert('Login Failed');
         }
+    }
+
+    if (redirect) {
+        return <Navigate to={'/'} />
     }
 
     return (

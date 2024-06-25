@@ -3,28 +3,36 @@ const mongoose = require("mongoose");
 const cors = require("cors");
 const bodyParser = require("body-parser");
 const userModel = require('./models/user');
+const cookieParser = require('cookie-parser');
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 require('dotenv').config();
 
 const bcryptSalt = bcrypt.genSaltSync(10);
+const jwtSecret = 'asdsadasdasda';
 
 const app = express() 
 app.use(express.json());
+app.use(cookieParser());
 
-app.use(cors({
-    credentials: true,
-    origin: 'http://localhost:3000',
-}));
+const corsOptions = {
+    origin: 'http://localhost:3000', 
+    credentials: true, 
+    optionsSuccessStatus: 200 
+};
 
+app.use(cors(corsOptions));
 app.use(bodyParser.json());
 
 mongoose.connect(process.env.MONGO_URL)
 
+
+
+
+
 app.get('/test', (req,res) => {
     res.json('test ok')
 })
-
-
 
 
 
@@ -50,19 +58,42 @@ app.post('/register', async (req, res) => {
 // LOGIN USER 
 
 app.post('/login', async (req,res) => {
+    mongoose.connect(process.env.MONGO_URL);
     const {email,password} = req.body;
-    const userDoc = await userModel.findOne({email})
+    const userDoc = await userModel.findOne({email});
     if (userDoc) {
-        const passOk = bcrypt.compareSync(password, userDoc.password)
-        if (passOk) {
-            res.status(200).json('pass ok')
-        } else {
-            res.status(404).json('wrong password')
-        }
+      const passOk = bcrypt.compareSync(password, userDoc.password);
+      if (passOk) {
+        jwt.sign({
+          email:userDoc.email,
+          id:userDoc._id
+        }, jwtSecret, {}, (err,token) => {
+          if (err) throw err;
+          res.cookie('token', token).json(userDoc);
+        });
+      } else {
+        res.status(422).json('pass not ok');
+      }
     } else {
-        res.status(400).json('not found')
+      res.json('not found');
     }
-})
+  });
+
+
+// PROFILE USER 
+
+app.get('/profile', (req,res) => {
+    const {token} = req.cookies;
+    if (token) {
+      jwt.verify(token, jwtSecret, {}, async (err, userData) => {
+        if (err) throw err;
+        const {name,email,_id} = await userModel.findById(userData.id);
+        res.json({name,email,_id});
+      });
+    } else {
+      res.json(null);
+    }
+  });
 
 
 
