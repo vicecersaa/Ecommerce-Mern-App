@@ -1,7 +1,9 @@
 import { useState, useEffect, useRef } from "react";
+import SliderComponent from "../properties/slider";
 
 export default function Main() {
 
+        // banner slider
  
         const images = [
             'https://images.tokopedia.net/img/cache/1200/BgtCLw/2022/6/27/0f25d058-81d4-48ed-b463-f765d8ba241d.jpg.webp?ect=4g',
@@ -11,78 +13,97 @@ export default function Main() {
         ]
    
 
-        const [currentIndex, setCurrentIndex] = useState(0);
+        const [currentIndex, setCurrentIndex] = useState(1);
         const [isTransitioning, setIsTransitioning] = useState(false);
-        const sliderRef = useRef(null);
-      
-        const slideCount = images.length;
-      
-        const showSlide = (index) => {
-          if (index >= slideCount + 1) {
-            setCurrentIndex(1);
-          } else if (index < 0) {
-            setCurrentIndex(slideCount - 1);
-          } else {
-            setCurrentIndex(index);
-          }
+        const slideCountOne = images.length;
+
+        const prevSlide = () => {
+            setCurrentIndex((prevIndex) => {
+                const newIndex = prevIndex === 0 ? slideCountOne - 1 : prevIndex - 1;
+                setIsTransitioning(true);
+                return newIndex;
+            });
         };
-      
-        const nextSlide = () => showSlide(currentIndex + 1);
-        const prevSlide = () => showSlide(currentIndex - 1);
-      
-        useEffect(() => {
-          const handleTransitionEnd = () => {
-            setIsTransitioning(false);
-            if (currentIndex === slideCount + 1) {
-              setCurrentIndex(1);
-            } else if (currentIndex === 0) {
-              setCurrentIndex(slideCount);
-            }
-          };
-      
-          const slider = sliderRef.current;
-          slider.addEventListener('transitionend', handleTransitionEnd);
-      
-          return () => {
-            slider.removeEventListener('transitionend', handleTransitionEnd);
-          };
-        }, [currentIndex, slideCount]);
-      
+
+        const nextSlide = () => {
+            setCurrentIndex((prevIndex) => {
+                const newIndex = prevIndex === slideCountOne + 1 ? 1 : prevIndex + 1;
+                setIsTransitioning(true);
+                return newIndex;
+            });
+        };
+
+
+        // kategori pilihan slider 
+
+        const kategoriPilihanImages = [
+          'https://images.tokopedia.net/img/cache/200-square/LBbbUK/2023/2/17/a1d98cca-c744-4cc4-ab53-33fe4c79bfea.jpg',
+          'https://images.tokopedia.net/img/cache/200-square/LBbbUK/2023/2/17/86a99924-3426-48d8-b921-a7bdc50aab07.jpg',
+          'https://images.tokopedia.net/img/cache/200-square/LBbbUK/2023/2/17/95a80eda-6ea8-4702-99f6-3687fbee153f.jpg',
+          'https://images.tokopedia.net/img/cache/200-square/LBbbUK/2023/2/17/f6e18924-8ff1-4d27-9d3b-844270dedca1.jpg',
+          'https://images.tokopedia.net/img/cache/200-square/LBbbUK/2023/2/17/ec381502-9d4f-4f0c-a1c7-53597b63a903.jpg',
+          'https://images.tokopedia.net/img/cache/200-square/LBbbUK/2023/2/17/d10ab990-d323-4def-a614-cbe28d242816.jpg',
+        ]
+
+        const [currentKategoriIndex, setCurrentKategoriIndex] = useState(1);
+        const [isKategoriTransitioning, setIsKategoriTransitioning] = useState(false);
+        const slideCountTwo = kategoriPilihanImages.length;
+
+        const prevSlideKategoriPilihan = () => {
+          setCurrentKategoriIndex((prevIndex) => {
+              const newIndex = prevIndex === 0 ? slideCountTwo - 1 : prevIndex - 1;
+              setIsKategoriTransitioning(true);
+              return newIndex;
+          });
+      };
+
+      const nextSlideKategoriPilihan = () => {
+        setCurrentKategoriIndex((prevIndex) => {
+              const newIndex = prevIndex === slideCountTwo + 1 ? 1 : prevIndex + 1;
+              setIsKategoriTransitioning(true);
+              return newIndex;
+          });
+      };
 
     return(
-    <div className="container mx-auto w-full max-w-[1200px] mt-3">
-        <div className="relative w-full mx-auto overflow-hidden rounded-2xl">
-            <div
-                ref={sliderRef}
-                className={`slider flex transition-transform duration-700 ease-in-out ${isTransitioning ? '' : 'no-transition'}`}
-                style={{ transform: `translateX(-${currentIndex * 100}%)` }}
-            >
-                <div className="w-full flex-shrink-0">
-                    <img src={images[slideCount - 1]} alt={`Slide ${slideCount}`} className="w-full" />
+      <div className="container mx-auto w-full max-w-[1200px] mt-3">
+
+            <SliderComponent
+                images={images}
+                currentIndex={currentIndex}
+                isTransitioning={isTransitioning}
+                prevSlide={prevSlide}
+                nextSlide={nextSlide}
+                slideClassName="flex-shrink-0"
+            />
+        
+
+          
+          <div className="w-full border-[1px] rounded-md border-slate-400 shadow-md p-[16px]  mt-6">
+            <div className="flex w-full ">
+              <div className="w-[50%]">
+                <p className="text-xl font-bold mb-3">Kategori Pilihan</p>
+                
+                <div className="w-full flex justify-center items-center">
+                    <SliderComponent 
+                      images={kategoriPilihanImages}
+                      currentIndex={currentKategoriIndex}
+                      isTransitioning={isKategoriTransitioning}
+                      prevSlide={prevSlideKategoriPilihan}
+                      nextSlide={nextSlideKategoriPilihan}
+                      slideClassName="flex-shrink-0 w-full"
+                      imgClassName="w-full max-w-[128px] rounded-lg mr-5"
+                    />
                 </div>
-            {images.map((src, index) => (
-                <div key={index} className="w-full flex-shrink-0">
-                <img src={src} alt={`Slide ${index + 1}`} className="w-full" />
-                </div>
-            ))}
-            <div className="w-full flex-shrink-0">
-                <img src={images[0]} alt={`Slide 1`} className="w-full" />
+
+              </div>
+              <div className="w-50%">
+                <p>Test</p>
+              </div>
             </div>
-            </div>
-           
-            <button
-            className="absolute left-[10px] top-1/2 transform -translate-y-1/2 bg-white rounded-full hover:bg-opacity-75 text-black font-bold py-2 px-4"
-            onClick={prevSlide}
-            >
-            &#10094;
-            </button>
-            <button
-            className="absolute right-[10px] top-1/2 transform -translate-y-1/2 bg-white rounded-full hover:bg-opacity-75 text-black font-bold py-2 px-4"
-            onClick={nextSlide}
-            >
-            &#10095;
-            </button>
-        </div>
-    </div>
+          </div>
+
+
+      </div>
     )
 }
