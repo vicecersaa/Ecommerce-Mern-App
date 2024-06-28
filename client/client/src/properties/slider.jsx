@@ -1,6 +1,18 @@
 import React, { useEffect, useRef } from 'react';
 
-const SliderComponent = ({ images, currentIndex, isTransitioning, prevSlide, nextSlide, slideClassName, imgClassName }) => {
+const SliderComponent = ({ 
+    images, 
+    currentIndex, 
+    isTransitioning, 
+    prevSlide, 
+    nextSlide, 
+    slideClassName, 
+    imgClassName, 
+    visibleSlides, 
+    buttonClassNameOne, 
+    buttonClassNameTwo,
+    linkToCategory
+}) => {
     const sliderRef = useRef(null);
 
     useEffect(() => {
@@ -8,7 +20,6 @@ const SliderComponent = ({ images, currentIndex, isTransitioning, prevSlide, nex
             if (!isTransitioning) {
                 return;
             }
-            const slider = sliderRef.current;
             const slideCount = images.length;
 
             if (currentIndex === slideCount + 1) {
@@ -31,29 +42,31 @@ const SliderComponent = ({ images, currentIndex, isTransitioning, prevSlide, nex
             <div
                 ref={sliderRef}
                 className={`slider flex transition-transform duration-700 ease-in-out  ${isTransitioning ? '' : 'no-transition'}`}
-                style={{ transform: `translateX(-${currentIndex * 100}%)` }}
+                style={{ transform: `translateX(-${currentIndex * (100 / visibleSlides)}%)` }}
             >
-                <div className={`${slideClassName}`}>
+                <div className={`${slideClassName}`} style={{ flex: `0 0 ${100 / visibleSlides}%` }}>
                     <img src={images[images.length - 1]} alt={`Slide ${images.length}`} className={imgClassName} />
                 </div>
                 {images.map((src, index) => (
-                    <div key={index} className={`${slideClassName}`}>
-                        <img src={src} alt={`Slide ${index + 1}`} className={imgClassName} />
+                    <div key={index} className={`${slideClassName}`} style={{ flex: `0 0 ${100 / visibleSlides}%` }}>
+                        <a href={linkToCategory}>
+                            <img src={src} alt={`Slide ${index + 1}`} className={imgClassName} />
+                        </a>
                     </div>
                 ))}
-                <div className={`${slideClassName}`}>
+                <div className={`${slideClassName}`} style={{ flex: `0 0 ${100 / visibleSlides}%` }}>
                     <img src={images[0]} alt={`Slide 1`} className={imgClassName} />
                 </div>
             </div>
             
             <button
-                className="absolute left-[10px] top-1/2 transform -translate-y-1/2 bg-white rounded-full hover:bg-opacity-75 text-black font-bold py-2 px-4"
+                className={`${buttonClassNameOne}`}
                 onClick={prevSlide}
             >
                 &#10094;
             </button>
             <button
-                className="absolute right-[10px] top-1/2 transform -translate-y-1/2 bg-white rounded-full hover:bg-opacity-75 text-black font-bold py-2 px-4"
+                className={`${buttonClassNameTwo}`}
                 onClick={nextSlide}
             >
                 &#10095;

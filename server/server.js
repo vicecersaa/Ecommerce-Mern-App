@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 const cors = require("cors");
 const bodyParser = require("body-parser");
 const userModel = require('./models/user');
+const productModel = require('./models/products');
 const cookieParser = require('cookie-parser');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
@@ -94,6 +95,43 @@ app.get('/profile', (req,res) => {
       res.json(null);
     }
   });
+
+
+  // CREATE PRODUCT 
+
+  app.post('/products', async (req, res) => {
+    const {namaProduk, namaToko, kondisi, deskripsi, hargaProduk, gambarProduk, stockProduk, createdAt, updatedAt} = req.body;
+
+    try {
+        const productDoc = await productModel.create({
+            namaProduk,
+            hargaProduk,
+            namaToko,
+            kondisi,
+            deskripsi,
+            gambarProduk,
+            stockProduk,
+            createdAt,
+            updatedAt
+        })
+        res.json(productDoc);
+    } catch (e) {
+        res.status(422).json(e);
+    }
+    
+})
+
+  // GET PRODUCT 
+
+  app.get('/products', async (req, res) => {
+    try {
+        const products = await productModel.find();
+        res.json(products);
+        console.log(products)
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+});
 
 
 

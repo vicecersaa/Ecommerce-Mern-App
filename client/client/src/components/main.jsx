@@ -1,5 +1,13 @@
 import { useState, useEffect, useRef } from "react";
 import SliderComponent from "../properties/slider";
+import BED from '../assets/img/double-bed.png';
+import BOX from '../assets/img/open-box.png';
+import SOFA from '../assets/img/sofa.png';
+import FASHION from '../assets/img/shop.png';
+import AKSESORIS from '../assets/img/jewelry.png';
+import MATRAS from '../assets/img/air-mattress.png';
+import SemuaProduk from "./SemuaProduk";
+import { ProductContextProvider } from "../ProductContext";
 
 export default function Main() {
 
@@ -18,92 +26,188 @@ export default function Main() {
         const slideCountOne = images.length;
 
         const prevSlide = () => {
-            setCurrentIndex((prevIndex) => {
-                const newIndex = prevIndex === 0 ? slideCountOne - 1 : prevIndex - 1;
-                setIsTransitioning(true);
-                return newIndex;
-            });
-        };
+          setIsTransitioning(true);
+          setCurrentIndex((prevIndex) => {
+              const newIndex = prevIndex === 0 ? slideCountOne - 1 : prevIndex - 1;
+              return newIndex;
+          });
+      };
 
         const nextSlide = () => {
-            setCurrentIndex((prevIndex) => {
-                const newIndex = prevIndex === slideCountOne + 1 ? 1 : prevIndex + 1;
-                setIsTransitioning(true);
-                return newIndex;
-            });
-        };
+          setIsTransitioning(true);
+          setCurrentIndex((prevIndex) => {
+              const newIndex = prevIndex === slideCountOne - 1 ? 0 : prevIndex + 1;
+              return newIndex;
+          });
+      };
 
 
         // kategori pilihan slider 
 
         const kategoriPilihanImages = [
-          'https://images.tokopedia.net/img/cache/200-square/LBbbUK/2023/2/17/a1d98cca-c744-4cc4-ab53-33fe4c79bfea.jpg',
-          'https://images.tokopedia.net/img/cache/200-square/LBbbUK/2023/2/17/86a99924-3426-48d8-b921-a7bdc50aab07.jpg',
-          'https://images.tokopedia.net/img/cache/200-square/LBbbUK/2023/2/17/95a80eda-6ea8-4702-99f6-3687fbee153f.jpg',
-          'https://images.tokopedia.net/img/cache/200-square/LBbbUK/2023/2/17/f6e18924-8ff1-4d27-9d3b-844270dedca1.jpg',
-          'https://images.tokopedia.net/img/cache/200-square/LBbbUK/2023/2/17/ec381502-9d4f-4f0c-a1c7-53597b63a903.jpg',
-          'https://images.tokopedia.net/img/cache/200-square/LBbbUK/2023/2/17/d10ab990-d323-4def-a614-cbe28d242816.jpg',
+          'https://images.tokopedia.net/img/cache/200-square/LBbbUK/2022/7/20/636845a5-cb9a-4ef6-8d46-d79cb85b5ace.jpg',
+          'https://images.tokopedia.net/img/cache/200-square/LBbbUK/2022/7/20/4c0884ea-1e56-4a02-bbc0-2f28da742b79.jpg',
+          'https://images.tokopedia.net/img/cache/200-square/LBbbUK/2022/7/20/56237cd3-29c9-4843-842c-88681b618ea5.jpg',
+          'https://images.tokopedia.net/img/cache/200-square/LBbbUK/2022/7/20/8532fb7f-ef8d-4689-9ccd-779fa6a1ebdf.jpg',
+          'https://images.tokopedia.net/img/cache/200-square/LBbbUK/2022/7/20/33eb9260-a21b-4b1b-b4b0-263013ab29b4.jpg',
+          'https://images.tokopedia.net/img/cache/200-square/LBbbUK/2022/7/20/9c4d3363-da3b-4049-a6f7-d1853320b373.jpg',
+          'https://images.tokopedia.net/img/cache/200-square/LBbbUK/2022/7/20/df7738a1-099d-4bd7-8c6c-3ba5b7d7f417.jpg',
+          'https://images.tokopedia.net/img/cache/200-square/LBbbUK/2022/7/20/c347915e-adc6-41b6-aa35-9c131a17cfdc.jpg'
         ]
 
-        const [currentKategoriIndex, setCurrentKategoriIndex] = useState(1);
+        const [currentKategoriIndex, setCurrentKategoriIndex] = useState(0);
         const [isKategoriTransitioning, setIsKategoriTransitioning] = useState(false);
         const slideCountTwo = kategoriPilihanImages.length;
 
         const prevSlideKategoriPilihan = () => {
+          setIsKategoriTransitioning(true);
           setCurrentKategoriIndex((prevIndex) => {
-              const newIndex = prevIndex === 0 ? slideCountTwo - 1 : prevIndex - 1;
-              setIsKategoriTransitioning(true);
-              return newIndex;
+            const newIndex = prevIndex === 0 ? slideCountTwo - 1 : prevIndex - 1;
+            return newIndex;
           });
       };
 
       const nextSlideKategoriPilihan = () => {
+        setIsKategoriTransitioning(true);
         setCurrentKategoriIndex((prevIndex) => {
-              const newIndex = prevIndex === slideCountTwo + 1 ? 1 : prevIndex + 1;
-              setIsKategoriTransitioning(true);
-              return newIndex;
+            const newIndex = prevIndex === slideCountTwo - 1 ? 0 : prevIndex + 1;
+            return newIndex;
           });
       };
 
+
+      // Produk Unggulan Slider 
+
+      const ProdukUnggulanImages = [
+        'https://images.tokopedia.net/img/cache/300-square/VqbcmM/2024/3/14/ea0ea028-38d1-45b6-90dc-2402716b6c5d.jpg',
+        'https://images.tokopedia.net/img/cache/300-square/VqbcmM/2024/3/14/50bae0c6-4a54-4f65-88da-50162a54d490.jpg',
+        'https://images.tokopedia.net/img/cache/300-square/VqbcmM/2024/3/14/12bd877a-abab-46b4-85a5-dc04652253ac.jpg',
+        'https://images.tokopedia.net/img/cache/300-square/VqbcmM/2024/3/14/19d69a7c-27e1-4003-8b9d-21ff97e247c6.jpg',
+        'https://images.tokopedia.net/img/cache/300-square/VqbcmM/2024/3/9/a32385ef-e6eb-4b28-8196-2b1dd9243048.jpg',
+      ]
+
+      const [currentProdukIndex, setCurrentProdukIndex] = useState(0);
+      const [isProdukTransitioning, setIsProdukTransitioning] = useState(false);
+      const slideCountThree = ProdukUnggulanImages.length;
+
+      const prevSlideProdukUnggulan = () => {
+        setIsProdukTransitioning(true);
+        setCurrentProdukIndex((prevIndex) => {
+          const newIndex = prevIndex === 0 ? slideCountThree - 1 : prevIndex - 1;
+          return newIndex;
+        });
+    };
+
+    const nextSlideProdukUnggulan = () => {
+      setIsProdukTransitioning(true);
+      setCurrentProdukIndex((prevIndex) => {
+          const newIndex = prevIndex === slideCountThree - 1 ? 0 : prevIndex + 1;
+          return newIndex;
+        });
+    };
+
+
     return(
-      <div className="container mx-auto w-full max-w-[1200px] mt-3">
+      <ProductContextProvider>
+        <div className="container mx-auto w-full max-w-[1200px] mt-3">
 
-            <SliderComponent
-                images={images}
-                currentIndex={currentIndex}
-                isTransitioning={isTransitioning}
-                prevSlide={prevSlide}
-                nextSlide={nextSlide}
-                slideClassName="flex-shrink-0"
-            />
-        
-
+              <SliderComponent
+                  images={images}
+                  currentIndex={currentIndex}
+                  isTransitioning={isTransitioning}
+                  prevSlide={prevSlide}
+                  nextSlide={nextSlide}
+                  slideClassName="flex-shrink-0"
+                  visibleSlides={1}
+                  buttonClassNameOne="absolute left-[10px] top-1/2 transform -translate-y-1/2 bg-white rounded-full hover:bg-opacity-75 text-black font-bold py-2 px-4"
+                  buttonClassNameTwo="absolute right-[10px] top-1/2 transform -translate-y-1/2 bg-white rounded-full hover:bg-opacity-75 text-black font-bold py-2 px-4"
+              />
           
-          <div className="w-full border-[1px] rounded-md border-slate-400 shadow-md p-[16px]  mt-6">
-            <div className="flex w-full ">
-              <div className="w-[50%]">
-                <p className="text-xl font-bold mb-3">Kategori Pilihan</p>
-                
-                <div className="w-full flex justify-center items-center">
-                    <SliderComponent 
-                      images={kategoriPilihanImages}
-                      currentIndex={currentKategoriIndex}
-                      isTransitioning={isKategoriTransitioning}
-                      prevSlide={prevSlideKategoriPilihan}
-                      nextSlide={nextSlideKategoriPilihan}
-                      slideClassName="flex-shrink-0 w-full"
-                      imgClassName="w-full max-w-[128px] rounded-lg mr-5"
-                    />
+
+            
+            <div className="w-full border-[1px] rounded-md shadow-md p-[16px]  mt-6 mb-20">
+
+
+                <div className="flex w-full">
+                  <div className="w-[50%]">
+                    <p className="text-xl font-bold mb-[20px]">Produk Unggulan</p>
+
+                    <div className="w-full max-w-[500px] flex justify-center items-center">
+                        <SliderComponent 
+                          images={ProdukUnggulanImages}
+                          currentIndex={currentProdukIndex}
+                          isTransitioning={isProdukTransitioning}
+                          prevSlide={prevSlideProdukUnggulan}
+                          nextSlide={nextSlideProdukUnggulan}
+                          slideClassName="w-full flex justify-center items-center flex-shrink-0"
+                          imgClassName="w-full max-w-[135px] max-h-[130px] rounded-lg cursor-pointer"
+                          visibleSlides={3}
+                          buttonClassNameOne="absolute left-[10px] top-1/2 transform -translate-y-1/2 bg-white rounded-full hover:bg-opacity-75 text-black font-bold py-2 px-4"
+                          buttonClassNameTwo="absolute right-[10px] top-1/2 transform -translate-y-1/2 bg-white rounded-full hover:bg-opacity-75 text-black font-bold py-2 px-4"
+                          linkToCategory="/"
+                        />
+                    </div>
+                  </div>
+                  <div className="w-50%">
+                    <p className="text-xl font-bold mb-[20px]">Kategori Pilihan</p>
+                      
+                      <div className="w-full max-w-[500px] flex justify-center items-center">
+                          <SliderComponent 
+                            images={kategoriPilihanImages}
+                            currentIndex={currentKategoriIndex}
+                            isTransitioning={isKategoriTransitioning}
+                            prevSlide={prevSlideKategoriPilihan}
+                            nextSlide={nextSlideKategoriPilihan}
+                            slideClassName="w-full flex justify-center items-center flex-shrink-0"
+                            imgClassName="w-full max-w-[135px] max-h-[150px] rounded-lg cursor-pointer"
+                            visibleSlides={3}
+                            buttonClassNameOne="absolute left-[10px] top-1/2 transform -translate-y-1/2 bg-white rounded-full hover:bg-opacity-75 text-black font-bold py-2 px-4"
+                            buttonClassNameTwo="absolute right-[10px] top-1/2 transform -translate-y-1/2 bg-white rounded-full hover:bg-opacity-75 text-black font-bold py-2 px-4"
+                            linkToCategory="/"
+                          />
+                      </div>
+                  </div>
                 </div>
 
-              </div>
-              <div className="w-50%">
-                <p>Test</p>
-              </div>
+                <div className="flex items-center gap-5 mt-10">
+                  
+                  <button className="flex justify-center items-center py-2 px-4 border-[1px] rounded-full border-slate-300">
+                    <img className="w-full max-w-[22px] mr-2" src={BED} alt="" />
+                    Springbed
+                  </button>
+
+                  <button className="flex justify-center items-center py-2 px-4 border-[1px] rounded-full border-slate-300">
+                    <img className="w-full max-w-[22px] mr-2" src={SOFA} alt="" />
+                    Furnitur
+                  </button>
+
+                  <button className="flex justify-center items-center py-2 px-4 border-[1px] rounded-full border-slate-300">
+                    <img className="w-full max-w-[22px] mr-2" src={FASHION} alt="" />
+                    Fashion
+                  </button>
+
+                  <button className="flex justify-center items-center py-2 px-4 border-[1px] rounded-full border-slate-300">
+                    <img className="w-full max-w-[22px] mr-2" src={MATRAS} alt="" />
+                    Matras
+                  </button>
+
+                  <button className="flex justify-center items-center py-2 px-4 border-[1px] rounded-full border-slate-300">
+                    <img className="w-full max-w-[22px] mr-2" src={BOX} alt="" />
+                    In A Box
+                  </button>
+
+                  <button className="flex justify-center items-center py-2 px-4 border-[1px] rounded-full border-slate-300">
+                    <img className="w-full max-w-[22px] mr-2" src={AKSESORIS} alt="" />
+                    Aksesoris
+                  </button>
+                </div>
+
             </div>
-          </div>
 
 
-      </div>
+            <SemuaProduk />
+
+        </div>
+      </ProductContextProvider>
     )
 }

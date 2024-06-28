@@ -8,6 +8,7 @@ export default function AccountPage() {
 
     // data profile
     const {user} = useContext(UserContext);
+    console.log(user)
 
     // bio state 
     const [bio, setBio] = useState(true);
@@ -196,9 +197,9 @@ export default function AccountPage() {
                                             </svg>
 
                                             <div className="flex items-center justify-between border-[1px] border-slate-400 rounded-lg">
-                                                <button class="px-3 bg-green-500 text-black rounded-l-md hover:bg-green-600" onclick="decrementCounter()">-</button>
+                                                <button class="px-3 bg-green-500 text-black rounded-l-md hover:bg-green-600" onClick="decrementCounter()">-</button>
                                                 <span id="counterValue" class="px-4 py-1 bg-gray-100 text-gray-800 font-bold">0</span>
-                                                <button class="px-3 bg-green-500 text-black rounded-r-md hover:bg-green-600" onclick="incrementCounter()">+</button>
+                                                <button class="px-3 bg-green-500 text-black rounded-r-md hover:bg-green-600" onClick="incrementCounter()">+</button>
                                             </div>
                                             
                                         </div>

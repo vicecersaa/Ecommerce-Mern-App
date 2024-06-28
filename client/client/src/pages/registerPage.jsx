@@ -60,7 +60,7 @@ export default function RegisterPage() {
 
                         <input 
                             className="py-3 px-4 mb-8 rounded-md font-sans text-[16px]" 
-                            type="text" placeholder='Password'
+                            type="password" placeholder='Password'
                             value={password}
                             onChange={e => setPassword(e.target.value)}
                         />
