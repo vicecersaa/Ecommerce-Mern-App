@@ -10,6 +10,7 @@ export default function AccountPage() {
     const {user} = useContext(UserContext);
     console.log(user)
 
+   
     // bio state 
     const [bio, setBio] = useState(true);
 
@@ -22,7 +23,10 @@ export default function AccountPage() {
     // total barang keranjang state
     const [totalBarang, setTotalBarang] = useState(0);
 
-    // mengambil data histori tanggal pembelian dan jam pembelian 
+    if (!user) {
+        return <div>Loading...</div>;
+    }
+
     
 
     // ubah ke section bio
@@ -197,9 +201,9 @@ export default function AccountPage() {
                                             </svg>
 
                                             <div className="flex items-center justify-between border-[1px] border-slate-400 rounded-lg">
-                                                <button class="px-3 bg-green-500 text-black rounded-l-md hover:bg-green-600" onClick="decrementCounter()">-</button>
+                                                <button class="px-3  text-black rounded-l-md hover:bg-green-600" >-</button>
                                                 <span id="counterValue" class="px-4 py-1 bg-gray-100 text-gray-800 font-bold">0</span>
-                                                <button class="px-3 bg-green-500 text-black rounded-r-md hover:bg-green-600" onClick="incrementCounter()">+</button>
+                                                <button class="px-3  text-black rounded-r-md hover:bg-green-600" >+</button>
                                             </div>
                                             
                                         </div>

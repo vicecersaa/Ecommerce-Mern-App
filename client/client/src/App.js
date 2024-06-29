@@ -10,6 +10,7 @@ import { useEffect } from 'react';
 import { ProductContextProvider } from './ProductContext.jsx';
 import ProdukCard from './properties/produkCard.jsx';
 import React from 'react';
+import ProdukDetail from './pages/produkDetail.jsx';
 
 axios.defaults.baseUrl = 'http://localhost:5000'
 axios.defaults.withCredentials = true;
@@ -17,18 +18,13 @@ axios.defaults.withCredentials = true;
 function App() {
 
   return (
-    
-   
-    <UserContextProvider>
           <Routes>
             <Route index element={<Home />} />
             <Route path='/login' element={<LoginPage />} />
             <Route path='/register' element={<RegisterPage />} />
             <Route path='/account' element={<AccountPage />} />
+            <Route path='/products/:id' element={<ProdukDetail />}/>
           </Routes>
-    </UserContextProvider>
- 
-   
   );
 }
 

@@ -2,6 +2,7 @@ import { useContext, useState } from "react"
 import axios from "axios"
 import ProdukCard from "../properties/produkCard";
 import { ProductContext } from "../ProductContext";
+import ProdukDetail from "../pages/produkDetail";
 
 
 export default function SemuaProduk() {
@@ -17,7 +18,6 @@ export default function SemuaProduk() {
 
      const { products } = useContext(ProductContext);
 
-     console.log(products)
  
      // Fungsi untuk mengirim data produk ke server
      async function createProduct(e) {
@@ -43,19 +43,26 @@ export default function SemuaProduk() {
         <div className="mb-20 flex flex-col">
 
             <div className="flex flex-wrap gap-2">
-            {products.map((product) => (
-                <ProdukCard 
-                    key={product._id.toString()}
-                    img={product.gambarProduk}
-                    namaProduk={product.namaProduk}
-                    hargaProduk={product.hargaProduk}
-                    namaToko={product.namaToko}
-                    ratingProduk={product.ratings}
-                />
-            ))}
+                {products.map((product) => (
+                    <ProdukCard 
+                        key={product._id.toString()}
+                        id={product._id.toString()}
+                        img={product.gambarProduk}
+                        namaProduk={product.namaProduk}
+                        hargaProduk={product.hargaProduk}
+                        kondisiProduk={product.kondisi}
+                        namaToko={product.namaToko}
+                        stockProduk={product.stockProduk}
+                    />
+                ))}
             </div>
 
             <form className="flex flex-col" onSubmit={createProduct}>
+                <input 
+                    type="text" placeholder="Gambar Produk" 
+                    value={gambarProduk}
+                    onChange={e => setGambarProduk(e.target.value)}
+                />
                 <input 
                     type="text" placeholder="Nama Produk"
                     value={namaProduk}
@@ -76,11 +83,14 @@ export default function SemuaProduk() {
                     value={kondisi}
                     onChange={e => setKondisi(e.target.value)} 
                 />
-                <input 
-                    type="text" placeholder="Deskripsi Barang"
+                <textarea 
                     value={deskripsi}
-                    onChange={e => setDeskripsi(e.target.value)}
-                />
+                    onChange={(e) => setDeskripsi(e.target.value)}
+                    placeholder="Masukan deskripsi produk..."
+                    rows="4"
+                    className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                >
+                </textarea>
                 <input 
                     type="text" placeholder="Stock Barang"
                     value={stockProduk}
@@ -88,7 +98,7 @@ export default function SemuaProduk() {
                 />
                 <button className='w-full bg-[#03AC0E] rounded-xl py-3 px-4 text-white font-bold text-[16px] hover:cursor-pointer'>Create Product</button>
             </form>
-
+            
             
         </div>
     )

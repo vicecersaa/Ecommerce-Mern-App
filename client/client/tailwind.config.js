@@ -5,13 +5,22 @@ module.exports = {
   ],
   theme: {
     extend: {
-      colors: {
-        'green': '#03AC0E'
-      },
-      flexDirections: {
-        'col' : ['column'],
-        'col-reverse' : ['column-reverse']
-      }
+       
+         textOverflow: {
+          ellipsis: 'ellipsis', 
+        },
+        whitespace: {
+          nowrap: 'nowrap', 
+        },
+      
+    },
+  },
+
+  variants: {
+    extend: {
+      // Menambahkan varian jika perlu
+      textOverflow: ['responsive', 'hover'],
+      whitespace: ['responsive', 'hover'],
     },
   },
   plugins: [],

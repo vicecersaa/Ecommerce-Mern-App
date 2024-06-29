@@ -14,7 +14,7 @@ const productSchema = new Schema({
     kondisi: String,
     deskripsi: String,
     hargaProduk: {
-        type: Number,
+        type: String,
         required: true
     },
     gambarProduk: String,
