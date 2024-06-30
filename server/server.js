@@ -7,7 +7,23 @@ const productModel = require('./models/products');
 const cookieParser = require('cookie-parser');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const multer = require('multer');
+const path = require('path');
 require('dotenv').config();
+
+
+// Configure multer for local file storage
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, path.join(__dirname, 'src/assets/img')); 
+  },
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + path.extname(file.originalname)); 
+  }
+});
+
+const upload = multer({ storage });
+
 
 const bcryptSalt = bcrypt.genSaltSync(10);
 const jwtSecret = 'asdsadasdasda';
@@ -26,15 +42,6 @@ app.use(cors(corsOptions));
 app.use(bodyParser.json());
 
 mongoose.connect(process.env.MONGO_URL)
-
-
-
-
-
-app.get('/test', (req,res) => {
-    res.json('test ok')
-})
-
 
 
 
@@ -97,29 +104,30 @@ app.get('/profile', (req,res) => {
   });
 
 
-  // CREATE PRODUCT 
+  // Route for uploading image and adding product
+  app.post('/products', upload.single('image'), async (req, res) => {
+  const { namaProduk, namaToko, kondisi, deskripsi, hargaProduk, stockProduk } = req.body;
+  const gambarProduk = req.file ? `/assets/img/${req.file.filename}` : ''; 
 
-  app.post('/products', async (req, res) => {
-    const {namaProduk, namaToko, kondisi, deskripsi, hargaProduk, gambarProduk, stockProduk, createdAt, updatedAt} = req.body;
+  try {
+    const productDoc = await productModel.create({
+      namaProduk,
+      hargaProduk,
+      namaToko,
+      kondisi,
+      deskripsi,
+      gambarProduk,
+      stockProduk,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    });
+    res.status(201).json(productDoc);
+  } catch (e) {
+    res.status(422).json({ error: 'Gagal menyimpan produk', details: e.message });
+  }
+});
 
-    try {
-        const productDoc = await productModel.create({
-            namaProduk,
-            hargaProduk,
-            namaToko,
-            kondisi,
-            deskripsi,
-            gambarProduk,
-            stockProduk,
-            createdAt,
-            updatedAt
-        })
-        res.json(productDoc);
-    } catch (e) {
-        res.status(422).json(e);
-    }
-    
-})
+app.use('/assets', express.static(path.join(__dirname, 'src/assets')));
 
   // GET PRODUCT 
 
