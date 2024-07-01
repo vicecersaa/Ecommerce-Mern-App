@@ -3,12 +3,12 @@ import Header from "../components/header";
 import { useContext, useState } from "react";
 import BLANKPROFILE from '../assets/img/blank.png';
 import BLANKSQUARE from '../assets/img/blankPicture.png';
+import TambahProduk from "../components/TambahProduk";
 
 export default function AccountPage() {
 
     // data profile
     const {user} = useContext(UserContext);
-    console.log(user)
 
    
     // bio state 
@@ -19,6 +19,9 @@ export default function AccountPage() {
 
     // keranjang state
     const [keranjang, setKeranjang] = useState(false);
+
+    // tambah produk state
+    const [tambahProduk, setTambahProduk] = useState(false)
 
     // total barang keranjang state
     const [totalBarang, setTotalBarang] = useState(0);
@@ -33,6 +36,7 @@ export default function AccountPage() {
     function handleBio() {
         setRiwayat(false);
         setKeranjang(false);
+        setTambahProduk(false);
         setBio(true);
     }
 
@@ -40,6 +44,7 @@ export default function AccountPage() {
     function handleRiwayat() {
         setBio(false);
         setKeranjang(false);
+        setTambahProduk(false);
         setRiwayat(true);
     }
 
@@ -47,7 +52,16 @@ export default function AccountPage() {
     function handleKeranjang() {
         setBio(false);
         setRiwayat(false);
+        setTambahProduk(false);
         setKeranjang(true);
+    }
+
+    //ubah ke section tambah produk
+    function handleTambahProduk() {
+        setBio(false)
+        setRiwayat(false);
+        setKeranjang(false);
+        setTambahProduk(true);
     }
 
 
@@ -75,6 +89,10 @@ export default function AccountPage() {
 
                         <button onClick={handleKeranjang} className={`py-[10px] px-[24px] font-bold ${keranjang ? 'text-[#03AC0E] border-b-2 border-[#03AC0E]' : 'text-[#6D7588]'}`}>
                             <p>Keranjang</p>
+                        </button>
+
+                        <button onClick={handleTambahProduk} className={`py-[10px] px-[24px] font-bold ${tambahProduk ? 'text-[#03AC0E] border-b-2 border-[#03AC0E]' : 'text-[#6D7588]'}`}>
+                            <p>Tambah Produk</p>
                         </button>
 
                     </div>
@@ -213,6 +231,14 @@ export default function AccountPage() {
                             </div>
                         </div>
                     )}
+
+                   {tambahProduk && (
+                     <div className="flex border-x-2 border-b-2 p-3">
+                        <div className="mt-4 w-full flex flex-col p-5 h-screen min-h-[340px]">
+                            <TambahProduk /> 
+                         </div>
+                    </div>
+                   )}
             </div>
         </div>
     )

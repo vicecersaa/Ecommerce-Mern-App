@@ -37,12 +37,12 @@ export default function ProdukDetail() {
                 <div className="container mx-auto w-full max-w-[1200px] mt-5 flex justify-between gap-5">
 
                     <div className="w-full max-w-[350px]">
-                        <img className="w-full max-w-[350px]" src={product.gambarProduk} alt={product.namaProduk} />
+                        <img className="w-full max-w-[350px]" src={`http://localhost:5000${product.gambarProduk}`} alt={product.namaProduk} />
                         <div className="flex mt-2 gap-5">
-                            <img className="w-full max-w-[60px]" src={product.gambarProduk} alt={product.namaProduk} />
-                            <img className="w-full max-w-[60px]" src={product.gambarProduk} alt={product.namaProduk} />
-                            <img className="w-full max-w-[60px]" src={product.gambarProduk} alt={product.namaProduk} />
-                            <img className="w-full max-w-[60px]" src={product.gambarProduk} alt={product.namaProduk} />
+                            <img className="w-full max-w-[60px]" src={`http://localhost:5000${product.gambarProduk}`} alt={product.namaProduk} />
+                            <img className="w-full max-w-[60px]" src={`http://localhost:5000${product.gambarProduk}`} alt={product.namaProduk} />
+                            <img className="w-full max-w-[60px]" src={`http://localhost:5000${product.gambarProduk}`} alt={product.namaProduk} />
+                            <img className="w-full max-w-[60px]" src={`http://localhost:5000${product.gambarProduk}`} alt={product.namaProduk} />
                         </div>
                     </div>
 
@@ -79,7 +79,7 @@ export default function ProdukDetail() {
                         <p className="font-bold text-[#212121] text-[18px] mb-[12px]">Atur jumlah dan catatan</p>
 
                         <div className="flex items-center">
-                            <img className="w-full max-w-[60px] mr-2" src={product.gambarProduk} alt={product.namaProduk} />
+                            <img className="w-full max-w-[60px] mr-2" src={`http://localhost:5000${product.gambarProduk}`} alt={product.namaProduk} />
                             <p className="w-full truncate max-w-[200px]">{product.namaProduk}</p>
                         </div>
                         

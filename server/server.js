@@ -12,17 +12,17 @@ const path = require('path');
 require('dotenv').config();
 
 
-// Configure multer for local file storage
+//konfigurasi multer 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, path.join(__dirname, 'src/assets/img')); 
+    cb(null, path.join(__dirname, 'uploads')); // Folder untuk menyimpan file
   },
   filename: (req, file, cb) => {
-    cb(null, Date.now() + path.extname(file.originalname)); 
+    cb(null, Date.now() + path.extname(file.originalname)); // Menambahkan timestamp untuk nama file unik
   }
 });
-
 const upload = multer({ storage });
+
 
 
 const bcryptSalt = bcrypt.genSaltSync(10);
@@ -104,30 +104,43 @@ app.get('/profile', (req,res) => {
   });
 
 
-  // Route for uploading image and adding product
-  app.post('/products', upload.single('image'), async (req, res) => {
-  const { namaProduk, namaToko, kondisi, deskripsi, hargaProduk, stockProduk } = req.body;
-  const gambarProduk = req.file ? `/assets/img/${req.file.filename}` : ''; 
+  // Endpoint untuk meng-upload gambar
+app.post('/upload-image', upload.single('image'), (req, res) => {
+  if (!req.file) {
+    return res.status(400).json({ error: 'No file uploaded' });
+  }
+  const imageUrl = `/uploads/${req.file.filename}`; // URL gambar
+  res.json({ imageUrl });
+});
+
+
+app.post('/products', async (req, res) => {
+  const { namaProduk, namaToko, kondisi, deskripsi, hargaProduk, stockProduk, gambarProduk } = req.body;
+  const productDoc = new productModel({
+    namaProduk,
+    hargaProduk,
+    namaToko,
+    kondisi,
+    deskripsi,
+    gambarProduk, // Pastikan ini diterima dan disimpan
+    stockProduk,
+    variants: JSON.parse(variants),
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  });
 
   try {
-    const productDoc = await productModel.create({
-      namaProduk,
-      hargaProduk,
-      namaToko,
-      kondisi,
-      deskripsi,
-      gambarProduk,
-      stockProduk,
-      createdAt: new Date(),
-      updatedAt: new Date()
-    });
-    res.status(201).json(productDoc);
-  } catch (e) {
-    res.status(422).json({ error: 'Gagal menyimpan produk', details: e.message });
+    const savedProduct = await productDoc.save();
+    res.status(201).json(savedProduct);
+  } catch (error) {
+    res.status(422).json({ error: 'Gagal menyimpan produk', details: error.message });
   }
 });
 
-app.use('/assets', express.static(path.join(__dirname, 'src/assets')));
+
+
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
 
   // GET PRODUCT 
 
