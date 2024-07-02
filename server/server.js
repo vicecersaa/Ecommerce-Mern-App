@@ -12,25 +12,13 @@ const path = require('path');
 require('dotenv').config();
 
 
-//konfigurasi multer 
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, path.join(__dirname, 'uploads')); // Folder untuk menyimpan file
-  },
-  filename: (req, file, cb) => {
-    cb(null, Date.now() + path.extname(file.originalname)); // Menambahkan timestamp untuk nama file unik
-  }
-});
-const upload = multer({ storage });
-
-
-
 const bcryptSalt = bcrypt.genSaltSync(10);
 const jwtSecret = 'asdsadasdasda';
 
 const app = express() 
 app.use(express.json());
 app.use(cookieParser());
+
 
 const corsOptions = {
     origin: 'http://localhost:3000', 
@@ -39,7 +27,8 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
-app.use(bodyParser.json());
+app.use(bodyParser.json());  // Untuk parsing aplikasi/json
+app.use(bodyParser.urlencoded({ extended: true }));  // Untuk parsing aplikasi/x-www-form-urlencoded
 
 mongoose.connect(process.env.MONGO_URL)
 
@@ -104,33 +93,61 @@ app.get('/profile', (req,res) => {
   });
 
 
-  // Endpoint untuk meng-upload gambar
-app.post('/upload-image', upload.single('image'), (req, res) => {
-  if (!req.file) {
-    return res.status(400).json({ error: 'No file uploaded' });
+  //konfigurasi multer 
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+      cb(null, 'uploads/'); // Make sure this directory exists
+  },
+  filename: (req, file, cb) => {
+      cb(null, Date.now() + path.extname(file.originalname));
   }
-  const imageUrl = `/uploads/${req.file.filename}`; // URL gambar
-  res.json({ imageUrl });
 });
+
+const upload = multer({ storage: storage }).array('image');
+
+
+
+  // Endpoint untuk meng-upload gambar
+  app.post('/upload-image', (req, res) => {
+    upload(req, res, function (err) {
+        if (err) {
+            return res.status(400).json({ error: 'Error uploading file', details: err.message });
+        }
+        if (!req.files || req.files.length === 0) {
+            return res.status(400).json({ error: 'No files uploaded' });
+        }
+        // Map the uploaded files to their URLs
+        const imageUrls = req.files.map(file => `/uploads/${file.filename}`);
+        
+        res.json({ imageUrls });
+        console.log(`Error : ${imageUrls}`);
+    });
+}); 
 
 
 app.post('/products', async (req, res) => {
-  const { namaProduk, namaToko, kondisi, deskripsi, hargaProduk, stockProduk, gambarProduk } = req.body;
-  const productDoc = new productModel({
-    namaProduk,
-    hargaProduk,
-    namaToko,
-    kondisi,
-    deskripsi,
-    gambarProduk, // Pastikan ini diterima dan disimpan
-    stockProduk,
-    variants: JSON.parse(variants),
-    createdAt: new Date(),
-    updatedAt: new Date(),
-  });
-
+  const { namaProduk, namaToko, kondisi, deskripsi, hargaProduk, stockProduk, gambarProduk, variants, beratProduk, dimensiProduk } = req.body;
+  console.log('Received data:', req.body);
   try {
+  
+
+    const productDoc = new productModel({
+      namaProduk,
+      hargaProduk,
+      namaToko,
+      kondisi,
+      deskripsi,
+      gambarProduk,
+      stockProduk,
+      variants,
+      beratProduk,
+      dimensiProduk,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    });
+
     const savedProduct = await productDoc.save();
+    console.log(savedProduct)
     res.status(201).json(savedProduct);
   } catch (error) {
     res.status(422).json({ error: 'Gagal menyimpan produk', details: error.message });

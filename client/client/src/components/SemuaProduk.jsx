@@ -1,8 +1,7 @@
 import { useContext, useState } from "react";
-import axios from "axios";
 import ProdukCard from "../properties/produkCard";
 import { ProductContext } from "../ProductContext";
-import ProdukDetail from "../pages/produkDetail";
+
 
 export default function SemuaProduk() {
    

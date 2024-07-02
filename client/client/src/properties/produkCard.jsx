@@ -17,7 +17,7 @@ export default function ProdukCard(props) {
     return (
         <Link to={`/products/${props.id}`}>
             <div className="flex flex-row w-full max-w-[200px] border-[1px] border-slate-100 shadow-md rounded-xl flex-wrap cursor-pointer">
-                <img className="rounded-t-xl" src={props.img} alt="" />
+                <img className="rounded-t-xl w-full max-w-[175px] m-auto" src={props.img} alt="" />
                 <div className="flex flex-col items-start justify-center p-[10px]">
                     <p className="w-full text-sm mb-1 text-clamp-2 max-w-[180px]">{props.namaProduk}</p>
                     <span className="font-bold mb-1">{props.hargaProduk}</span>

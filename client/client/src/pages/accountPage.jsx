@@ -234,7 +234,7 @@ export default function AccountPage() {
 
                    {tambahProduk && (
                      <div className="flex border-x-2 border-b-2 p-3">
-                        <div className="mt-4 w-full flex flex-col p-5 h-screen min-h-[340px]">
+                        <div className="mt-4 w-full flex flex-col p-5 h-screen min-h-[1020px]">
                             <TambahProduk /> 
                          </div>
                     </div>
