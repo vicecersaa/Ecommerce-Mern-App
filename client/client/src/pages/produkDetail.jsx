@@ -13,6 +13,10 @@ export default function ProdukDetail() {
     const [selectedVariant, setSelectedVariant] = useState(null);
     const [selectedSize, setSelectedSize] = useState('');
 
+    console.log('Product:', product);
+
+   
+
     const handleVariantClick = (variant) => {
         setSelectedVariant(variant);
       };
@@ -24,11 +28,8 @@ export default function ProdukDetail() {
 
     useEffect(() => {
         if (!loading && products) {
-          console.log('Available products:', products); // Debug log
-          console.log('Searching for product with ID:', id); // Debug log
           const foundProduct = products.find((p) => p._id.toString() === id.toString());
           setProduct(foundProduct);
-          console.log('Found product:', foundProduct); // Debug log
         }
       }, [products, loading, id]);
     
@@ -39,6 +40,9 @@ export default function ProdukDetail() {
       if (!product) {
         return <div>Product not found</div>;
       }
+
+    
+      const uniqueVariantNames = [...new Set(product.variants.map(variant => variant.namaVarian))];
 
       const displayedPrice = selectedVariant ? selectedVariant.harga : product.hargaProduk;
 
@@ -70,11 +74,17 @@ export default function ProdukDetail() {
 
 
                         <div>
-                            <h4>Pilih Varian:</h4>
-                            {product.variants.map((variant, index) => (
-                            <button className="py-1 px-3" key={index} onClick={() => handleVariantClick(variant)}>
-                                {variant.namaVarian}
-                            </button>
+                            <h2>Pilih Varian:</h2>
+                            {uniqueVariantNames.map((variantName) => (
+                                <button
+                                    key={variantName}
+                                    onClick={() => handleVariantClick(variantName)}
+                                    style={{
+                                    backgroundColor: selectedVariant === variantName ? 'green' : 'gray'
+                                    }}
+                                >
+                                    {variantName}
+                                </button>
                             ))}
                         </div>
                         <div>
