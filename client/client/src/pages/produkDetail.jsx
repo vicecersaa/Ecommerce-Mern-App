@@ -10,6 +10,16 @@ export default function ProdukDetail() {
     console.log('ID from URL:', id);
     const {products, loading} = useContext(ProductContext);
     const [product, setProduct] = useState(null);
+    const [selectedVariant, setSelectedVariant] = useState(null);
+    const [selectedSize, setSelectedSize] = useState('');
+
+    const handleVariantClick = (variant) => {
+        setSelectedVariant(variant);
+      };
+    
+      const handleSizeClick = (size) => {
+        setSelectedSize(size);
+      };
 
 
     useEffect(() => {
@@ -30,6 +40,8 @@ export default function ProdukDetail() {
         return <div>Product not found</div>;
       }
 
+      const displayedPrice = selectedVariant ? selectedVariant.harga : product.hargaProduk;
+
       return (
             <div>
                 <Header />
@@ -37,12 +49,12 @@ export default function ProdukDetail() {
                 <div className="container mx-auto w-full max-w-[1200px] mt-5 flex justify-between gap-5">
 
                     <div className="w-full max-w-[350px]">
-                        <img className="w-full max-w-[350px]" src={`http://localhost:5000${product.gambarProduk}`} alt={product.namaProduk} />
+                        <img className="w-full max-w-[350px]" src={`http://localhost:5000${product.gambarProduk[0]}`} alt={product.namaProduk} />
                         <div className="flex mt-2 gap-5">
-                            <img className="w-full max-w-[60px]" src={`http://localhost:5000${product.gambarProduk}`} alt={product.namaProduk} />
-                            <img className="w-full max-w-[60px]" src={`http://localhost:5000${product.gambarProduk}`} alt={product.namaProduk} />
-                            <img className="w-full max-w-[60px]" src={`http://localhost:5000${product.gambarProduk}`} alt={product.namaProduk} />
-                            <img className="w-full max-w-[60px]" src={`http://localhost:5000${product.gambarProduk}`} alt={product.namaProduk} />
+                            <img className="w-full max-w-[60px]" src={`http://localhost:5000${product?.gambarProduk[1] || ""}`} alt={product.namaProduk} />
+                            <img className="w-full max-w-[60px]" src={`http://localhost:5000${product?.gambarProduk[2] || ""}`} alt={product.namaProduk} />
+                            <img className="w-full max-w-[60px]" src={`http://localhost:5000${product?.gambarProduk[3] || ""}`} alt={product.namaProduk} />
+                            <img className="w-full max-w-[60px]" src={`http://localhost:5000${product?.gambarProduk[4] || ""}`} alt={product.namaProduk} />
                         </div>
                     </div>
 
@@ -55,6 +67,24 @@ export default function ProdukDetail() {
                         </div>
 
                         <p className="font-bold text-[28px] mb-5 mt-3">{product.hargaProduk}</p>
+
+
+                        <div>
+                            <h4>Pilih Varian:</h4>
+                            {product.variants.map((variant, index) => (
+                            <button className="py-1 px-3" key={index} onClick={() => handleVariantClick(variant)}>
+                                {variant.namaVarian}
+                            </button>
+                            ))}
+                        </div>
+                        <div>
+                            <h4>Pilih Ukuran:</h4>
+                            {['90 x 200', '100 x 200', '120 x 200', '140 x 200', '160 x 200', '180 x 200'].map((size, index) => (
+                            <button key={index} onClick={() => handleSizeClick(size)}>
+                                {size}
+                            </button>
+                            ))}
+                        </div>
 
                         <p className="text-slate-500 font-medium">
                             Kondisi : <span className="text-black font-normal">{product.kondisi}</span>
@@ -79,7 +109,7 @@ export default function ProdukDetail() {
                         <p className="font-bold text-[#212121] text-[18px] mb-[12px]">Atur jumlah dan catatan</p>
 
                         <div className="flex items-center">
-                            <img className="w-full max-w-[60px] mr-2" src={`http://localhost:5000${product.gambarProduk}`} alt={product.namaProduk} />
+                            <img className="w-full max-w-[60px] mr-2" src={`http://localhost:5000${product.gambarProduk[0]}`} alt={product.namaProduk} />
                             <p className="w-full truncate max-w-[200px]">{product.namaProduk}</p>
                         </div>
                         

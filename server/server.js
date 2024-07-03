@@ -96,7 +96,7 @@ app.get('/profile', (req,res) => {
   //konfigurasi multer 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-      cb(null, 'uploads/'); // Make sure this directory exists
+      cb(null, 'uploads/');
   },
   filename: (req, file, cb) => {
       cb(null, Date.now() + path.extname(file.originalname));

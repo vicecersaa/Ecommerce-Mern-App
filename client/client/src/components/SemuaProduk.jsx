@@ -16,7 +16,7 @@ export default function SemuaProduk() {
                     <ProdukCard 
                         key={product._id.toString()}
                         id={product._id.toString()}
-                        img={`http://localhost:5000${product.gambarProduk}`}
+                        img={`http://localhost:5000${product.gambarProduk[0]}`}
                         namaProduk={product.namaProduk}
                         hargaProduk={product.hargaProduk}
                         kondisiProduk={product.kondisi}
