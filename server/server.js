@@ -126,7 +126,7 @@ const upload = multer({ storage: storage }).array('image');
 
 
 app.post('/products', async (req, res) => {
-  const { namaProduk, namaToko, kondisi, deskripsi, hargaProduk, stockProduk, gambarProduk, variants, beratProduk, dimensiProduk } = req.body;
+  const { namaProduk, namaToko, kondisi, deskripsi, hargaProduk, stockProduk, gambarProduk, variants, beratProduk } = req.body;
   console.log('Received data:', req.body);
   try {
   
@@ -141,7 +141,6 @@ app.post('/products', async (req, res) => {
       stockProduk,
       variants,
       beratProduk,
-      dimensiProduk,
       createdAt: new Date(),
       updatedAt: new Date()
     });

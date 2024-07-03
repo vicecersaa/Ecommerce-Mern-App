@@ -13,7 +13,6 @@ export default function TambahProduk() {
     const [gambarProduk, setGambarProduk] = useState(null); // Update to file input
     const [stockProduk, setStockProduk] = useState('');
     const [beratProduk, setBeratProduk] = useState('');
-    const [dimensi, setDimensi] = useState({ length: '', width: '', height: '' });
     const [variants, setVariants] = useState([]);
     const [ratings, setRatings] = useState('')
     const [reviews, setReviews] = useState([]);
@@ -93,7 +92,6 @@ export default function TambahProduk() {
             reviews,
             ratings,
             beratProduk,
-            dimensiProduk: dimensi
         };
     
         // Mengirim data produk ke server
@@ -186,40 +184,7 @@ export default function TambahProduk() {
                         />
                     </div>
 
-                        {/* Dimensions */}
-                    <div className="flex items-center mt-3">
-                        <p className="w-full max-w-[150px] font-semibold font-sans">Berat Produk: </p>
-                        <input 
-                            className="border-[1px] border-slate-500 w-full py-2 px-2 rounded-md outline-none"
-                            type="number" placeholder="Berat Produk"
-                            value={beratProduk}
-                            onChange={e => setBeratProduk(e.target.value)}
-                        />
-                    </div>
-
-                    <div className="flex items-center mt-3 gap-2">
-                        <p className="w-full max-w-[150px] font-semibold font-sans">Dimensi Produk: </p>
-                        <input
-                            className="border-[1px] border-slate-500 w-full py-2 px-2 rounded-md outline-none mt-2"
-                            type="number" placeholder="Panjang"
-                            value={dimensi.length}
-                            onChange={e => setDimensi({ ...dimensi, length: e.target.value })}
-                        />
-                        X
-                        <input
-                            className="border-[1px] border-slate-500 w-full py-2 px-2 rounded-md outline-none mt-2"
-                            type="number" placeholder="Lebar"
-                            value={dimensi.width}
-                            onChange={e => setDimensi({ ...dimensi, width: e.target.value })}
-                        />
-                        X
-                        <input
-                            className="border-[1px] border-slate-500 w-full py-2 px-2 rounded-md outline-none mt-2"
-                            type="number" placeholder="Tinggi"
-                            value={dimensi.height}
-                            onChange={e => setDimensi({ ...dimensi, height: e.target.value })}
-                        />
-                    </div>
+                        
 
                     {/* Variants */}
                     <div className="mt-5">
@@ -240,27 +205,9 @@ export default function TambahProduk() {
                                 />
                                 <input
                                     className="border-[1px] border-slate-500 py-2 px-2 rounded-md mb-2"
-                                    type="text" placeholder="Warna"
-                                    value={variant.warna}
-                                    onChange={(e) => handleVariantChange(index, 'warna', e.target.value)}
-                                />
-                                <input
-                                    className="border-[1px] border-slate-500 py-2 px-2 rounded-md mb-2"
                                     type="number" placeholder="Harga"
                                     value={variant.harga}
                                     onChange={(e) => handleVariantChange(index, 'harga', e.target.value)}
-                                />
-                                <input
-                                    className="border-[1px] border-slate-500 py-2 px-2 rounded-md mb-2"
-                                    type="number" placeholder="Stock"
-                                    value={variant.stock}
-                                    onChange={(e) => handleVariantChange(index, 'stock', e.target.value)}
-                                />
-                                <input
-                                    className="border-[1px] border-slate-500 py-2 px-2 rounded-md mb-2"
-                                    type="text" placeholder="SKU"
-                                    value={variant.sku}
-                                    onChange={(e) => handleVariantChange(index, 'sku', e.target.value)}
                                 />
                                 <button
                                     type="button"

@@ -41,8 +41,16 @@ export default function ProdukDetail() {
         return <div>Product not found</div>;
       }
 
-    
-      const uniqueVariantNames = [...new Set(product.variants.map(variant => variant.namaVarian))];
+      
+       // Extract unique variant names
+        const getUniqueVariantNames = () => {
+            const variantNames = product.variants.map(variant => variant.namaVarian);
+            return [...new Set(variantNames)];
+        };
+
+        const uniqueVariantNames = getUniqueVariantNames();
+
+        console.log(uniqueVariantNames)
 
       const displayedPrice = selectedVariant ? selectedVariant.harga : product.hargaProduk;
 
@@ -76,15 +84,15 @@ export default function ProdukDetail() {
                         <div>
                             <h2>Pilih Varian:</h2>
                             {uniqueVariantNames.map((variantName) => (
-                                <button
-                                    key={variantName}
-                                    onClick={() => handleVariantClick(variantName)}
-                                    style={{
-                                    backgroundColor: selectedVariant === variantName ? 'green' : 'gray'
-                                    }}
-                                >
-                                    {variantName}
-                                </button>
+                            <button
+                                key={variantName}
+                                onClick={() => handleVariantClick(variantName)}
+                                style={{
+                                backgroundColor: selectedVariant === variantName ? 'green' : 'gray'
+                                }}
+                            >
+                                {variantName}
+                            </button>
                             ))}
                         </div>
                         <div>

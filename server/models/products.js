@@ -2,32 +2,29 @@ const mongoose = require('mongoose');
 const {Schema} = mongoose;
 
 
-  const variantSchema = new Schema({
-    namaVarian: {
-        type: String,
-        required: true,
-    },
+const ukuranSchema = new Schema({
     ukuran: {
         type: String,
-        required: false,
-    },
-    warna: {
-        type: String,
-        required: false,
+        required: false
     },
     harga: {
         type: Number,
-        required: true,
-    },
-    stock: {
-        type: Number,
-        required: true,
-        default: 0,
-    },
-    sku: {
+        required: false
+    }
+})
+
+
+  const variantSchema = new Schema({
+    namaVarian: {
         type: String,
         required: false,
-    }
+    },
+    ukuranVarian: [ukuranSchema],
+    harga: {
+        type: Number,
+        required: false,
+    },
+   
   }, {_id: false});
 
   const reviewSchema = new Schema({
@@ -101,21 +98,6 @@ const productSchema = new Schema({
         type: Number,
         required: false,
     },
-    dimensiProduk: {
-        length: {
-            type: Number,
-            required: false
-        },
-        lebar: {
-            type: Number,
-            required: false
-        },
-        tinggi: {
-            type: Number,
-            required: false
-        }
-    }
-
 });
 
 // Update timestamps before saving
