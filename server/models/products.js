@@ -13,7 +13,6 @@ const ukuranSchema = new Schema({
     }
 })
 
-
   const variantSchema = new Schema({
     namaVarian: {
         type: String,

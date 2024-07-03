@@ -12,24 +12,27 @@ export default function ProdukDetail() {
     const [product, setProduct] = useState(null);
     const [selectedVariant, setSelectedVariant] = useState(null);
     const [selectedSize, setSelectedSize] = useState('');
-
-    console.log('Product:', product);
-
+    const [price, setPrice] = useState(0);
    
-
     const handleVariantClick = (variant) => {
+        console.log('Selected variant:', variant);
         setSelectedVariant(variant);
-      };
+        setSelectedSize('');
+        setPrice(variant.harga || product.hargaProduk);
+    };
     
-      const handleSizeClick = (size) => {
+    const handleSizeClick = (size, harga) => {
+        console.log('Selected size:', size, 'Price:', harga);
         setSelectedSize(size);
-      };
+        setPrice(harga);
+    };
 
 
     useEffect(() => {
         if (!loading && products) {
           const foundProduct = products.find((p) => p._id.toString() === id.toString());
           setProduct(foundProduct);
+          console.log('Product data:', foundProduct);
         }
       }, [products, loading, id]);
     
@@ -50,7 +53,7 @@ export default function ProdukDetail() {
 
         const uniqueVariantNames = getUniqueVariantNames();
 
-        console.log(uniqueVariantNames)
+
 
       const displayedPrice = selectedVariant ? selectedVariant.harga : product.hargaProduk;
 
@@ -63,10 +66,10 @@ export default function ProdukDetail() {
                     <div className="w-full max-w-[350px]">
                         <img className="w-full max-w-[350px]" src={`http://localhost:5000${product.gambarProduk[0]}`} alt={product.namaProduk} />
                         <div className="flex mt-2 gap-5">
-                            <img className="w-full max-w-[60px]" src={`http://localhost:5000${product?.gambarProduk[1] || ""}`} alt={product.namaProduk} />
-                            <img className="w-full max-w-[60px]" src={`http://localhost:5000${product?.gambarProduk[2] || ""}`} alt={product.namaProduk} />
-                            <img className="w-full max-w-[60px]" src={`http://localhost:5000${product?.gambarProduk[3] || ""}`} alt={product.namaProduk} />
-                            <img className="w-full max-w-[60px]" src={`http://localhost:5000${product?.gambarProduk[4] || ""}`} alt={product.namaProduk} />
+                            <img className="w-full max-w-[60px]" src={`http://localhost:5000${product?.gambarProduk[1] || null}`} alt={product?.gambarProduk ? product.namaProduk : null} />
+                            <img className="w-full max-w-[60px]" src={`http://localhost:5000${product?.gambarProduk[2] || null}`} alt={product?.gambarProduk ? product.namaProduk : null} />
+                            <img className="w-full max-w-[60px]" src={`http://localhost:5000${product?.gambarProduk[3] || null}`} alt={product?.gambarProduk ? product.namaProduk : null} />
+                            <img className="w-full max-w-[60px]" src={`http://localhost:5000${product?.gambarProduk[4] || null}`} alt={product?.gambarProduk ? product.namaProduk : null} />
                         </div>
                     </div>
 
@@ -83,27 +86,51 @@ export default function ProdukDetail() {
 
                         <div>
                             <h2>Pilih Varian:</h2>
-                            {uniqueVariantNames.map((variantName) => (
-                            <button
-                                key={variantName}
-                                onClick={() => handleVariantClick(variantName)}
-                                style={{
-                                backgroundColor: selectedVariant === variantName ? 'green' : 'gray'
-                                }}
-                            >
-                                {variantName}
-                            </button>
-                            ))}
-                        </div>
-                        <div>
-                            <h4>Pilih Ukuran:</h4>
-                            {['90 x 200', '100 x 200', '120 x 200', '140 x 200', '160 x 200', '180 x 200'].map((size, index) => (
-                            <button key={index} onClick={() => handleSizeClick(size)}>
-                                {size}
-                            </button>
-                            ))}
+                            {product.variants && product.variants.length > 0 ? (
+                                uniqueVariantNames.map((variantName) => (
+                                    <button
+                                        key={variantName}
+                                        onClick={() => handleVariantClick(product.variants.find(v => v.namaVarian === variantName))}
+                                        style={{
+                                            backgroundColor: selectedVariant && selectedVariant.namaVarian === variantName ? 'green' : 'gray',
+                                            color: 'white',
+                                            padding: '8px 16px',
+                                            margin: '4px',
+                                            borderRadius: '4px',
+                                            border: 'none',
+                                        }}
+                                    >
+                                        {variantName}
+                                    </button>
+                                ))
+                            ) : (
+                                <p>No variants available</p>
+                            )}
                         </div>
 
+                        <div className="mt-4">
+                            <h4 className="text-lg font-semibold">Pilih Ukuran:</h4>
+                            {selectedVariant && selectedVariant.ukuranVarian && selectedVariant.ukuranVarian.length > 0 ? (
+                                selectedVariant.ukuranVarian.map((size) => (
+                                    <button
+                                        key={size._id}
+                                        onClick={() => handleSizeClick(size.ukuran, size.harga)}
+                                        style={{
+                                            backgroundColor: selectedSize === size.ukuran ? 'green' : 'gray',
+                                            color: 'white',
+                                            padding: '8px 16px',
+                                            margin: '4px',
+                                            borderRadius: '4px',
+                                            border: 'none',
+                                        }}
+                                    >
+                                        {size.ukuran}
+                                    </button>
+                                ))
+                            ) : (
+                                <p>Ukuran tidak tersedia untuk varian ini</p>
+                            )}
+                        </div>
                         <p className="text-slate-500 font-medium">
                             Kondisi : <span className="text-black font-normal">{product.kondisi}</span>
                         </p>
