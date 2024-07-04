@@ -12,6 +12,25 @@ const path = require('path');
 require('dotenv').config();
 
 
+// MIDDLEWARE
+
+
+// Middleware to authenticate user (if required)
+const authenticateUser = async (req, res, next) => {
+  const { token } = req.cookies;
+  if (token) {
+      try {
+          const userData = jwt.verify(token, jwtSecret);
+          req.user = await userModel.findById(userData.id);
+          next();
+      } catch (err) {
+          res.status(401).json({ error: 'Unauthorized' });
+      }
+  } else {
+      res.status(401).json({ error: 'Unauthorized' });
+  }
+};
+
 const bcryptSalt = bcrypt.genSaltSync(10);
 const jwtSecret = 'asdsadasdasda';
 
@@ -34,8 +53,15 @@ mongoose.connect(process.env.MONGO_URL)
 
 
 
-// REGISTER USER
 
+
+
+// ------------------------------------------------------------------------------------------------------ //
+
+//ACCOUNT SETTINGS :
+
+
+// REGISTER USER
 app.post('/register', async (req, res) => {
     const {name, email, password} = req.body;
 
@@ -53,44 +79,77 @@ app.post('/register', async (req, res) => {
 })
 
 // LOGIN USER 
-
-app.post('/login', async (req,res) => {
-    mongoose.connect(process.env.MONGO_URL);
-    const {email,password} = req.body;
-    const userDoc = await userModel.findOne({email});
-    if (userDoc) {
-      const passOk = bcrypt.compareSync(password, userDoc.password);
-      if (passOk) {
-        jwt.sign({
-          email:userDoc.email,
-          id:userDoc._id
-        }, jwtSecret, {}, (err,token) => {
-          if (err) throw err;
-          res.cookie('token', token).json(userDoc);
-        });
+app.post('/login', async (req, res) => {
+  const { email, password } = req.body;
+  try {
+      const userDoc = await userModel.findOne({ email });
+      if (userDoc && bcrypt.compareSync(password, userDoc.password)) {
+          jwt.sign({
+              email: userDoc.email,
+              id: userDoc._id
+          }, jwtSecret, {}, (err, token) => {
+              if (err) return res.status(500).json({ error: 'Failed to generate token' });
+              res.cookie('token', token, { httpOnly: true, path: '/' }).json(userDoc);
+          });
       } else {
-        res.status(422).json('pass not ok');
+          res.status(422).json({ error: 'Invalid credentials' });
       }
-    } else {
-      res.json('not found');
-    }
-  });
+  } catch (err) {
+      res.status(500).json({ error: 'Failed to login', details: err.message });
+  }
+});
+
+
+
+ // LOGOUT USER
+app.post('/logout', (req, res) => {
+  res.cookie('token', '', { expires: new Date(0) }); 
+  res.status(200).send('Logged out successfully');
+});
+
 
 
 // PROFILE USER 
-
-app.get('/profile', (req,res) => {
-    const {token} = req.cookies;
-    if (token) {
+app.get('/profile', (req, res) => {
+  const { token } = req.cookies;
+  if (token) {
       jwt.verify(token, jwtSecret, {}, async (err, userData) => {
-        if (err) throw err;
-        const {name,email,_id} = await userModel.findById(userData.id);
-        res.json({name,email,_id});
+          if (err) return res.status(401).json({ error: 'Unauthorized' });
+          const user = await userModel.findById(userData.id);
+          res.json({ name: user.name, email: user.email, _id: user._id });
       });
-    } else {
+  } else {
       res.json(null);
+  }
+});
+
+
+// UPDATE USER 
+app.patch('/profile/update-profile/:id', authenticateUser, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const updatedUser = await userModel.findByIdAndUpdate(id, req.body, { new: true });
+
+    if (!updatedUser) {
+      return res.status(404).json({ message: "User not found" });
     }
-  });
+
+    res.status(200).json(updatedUser);
+    
+  } catch (error) {
+
+    res.status(500).json({ message: error.message });
+  }
+});
+
+
+
+
+
+// ------------------------------------------------------------------------------------------------------ //
+
+//PRODUCT SETTINGS : 
+
 
 
   //konfigurasi multer 
@@ -124,6 +183,8 @@ const upload = multer({ storage: storage }).array('image');
     });
 }); 
 
+
+// UPLOAD PRODUCT 
 
 app.post('/products', async (req, res) => {
   const { namaProduk, namaToko, kondisi, deskripsi, hargaProduk, stockProduk, gambarProduk, variants, beratProduk } = req.body;
@@ -169,6 +230,13 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
         res.status(500).json({ message: err.message });
     }
 });
+
+
+
+// ------------------------------------------------------------------------------------------------------ //
+
+//PORT SETTINGS :
+
 
 
 

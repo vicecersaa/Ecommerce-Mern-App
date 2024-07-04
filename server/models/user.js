@@ -6,7 +6,7 @@ const userSchema = new Schema({
     email: {type:String, unique:true},
     password: String,
     address: String,
-    phoneNumber: String,
+    phoneNumber: Number,
     profilePicture: String,
     fullName: String,
     metodePembayaran: [{type: String}],

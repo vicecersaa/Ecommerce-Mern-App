@@ -40,6 +40,30 @@ export default function TambahProduk() {
             throw error;
         }
     };
+
+    // pengaturan perubahan harga
+
+    const formatNumber = (num) => {
+        return num.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+    };
+
+    const handleFormattedChange = (e, variantIndex, ukuranIndex, field) => {
+        const rawValue = e.target.value.replace(/\./g, '');
+        if (!isNaN(rawValue)) {
+            const formattedValue = formatNumber(rawValue);
+            handleUkuranVarianChange(variantIndex, ukuranIndex, field, rawValue);
+            e.target.value = formattedValue; 
+        }
+    };
+
+    const handleHargaProdukChange = (e) => {
+        const rawValue = e.target.value.replace(/\./g, '');
+        if (!isNaN(rawValue)) {
+            const formattedValue = formatNumber(rawValue);
+            setHargaProduk(rawValue);
+            e.target.value = formattedValue; // Update the input field with the formatted value
+        }
+    };
     
     const handleFileChange = (e) => {
         const files = Array.from(e.target.files); // Convert FileList to an array
@@ -56,6 +80,7 @@ export default function TambahProduk() {
     };
 
     // Handle ukuranVarian changes
+
     const handleUkuranVarianChange = (variantIndex, ukuranIndex, field, value) => {
         const newVariants = [...variants];
         const newUkuranVarian = [...newVariants[variantIndex].ukuranVarian];
@@ -72,6 +97,8 @@ export default function TambahProduk() {
         setVariants(variants.filter((_, i) => i !== index));
     };
 
+    // sizes setting
+
     const addUkuranVarian = (variantIndex) => {
         const newVariants = [...variants];
         newVariants[variantIndex].ukuranVarian.push({ ukuran: '', harga: '' });
@@ -83,6 +110,8 @@ export default function TambahProduk() {
         newVariants[variantIndex].ukuranVarian = newVariants[variantIndex].ukuranVarian.filter((_, i) => i !== ukuranIndex);
         setVariants(newVariants);
     };
+
+    
 
      // Fungsi untuk mengirim data produk ke server
      const createProduct = async (e) => {
@@ -158,9 +187,10 @@ export default function TambahProduk() {
                     <p className="w-full max-w-[150px] font-semibold font-sans">Harga Produk: </p>
                     <input
                         className="border-[1px] border-slate-500 w-full py-2 px-2 rounded-md outline-none"
-                        type="text" placeholder="Harga Produk"
-                        value={hargaProduk}
-                        onChange={e => setHargaProduk(e.target.value)}
+                        type="text"
+                        placeholder="Harga Produk"
+                        value={formatNumber(hargaProduk)}
+                        onChange={handleHargaProdukChange}
                     />
                 </div>
 
@@ -225,9 +255,10 @@ export default function TambahProduk() {
                                     />
                                     <input
                                         className="border-[1px] border-slate-500 py-2 px-2 rounded-md mb-2"
-                                        type="number" placeholder="Harga"
-                                        value={ukuran.harga}
-                                        onChange={(e) => handleUkuranVarianChange(variantIndex, ukuranIndex, 'harga', e.target.value)}
+                                        type="text"
+                                        placeholder="Harga"
+                                        value={formatNumber(ukuran.harga)}
+                                        onChange={(e) => handleFormattedChange(e, variantIndex, ukuranIndex, 'harga')}
                                     />
                                     <button
                                         type="button"

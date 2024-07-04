@@ -4,33 +4,57 @@ import { useContext, useState } from "react";
 import BLANKPROFILE from '../assets/img/blank.png';
 import BLANKSQUARE from '../assets/img/blankPicture.png';
 import TambahProduk from "../components/TambahProduk";
+import axios from "axios";
+import { Navigate, useNavigate } from "react-router-dom";
+import ChangeProfile from '../properties/ChangeProfile';
 
 export default function AccountPage() {
 
     // data profile
-    const {user} = useContext(UserContext);
-
-   
+    const {user, setUser} = useContext(UserContext);
     // bio state 
     const [bio, setBio] = useState(true);
-
     // riwayat state
     const [riwayat, setRiwayat] = useState(false);
-
     // keranjang state
     const [keranjang, setKeranjang] = useState(false);
-
     // tambah produk state
     const [tambahProduk, setTambahProduk] = useState(false)
-
     // total barang keranjang state
     const [totalBarang, setTotalBarang] = useState(0);
+     // state untuk kontrol edit profile
+     const [editField, setEditField] = useState(null);
+     // State untuk mengontrol form edit
+     const [editingField, setEditingField] = useState(null);
+     const [editValue, setEditValue] = useState('');
+
+     const [isEditingUsername, setIsEditingUsername] = useState(false);
+
+     const handleEditUsernameClick = () => {
+        setIsEditingUsername(true);
+    };
+    
+
+    const navigate = useNavigate();
+    const PORT = 'http://localhost:5000'
 
     if (!user) {
         return <div>Loading...</div>;
     }
 
-    
+
+    async function logout() {
+        try {
+            const response = await axios.post(`${PORT}/logout`, null, { withCredentials: true });
+            console.log('Logout response:', response);
+            
+            setUser(null);
+            navigate('/');
+        } catch (error) {
+            console.error('Error during logout:', error);
+            console.error('Error response:', error.response);
+        }
+    }
 
     // ubah ke section bio
     function handleBio() {
@@ -64,6 +88,48 @@ export default function AccountPage() {
         setTambahProduk(true);
     }
 
+
+    const startEditing = (field, currentValue) => {
+        setEditValue(currentValue); // Set initial value for the field
+        setEditingField(field); // Set field to be edited
+    };
+
+    const handleSave = async () => {
+        if (editingField) {
+            try {
+                console.log("Saving", editingField, editValue);
+                await handleEditProfile(editingField, editValue);
+                setEditingField(null); // Close the form after saving
+                setEditValue(''); // Clear the edit value
+            } catch (err) {
+                console.error(`Failed to update ${editingField}:`, err);
+            }
+        }
+    };
+
+
+     // Handler untuk mengedit profil
+     const handleEditProfile = async (field, value) => {
+        try {
+            const response = await axios.patch(`${PORT}/profile/update-profile/${user._id}`, { [field]: value }, { withCredentials: true });
+
+            if (response.status === 200) {
+                setUser(prevUser => ({ ...prevUser, [field]: value }));
+                console.log(`${field} updated successfully`);
+                setEditField(null); 
+            } else {
+                throw new Error(`Failed to update ${field}`);
+            }
+        } catch (err) {
+            console.error(`Error updating ${field}:`, err);
+            throw new Error(`An error occurred while updating ${field}`);
+        }
+    };
+
+    
+
+
+    
 
 
     return (
@@ -107,9 +173,75 @@ export default function AccountPage() {
                                 <div className="mt-4 w-full flex flex-col p-5 h-full min-h-[340px] max-h-[300px]">
                                     <p className="font-bold text-[#6D7588]">Ubah Biodata Diri</p>
 
-                                    <p className="mt-2 text-base w-full font-semibold">Username : {user.name} <span className="text-xs ml-3 text-[#03AC0E] font-normal cursor-pointer">Ubah</span></p>
+                                    <p className="mt-2 text-base w-full font-semibold">
+                                        Username : {user.name} 
+                                        <span
+                                            onClick={() => startEditing('name', user.name)}
+                                            className="text-xs ml-3 text-[#03AC0E] font-normal cursor-pointer"
+                                        >
+                                            Ubah
+                                        </span>
+                                    </p>
+
+                                    {editingField === 'name' && (
+                                        <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 z-50 ">
+                                            <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-sm mx-4 relative">
+                                                
+                                                <h2 className="text-xl font-semibold mb-4">Ubah Username</h2>
+                                                <div className="absolute top-3 right-2 cursor-pointer hover:bg-[#DEDEDE] rounded-md" onClick={() => setEditingField(null)}>
+                                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-7">
+                                                        <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
+                                                    </svg>
+                                                </div>
+                                                <input
+                                                    type="text"
+                                                    value={editValue}
+                                                    onChange={(e) => setEditValue(e.target.value)}
+                                                    className="border-2 border-gray-300 rounded p-2 w-full mb-4"
+                                                    placeholder="Enter new username"
+                                                />
+                                                <div className="flex justify-end gap-2">
+                                                    <button
+                                                        onClick={handleSave}
+                                                        className="w-full bg-[#03AC0E] text-white px-4 py-2 rounded-md hover:bg-[#029c00]"
+                                                    >
+                                                        Simpan
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    )}
 
                                     <p className="mt-2 text-base w-full font-semibold">Nama Lengkap : {user?.fullName || "-"} <span className="text-xs ml-3 text-[#03AC0E] font-normal cursor-pointer">Tambahkan / Ubah</span></p>
+
+                                    {editingField === 'name' && (
+                                        <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 z-50 ">
+                                            <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-sm mx-4 relative">
+                                                
+                                                <h2 className="text-xl font-semibold mb-4">Ubah Username</h2>
+                                                <div className="absolute top-3 right-2 cursor-pointer hover:bg-[#DEDEDE] rounded-md" onClick={() => setEditingField(null)}>
+                                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-7">
+                                                        <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
+                                                    </svg>
+                                                </div>
+                                                <input
+                                                    type="text"
+                                                    value={editValue}
+                                                    onChange={(e) => setEditValue(e.target.value)}
+                                                    className="border-2 border-gray-300 rounded p-2 w-full mb-4"
+                                                    placeholder="Enter new username"
+                                                />
+                                                <div className="flex justify-end gap-2">
+                                                    <button
+                                                        onClick={handleSave}
+                                                        className="w-full bg-[#03AC0E] text-white px-4 py-2 rounded-md hover:bg-[#029c00]"
+                                                    >
+                                                        Simpan
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    )}
 
                                     <p className="mt-2 text-base w-full font-semibold">Alamat Lengkap : {user?.address || "-"} <span className="text-xs ml-3 text-[#03AC0E] font-normal cursor-pointer">Tambahkan / Ubah</span></p>
 
@@ -119,10 +251,9 @@ export default function AccountPage() {
 
                                     <p className="mt-2 text-base w-full font-semibold">Password : XXXXXX <span className="text-xs ml-3 text-[#03AC0E] font-normal cursor-pointer">Ubah</span></p>
 
-                                    
 
                                     <div className="mt-auto flex items-end">
-                                        <button className="bg-red-500  text-white font-sans font-semibold cursor-pointer text-sm py-2 px-4 border-2 rounded-md">Log Out</button>
+                                        <button className="bg-red-500  text-white font-sans font-semibold cursor-pointer text-sm py-2 px-4 border-2 rounded-md" onClick={logout}>Log Out</button>
                                     </div>
                                 </div>
                             </div>

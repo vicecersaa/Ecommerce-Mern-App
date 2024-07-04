@@ -8,6 +8,11 @@ export default function SemuaProduk() {
 
     const { products } = useContext(ProductContext);
 
+     // Formatting function to add thousand separators
+    const formatPrice = (num) => {
+    if (!num) return '';
+    return `Rp${parseFloat(num).toLocaleString('id-ID', { minimumFractionDigits: 0 })}`;
+};
 
     return (
         <div className="mb-20 flex flex-col">
@@ -18,7 +23,7 @@ export default function SemuaProduk() {
                         id={product._id.toString()}
                         img={`http://localhost:5000${product.gambarProduk[0]}`}
                         namaProduk={product.namaProduk}
-                        hargaProduk={product.hargaProduk}
+                        hargaProduk={formatPrice(product.hargaProduk)}
                         kondisiProduk={product.kondisi}
                         namaToko={product.namaToko}
                         stockProduk={product.stockProduk}

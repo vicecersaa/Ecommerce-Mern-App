@@ -5,6 +5,12 @@ import Header from "../components/header";
 import STARS from "../assets/img/star.png";
 
 
+ // Formatting function to add thousand separators
+ const formatPrice = (num) => {
+    if (!num) return '';
+    return `Rp${parseFloat(num).toLocaleString('id-ID', { minimumFractionDigits: 0 })}`;
+};
+
 export default function ProdukDetail() {
     const {id} = useParams();
     console.log('ID from URL:', id);
@@ -13,6 +19,24 @@ export default function ProdukDetail() {
     const [selectedVariant, setSelectedVariant] = useState(null);
     const [selectedSize, setSelectedSize] = useState('');
     const [price, setPrice] = useState(0);
+    const [isExpanded, setIsExpanded] = useState(false);
+    const [mainImage, setMainImage] = useState("");
+
+    // show more dan show less teks
+
+    const toggleExpansion = () => {
+        setIsExpanded(!isExpanded);
+    };
+
+    const getDisplayText = (text) => {
+        const maxLength = 243; 
+        if (!isExpanded && text.length > maxLength) {
+            return text.slice(0, maxLength) + "...";
+        }
+        return text;
+    };
+
+
    
     const handleVariantClick = (variant) => {
         console.log('Selected variant:', variant);
@@ -22,9 +46,14 @@ export default function ProdukDetail() {
     };
     
     const handleSizeClick = (size, harga) => {
-        console.log('Selected size:', size, 'Price:', harga);
         setSelectedSize(size);
         setPrice(harga);
+    };
+
+    console.log(price)
+
+    const handleThumbnailClick = (image) => {
+        setMainImage(image);
     };
 
 
@@ -32,7 +61,9 @@ export default function ProdukDetail() {
         if (!loading && products) {
           const foundProduct = products.find((p) => p._id.toString() === id.toString());
           setProduct(foundProduct);
-          console.log('Product data:', foundProduct);
+            if (foundProduct) {
+                setMainImage(foundProduct.gambarProduk[0]);
+            }
         }
       }, [products, loading, id]);
     
@@ -55,7 +86,7 @@ export default function ProdukDetail() {
 
 
 
-      const displayedPrice = selectedVariant ? selectedVariant.harga : product.hargaProduk;
+      
 
       return (
             <div>
@@ -63,15 +94,20 @@ export default function ProdukDetail() {
 
                 <div className="container mx-auto w-full max-w-[1200px] mt-5 flex justify-between gap-5">
 
-                    <div className="w-full max-w-[350px]">
-                        <img className="w-full max-w-[350px]" src={`http://localhost:5000${product.gambarProduk[0]}`} alt={product.namaProduk} />
-                        <div className="flex mt-2 gap-5">
-                            <img className="w-full max-w-[60px]" src={`http://localhost:5000${product?.gambarProduk[1] || null}`} alt={product?.gambarProduk ? product.namaProduk : null} />
-                            <img className="w-full max-w-[60px]" src={`http://localhost:5000${product?.gambarProduk[2] || null}`} alt={product?.gambarProduk ? product.namaProduk : null} />
-                            <img className="w-full max-w-[60px]" src={`http://localhost:5000${product?.gambarProduk[3] || null}`} alt={product?.gambarProduk ? product.namaProduk : null} />
-                            <img className="w-full max-w-[60px]" src={`http://localhost:5000${product?.gambarProduk[4] || null}`} alt={product?.gambarProduk ? product.namaProduk : null} />
-                        </div>
+                <div className="w-full max-w-[350px]">
+                    <img className="w-full max-w-[350px] bg-[#DEDEDE] p-[20px] rounded-lg" src={`http://localhost:5000${mainImage}`} alt={product.namaProduk} />
+                    <div className="flex mt-2 gap-5">
+                        {product.gambarProduk.slice(0).map((image, index) => (
+                            <img
+                                key={index}
+                                className="w-full max-w-[80px] bg-[#DEDEDE] p-[10px] rounded-lg cursor-pointer"
+                                src={`http://localhost:5000${image}`}
+                                alt={product.namaProduk}
+                                onClick={() => handleThumbnailClick(image)}
+                            />
+                        ))}
                     </div>
+                </div>
 
                     <div className="w-full max-w-[450px]">
                         <h1 className="font-bold text-[20px]">{product.namaProduk}</h1>
@@ -81,19 +117,19 @@ export default function ProdukDetail() {
                             <span>{product.ratings}</span>
                         </div>
 
-                        <p className="font-bold text-[28px] mb-5 mt-3">{product.hargaProduk}</p>
+                        <p className="font-bold text-[30px] mb-5 mt-3">{formatPrice(price || product.hargaProduk)}</p>
 
 
                         <div>
-                            <h2>Pilih Varian:</h2>
+                            <h2 className="font-bold text-xl mb-3">Pilih Varian:</h2>
                             {product.variants && product.variants.length > 0 ? (
                                 uniqueVariantNames.map((variantName) => (
                                     <button
                                         key={variantName}
                                         onClick={() => handleVariantClick(product.variants.find(v => v.namaVarian === variantName))}
                                         style={{
-                                            backgroundColor: selectedVariant && selectedVariant.namaVarian === variantName ? 'green' : 'gray',
-                                            color: 'white',
+                                            backgroundColor: selectedVariant && selectedVariant.namaVarian === variantName ? 'green' : '#DEDEDE',
+                                            color: selectedVariant && selectedVariant.namaVarian === variantName ? 'white' : 'black',
                                             padding: '8px 16px',
                                             margin: '4px',
                                             borderRadius: '4px',
@@ -108,16 +144,16 @@ export default function ProdukDetail() {
                             )}
                         </div>
 
-                        <div className="mt-4">
-                            <h4 className="text-lg font-semibold">Pilih Ukuran:</h4>
+                        <div className="mt-4 mb-4">
+                            {selectedVariant && <h4 className="text-xl font-bold mb-3">Pilih Ukuran:</h4>}
                             {selectedVariant && selectedVariant.ukuranVarian && selectedVariant.ukuranVarian.length > 0 ? (
                                 selectedVariant.ukuranVarian.map((size) => (
                                     <button
                                         key={size._id}
                                         onClick={() => handleSizeClick(size.ukuran, size.harga)}
                                         style={{
-                                            backgroundColor: selectedSize === size.ukuran ? 'green' : 'gray',
-                                            color: 'white',
+                                            backgroundColor: selectedSize === size.ukuran ? 'green' : '#DEDEDE',
+                                            color: selectedSize === size.ukuran ? 'white' : 'black',
                                             padding: '8px 16px',
                                             margin: '4px',
                                             borderRadius: '4px',
@@ -128,7 +164,7 @@ export default function ProdukDetail() {
                                     </button>
                                 ))
                             ) : (
-                                <p>Ukuran tidak tersedia untuk varian ini</p>
+                                <p></p>
                             )}
                         </div>
                         <p className="text-slate-500 font-medium">
@@ -143,9 +179,21 @@ export default function ProdukDetail() {
                             Toko : <span className="text-[#03AC0E] font-semibold">{product.namaToko}</span>
                         </p>
 
-                        <p className="whitespace-pre-wrap text-sm">
-                            {product.deskripsi}
-                        </p>
+                     
+                    
+                    <p className="whitespace-pre-wrap text-[16px]">
+                        {getDisplayText(product.deskripsi)}
+                    </p>
+                    {product.deskripsi.length > 100 && (
+                        <button
+                            className="text-[#00AA5B] text-sm"
+                            onClick={toggleExpansion}
+                        >
+                            {isExpanded ? "Lihat Lebih Sedikit" : "Baca Selengkapnya"}
+                        </button>
+                    )}
+
+                  
 
                     </div>
 
@@ -178,7 +226,7 @@ export default function ProdukDetail() {
 
                         <div className="flex items-center justify-between mt-10">
                             <p className="text-gray-500">Subtotal</p>
-                            <p className="text-[#212121] font-bold text-[18px]">{product.hargaProduk}</p>
+                            <p className="text-[#212121] font-bold text-[18px]">{formatPrice(price || product.hargaProduk)}</p>
                         </div>
 
                         <div className="mt-3">
