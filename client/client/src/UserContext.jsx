@@ -1,33 +1,45 @@
 import axios from "axios";
 
-const { createContext, Children, useState, useEffect } = require("react");
+const { createContext, useState, useEffect } = require("react");
 
 export const UserContext = createContext({});
 
 
 
-export function UserContextProvider({children}) {
-    // Port 
-    const PORT = 'http://localhost:5000'
-
+export function UserContextProvider({ children }) {
+    const PORT = 'http://localhost:5000';
+    
     // User State
     const [user, setUser] = useState(null);
 
-    //  getting user profile
+    // Fetch user profile on mount and if user is null
     useEffect(() => {
+        const fetchUserProfile = async () => {
+            try {
+                const { data } = await axios.get(`${PORT}/profile`);
+                setUser(data);
+            } catch (error) {
+                console.error('Error fetching user profile:', error);
+            }
+        };
+
         if (!user) {
-        axios.get(`${PORT}/profile`,).then(({data}) => {
-            setUser(data);
-        });
-        
+            fetchUserProfile();
         }
-    },[])
+    }, []);
+
+    const updateUser = async (userId, updates) => {
+        try {
+            const response = await axios.put(`${PORT}/user/${userId}`, updates);
+            setUser(response.data);
+        } catch (error) {
+            console.error('Error updating user:', error);
+        }
+    };
 
     return (
-        
-        <UserContext.Provider value={{user, setUser}}>
+        <UserContext.Provider value={{ user, setUser, updateUser }}>
             {children}
         </UserContext.Provider>
-
     );
 }

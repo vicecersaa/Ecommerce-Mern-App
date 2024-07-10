@@ -9,6 +9,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const multer = require('multer');
 const path = require('path');
+const { body, validationResult } = require('express-validator');
 require('dotenv').config();
 
 
@@ -49,6 +50,13 @@ app.use(cors(corsOptions));
 app.use(bodyParser.json());  // Untuk parsing aplikasi/json
 app.use(bodyParser.urlencoded({ extended: true }));  // Untuk parsing aplikasi/x-www-form-urlencoded
 
+const validateUpdate = [
+  body('phoneNumber').optional().isString(),
+  body('address').optional().isString(),
+  // Add more validations as needed
+];
+
+
 mongoose.connect(process.env.MONGO_URL)
 
 
@@ -77,6 +85,7 @@ app.post('/register', async (req, res) => {
     }
     
 })
+
 
 // LOGIN USER 
 app.post('/login', async (req, res) => {
@@ -116,7 +125,7 @@ app.get('/profile', (req, res) => {
       jwt.verify(token, jwtSecret, {}, async (err, userData) => {
           if (err) return res.status(401).json({ error: 'Unauthorized' });
           const user = await userModel.findById(userData.id);
-          res.json({ name: user.name, email: user.email, _id: user._id });
+          res.json({ name: user.name, email: user.email, _id: user._id, address: user.address, fullName: user.fullName, phoneNumber: user.phoneNumber });
       });
   } else {
       res.json(null);

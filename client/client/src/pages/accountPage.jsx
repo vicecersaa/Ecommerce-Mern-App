@@ -28,13 +28,7 @@ export default function AccountPage() {
      const [editingField, setEditingField] = useState(null);
      const [editValue, setEditValue] = useState('');
 
-     const [isEditingUsername, setIsEditingUsername] = useState(false);
-
-     const handleEditUsernameClick = () => {
-        setIsEditingUsername(true);
-    };
     
-
     const navigate = useNavigate();
     const PORT = 'http://localhost:5000'
 
@@ -108,15 +102,13 @@ export default function AccountPage() {
     };
 
 
-     // Handler untuk mengedit profil
+     // Edit profile handler
      const handleEditProfile = async (field, value) => {
         try {
             const response = await axios.patch(`${PORT}/profile/update-profile/${user._id}`, { [field]: value }, { withCredentials: true });
-
             if (response.status === 200) {
                 setUser(prevUser => ({ ...prevUser, [field]: value }));
                 console.log(`${field} updated successfully`);
-                setEditField(null); 
             } else {
                 throw new Error(`Failed to update ${field}`);
             }
@@ -125,6 +117,10 @@ export default function AccountPage() {
             throw new Error(`An error occurred while updating ${field}`);
         }
     };
+
+    if (!user) {
+        return <div>Loading...</div>;
+    }
 
     
 
@@ -173,81 +169,194 @@ export default function AccountPage() {
                                 <div className="mt-4 w-full flex flex-col p-5 h-full min-h-[340px] max-h-[300px]">
                                     <p className="font-bold text-[#6D7588]">Ubah Biodata Diri</p>
 
-                                    <p className="mt-2 text-base w-full font-semibold">
-                                        Username : {user.name} 
-                                        <span
-                                            onClick={() => startEditing('name', user.name)}
-                                            className="text-xs ml-3 text-[#03AC0E] font-normal cursor-pointer"
-                                        >
-                                            Ubah
-                                        </span>
-                                    </p>
+                                <p className="mt-2 text-base w-full font-semibold">
+                                    Username : {user.name} 
+                                    <span
+                                        onClick={() => startEditing('name', user.name)}
+                                        className="text-xs ml-3 text-[#03AC0E] font-normal cursor-pointer"
+                                    >
+                                        Ubah
+                                    </span>
+                                </p>
 
-                                    {editingField === 'name' && (
-                                        <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 z-50 ">
-                                            <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-sm mx-4 relative">
-                                                
-                                                <h2 className="text-xl font-semibold mb-4">Ubah Username</h2>
-                                                <div className="absolute top-3 right-2 cursor-pointer hover:bg-[#DEDEDE] rounded-md" onClick={() => setEditingField(null)}>
-                                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-7">
-                                                        <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
-                                                    </svg>
-                                                </div>
-                                                <input
-                                                    type="text"
-                                                    value={editValue}
-                                                    onChange={(e) => setEditValue(e.target.value)}
-                                                    className="border-2 border-gray-300 rounded p-2 w-full mb-4"
-                                                    placeholder="Enter new username"
-                                                />
-                                                <div className="flex justify-end gap-2">
-                                                    <button
-                                                        onClick={handleSave}
-                                                        className="w-full bg-[#03AC0E] text-white px-4 py-2 rounded-md hover:bg-[#029c00]"
-                                                    >
-                                                        Simpan
-                                                    </button>
-                                                </div>
+                                {editingField === 'name' && (
+                                    <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 z-50 ">
+                                        <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-sm mx-4 relative">
+                                            
+                                            <h2 className="text-xl font-semibold mb-4">Ubah Username</h2>
+                                            <div className="absolute top-3 right-2 cursor-pointer hover:bg-[#DEDEDE] rounded-md" onClick={() => setEditingField(null)}>
+                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-7">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
+                                                </svg>
+                                            </div>
+                                            <input
+                                                type="text"
+                                                value={editValue}
+                                                onChange={(e) => setEditValue(e.target.value)}
+                                                className="border-2 border-gray-300 rounded p-2 w-full mb-4"
+                                                placeholder="Enter new username"
+                                            />
+                                            <div className="flex justify-end gap-2">
+                                                <button
+                                                    onClick={handleSave}
+                                                    className="w-full bg-[#03AC0E] text-white px-4 py-2 rounded-md hover:bg-[#029c00]"
+                                                >
+                                                    Simpan
+                                                </button>
                                             </div>
                                         </div>
-                                    )}
+                                    </div>
+                                )}
 
-                                    <p className="mt-2 text-base w-full font-semibold">Nama Lengkap : {user?.fullName || "-"} <span className="text-xs ml-3 text-[#03AC0E] font-normal cursor-pointer">Tambahkan / Ubah</span></p>
+                                <p className="mt-2 text-base w-full font-semibold">
+                                    Nama Lengkap : {user.fullName} 
+                                    <span 
+                                        onClick={() => startEditing('fullName', user.fullName || "")}
+                                        className="text-xs ml-3 text-[#03AC0E] font-normal cursor-pointer">
+                                        Tambahkan / Ubah
+                                    </span>
+                                </p>
 
-                                    {editingField === 'name' && (
-                                        <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 z-50 ">
-                                            <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-sm mx-4 relative">
-                                                
-                                                <h2 className="text-xl font-semibold mb-4">Ubah Username</h2>
-                                                <div className="absolute top-3 right-2 cursor-pointer hover:bg-[#DEDEDE] rounded-md" onClick={() => setEditingField(null)}>
-                                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-7">
-                                                        <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
-                                                    </svg>
-                                                </div>
-                                                <input
-                                                    type="text"
-                                                    value={editValue}
-                                                    onChange={(e) => setEditValue(e.target.value)}
-                                                    className="border-2 border-gray-300 rounded p-2 w-full mb-4"
-                                                    placeholder="Enter new username"
-                                                />
-                                                <div className="flex justify-end gap-2">
-                                                    <button
-                                                        onClick={handleSave}
-                                                        className="w-full bg-[#03AC0E] text-white px-4 py-2 rounded-md hover:bg-[#029c00]"
-                                                    >
-                                                        Simpan
-                                                    </button>
-                                                </div>
+                                {editingField === 'fullName' && (
+                                    <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 z-50">
+                                        <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-sm mx-4 relative">
+                                            <h2 className="text-xl font-semibold mb-4">Tambah Nama Lengkap</h2>
+                                            <div className="absolute top-3 right-2 cursor-pointer hover:bg-[#DEDEDE] rounded-md" onClick={() => setEditingField(null)}>
+                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-7">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
+                                                </svg>
+                                            </div>
+                                            <input
+                                                type="text"
+                                                value={editValue}
+                                                onChange={(e) => setEditValue(e.target.value)}
+                                                className="border-2 border-gray-300 rounded p-2 w-full mb-4"
+                                                placeholder="Enter new full name"
+                                            />
+                                            <div className="flex justify-end gap-2">
+                                                <button
+                                                    onClick={handleSave}
+                                                    className="w-full bg-[#03AC0E] text-white px-4 py-2 rounded-md hover:bg-[#029c00]"
+                                                >
+                                                    Simpan
+                                                </button>
                                             </div>
                                         </div>
-                                    )}
+                                    </div>
+                                )}
 
-                                    <p className="mt-2 text-base w-full font-semibold">Alamat Lengkap : {user?.address || "-"} <span className="text-xs ml-3 text-[#03AC0E] font-normal cursor-pointer">Tambahkan / Ubah</span></p>
+                                <p className="mt-2 text-base w-full font-semibold">
+                                    Alamat Lengkap : {user.address} 
+                                    <span 
+                                        onClick={() => startEditing('address', user.address || "")}
+                                        className="text-xs ml-3 text-[#03AC0E] font-normal cursor-pointer">
+                                        Tambahkan / Ubah
+                                    </span>
+                                </p>
 
-                                    <p className="mt-2 text-base w-full font-semibold">Nomor Hp : {user?.phoneNumber || "-"} <span className="text-xs ml-3 text-[#03AC0E] font-normal cursor-pointer">Tambahkan / Ubah</span></p>
+                                {editingField === 'address' && (
+                                    <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 z-50">
+                                        <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-sm mx-4 relative">
+                                            <h2 className="text-xl font-semibold mb-4">Tambah Alamat Lengkap</h2>
+                                            <div className="absolute top-3 right-2 cursor-pointer hover:bg-[#DEDEDE] rounded-md" onClick={() => setEditingField(null)}>
+                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-7">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
+                                                </svg>
+                                            </div>
+                                            <input
+                                                type="text"
+                                                value={editValue}
+                                                onChange={(e) => setEditValue(e.target.value)}
+                                                className="border-2 border-gray-300 rounded p-2 w-full mb-4"
+                                                placeholder="Enter full address"
+                                            />
+                                            <div className="flex justify-end gap-2">
+                                                <button
+                                                    onClick={handleSave}
+                                                    className="w-full bg-[#03AC0E] text-white px-4 py-2 rounded-md hover:bg-[#029c00]"
+                                                >
+                                                    Simpan
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
 
-                                    <p className="mt-2 text-base w-full font-semibold">Email : {user.email} <span className="text-xs ml-3 text-[#03AC0E] font-normal cursor-pointer">Ubah</span></p>
+
+
+                                <p className="mt-2 text-base w-full font-semibold">
+                                    Nomor Telp : {user.phoneNumber} 
+                                    <span 
+                                        onClick={() => startEditing('phoneNumber', user.phoneNumber || "")}
+                                        className="text-xs ml-3 text-[#03AC0E] font-normal cursor-pointer">
+                                        Tambahkan / Ubah
+                                    </span>
+                                </p>
+
+                                {editingField === 'phoneNumber' && (
+                                    <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 z-50">
+                                        <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-sm mx-4 relative">
+                                            <h2 className="text-xl font-semibold mb-4">Tambah Nomor Telepon</h2>
+                                            <div className="absolute top-3 right-2 cursor-pointer hover:bg-[#DEDEDE] rounded-md" onClick={() => setEditingField(null)}>
+                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-7">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
+                                                </svg>
+                                            </div>
+                                            <input
+                                                type="text"
+                                                value={editValue}
+                                                onChange={(e) => setEditValue(e.target.value)}
+                                                className="border-2 border-gray-300 rounded p-2 w-full mb-4"
+                                                placeholder="Enter Phone Number"
+                                            />
+                                            <div className="flex justify-end gap-2">
+                                                <button
+                                                    onClick={handleSave}
+                                                    className="w-full bg-[#03AC0E] text-white px-4 py-2 rounded-md hover:bg-[#029c00]"
+                                                >
+                                                    Simpan
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
+
+                                <p className="mt-2 text-base w-full font-semibold">
+                                    Email : {user?.email || "-"} 
+                                    <span 
+                                        onClick={() => startEditing('email', user.email || "")}
+                                        className="text-xs ml-3 text-[#03AC0E] font-normal cursor-pointer">
+                                        Tambahkan / Ubah
+                                    </span>
+                                </p>
+
+                                {editingField === 'email' && (
+                                    <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 z-50">
+                                        <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-sm mx-4 relative">
+                                            <h2 className="text-xl font-semibold mb-4">Ubah Email</h2>
+                                            <div className="absolute top-3 right-2 cursor-pointer hover:bg-[#DEDEDE] rounded-md" onClick={() => setEditingField(null)}>
+                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-7">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
+                                                </svg>
+                                            </div>
+                                            <input
+                                                type="text"
+                                                value={editValue}
+                                                onChange={(e) => setEditValue(e.target.value)}
+                                                className="border-2 border-gray-300 rounded p-2 w-full mb-4"
+                                                placeholder="Enter Email Address"
+                                            />
+                                            <div className="flex justify-end gap-2">
+                                                <button
+                                                    onClick={handleSave}
+                                                    className="w-full bg-[#03AC0E] text-white px-4 py-2 rounded-md hover:bg-[#029c00]"
+                                                >
+                                                    Simpan
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
 
                                     <p className="mt-2 text-base w-full font-semibold">Password : XXXXXX <span className="text-xs ml-3 text-[#03AC0E] font-normal cursor-pointer">Ubah</span></p>
 
