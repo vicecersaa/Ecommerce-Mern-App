@@ -1,10 +1,7 @@
 import axios from "axios";
-
-const { createContext, useState, useEffect } = require("react");
+import React, { createContext, useState, useEffect } from "react";
 
 export const UserContext = createContext({});
-
-
 
 export function UserContextProvider({ children }) {
     const PORT = 'http://localhost:5000';
@@ -16,7 +13,7 @@ export function UserContextProvider({ children }) {
     useEffect(() => {
         const fetchUserProfile = async () => {
             try {
-                const { data } = await axios.get(`${PORT}/profile`);
+                const { data } = await axios.get(`${PORT}/profile`, { withCredentials: true });
                 setUser(data);
             } catch (error) {
                 console.error('Error fetching user profile:', error);
@@ -26,7 +23,7 @@ export function UserContextProvider({ children }) {
         if (!user) {
             fetchUserProfile();
         }
-    }, []);
+    }, [user]);
 
     const updateUser = async (userId, updates) => {
         try {

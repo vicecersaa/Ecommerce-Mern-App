@@ -8,8 +8,12 @@
         password: String,
         address: String,
         phoneNumber: String,
+        role: { 
+            type: String, 
+            default: 'admin' 
+        },
         profilePicture: {
-            type: [String],
+            type: String,
             required: false
         },
         fullName: String,

@@ -152,10 +152,11 @@ export default function AccountPage() {
                         <button onClick={handleKeranjang} className={`py-[10px] px-[24px] font-bold ${keranjang ? 'text-[#03AC0E] border-b-2 border-[#03AC0E]' : 'text-[#6D7588]'}`}>
                             <p>Keranjang</p>
                         </button>
-
-                        <button onClick={handleTambahProduk} className={`py-[10px] px-[24px] font-bold ${tambahProduk ? 'text-[#03AC0E] border-b-2 border-[#03AC0E]' : 'text-[#6D7588]'}`}>
-                            <p>Tambah Produk</p>
-                        </button>
+                        {user && user.role === 'admin' && (
+                            <button onClick={handleTambahProduk} className={`py-[10px] px-[24px] font-bold ${tambahProduk ? 'text-[#03AC0E] border-b-2 border-[#03AC0E]' : 'text-[#6D7588]'}`}>
+                                <p>Tambah Produk</p>
+                            </button>
+                        )}
 
                     </div>
                     
@@ -484,14 +485,15 @@ export default function AccountPage() {
                             </div>
                         </div>
                     )}
-
-                   {tambahProduk && (
-                     <div className="flex border-x-2 border-b-2 p-3">
+                <div>
+                    {user && user.role === 'admin' && tambahProduk &&(
+                        <div className="flex border-x-2 border-b-2 p-3">
                         <div className="mt-4 w-full flex flex-col p-5 h-screen h-full min-h-[1500px]">
-                            <TambahProduk /> 
-                         </div>
-                    </div>
-                   )}
+                            <TambahProduk />
+                        </div>
+                        </div>
+                    )}
+                </div>
             </div>
         </div>
     )

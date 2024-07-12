@@ -16,20 +16,35 @@ require('dotenv').config();
 // MIDDLEWARE
 const saltRounds = 10;
 
-// Middleware to authenticate user (if required)
+// Middleware to authenticate user 
 const authenticateUser = async (req, res, next) => {
   const { token } = req.cookies;
-  if (token) {
-      try {
-          const userData = jwt.verify(token, jwtSecret);
-          req.user = await userModel.findById(userData.id);
-          next();
-      } catch (err) {
-          res.status(401).json({ error: 'Unauthorized' });
-      }
-  } else {
-      res.status(401).json({ error: 'Unauthorized' });
+
+  if (!token) {
+    return res.status(401).json({ error: 'No token, authorization denied' });
   }
+
+  try {
+    const userData = jwt.verify(token, jwtSecret);
+    const user = await userModel.findById(userData.id);
+
+    if (!user) {
+      return res.status(401).json({ error: 'User not found' });
+    }
+
+    req.user = user;
+    next();
+  } catch (err) {
+    return res.status(401).json({ error: 'Token is not valid' });
+  }
+};
+
+// Middleware to authenticate admin 
+const authenticateAdmin = (req, res, next) => {
+  if (req.user.role !== 'admin') {
+      return res.status(403).json({ error: 'Forbidden: Access is denied' });
+  }
+  next();
 };
 
 const bcryptSalt = bcrypt.genSaltSync(10);
@@ -58,6 +73,7 @@ const validateUpdate = [
 ];
 
 
+
 mongoose.connect(process.env.MONGO_URL)
 
 
@@ -78,6 +94,7 @@ app.post('/register', async (req, res) => {
         const userDoc = await userModel.create({
             name,
             email,
+            role: role || 'user',
             password: bcrypt.hashSync(password, bcryptSalt)
         })
         res.json(userDoc);
@@ -86,6 +103,40 @@ app.post('/register', async (req, res) => {
     }
     
 })
+
+
+// REGISTER ADMIN ACCOUNT
+app.post('/register-admin', authenticateUser, async (req, res) => {
+  if (req.user.role !== 'admin') {
+      return res.status(403).json({ error: 'Forbidden: Only admins can create new admins' });
+  }
+
+  const { name, email, password } = req.body;
+
+  
+  const existingAdmin = await userModel.findOne({ email });
+  if (existingAdmin) {
+      return res.status(400).json({ error: 'Admin already exists' });
+  }
+
+  // Hash password
+  const hashedPassword = await bcrypt.hash(password, 10);
+
+  // Create new admin
+  const newAdmin = new userModel({
+      name,
+      email,
+      password: hashedPassword,
+      role: 'admin' 
+  });
+
+  try {
+      await newAdmin.save();
+      res.status(201).json({ message: 'Admin registered successfully' });
+  } catch (error) {
+      res.status(500).json({ error: 'Failed to register admin', details: error.message });
+  }
+});
 
 
 // LOGIN USER 
@@ -126,7 +177,7 @@ app.get('/profile', (req, res) => {
       jwt.verify(token, jwtSecret, {}, async (err, userData) => {
           if (err) return res.status(401).json({ error: 'Unauthorized' });
           const user = await userModel.findById(userData.id);
-          res.json({ name: user.name, email: user.email, _id: user._id, address: user.address, fullName: user.fullName, phoneNumber: user.phoneNumber, profilePicture: user.profilePicture });
+          res.json({ name: user.name, email: user.email, _id: user._id, address: user.address, fullName: user.fullName, phoneNumber: user.phoneNumber, profilePicture: user.profilePicture, role: user.role });
       });
   } else {
       res.json(null);
@@ -173,25 +224,27 @@ app.post('/change-password', authenticateUser, async (req, res) => {
   }
 });
 
-// UPLOAD PROFILE PICTURE
+
+
+//UPLOAD PROFILE PICTURE
 app.post('/upload-profilePicture', authenticateUser, (req, res) => {
+  const upload = multer({ storage: storage }).single('image');
   upload(req, res, async function (err) {
       if (err) {
           return res.status(400).json({ error: 'Error uploading file', details: err.message });
       }
-      if (!req.files || req.files.length === 0) {
+      if (!req.file) { 
           return res.status(400).json({ error: 'No files uploaded' });
       }
 
-      // Map the uploaded files to their URLs
-      const imageUrls = req.files.map(file => `/uploads/${file.filename}`);
+      const imageUrl = `/uploads/${req.file.filename}`;
 
       // Update the user's profilePicture
       try {
-          const userId = req.user._id; // Extract user ID from the request (make sure authenticateUser middleware sets req.user)
+          const userId = req.user._id; 
           const updatedUser = await userModel.findByIdAndUpdate(
               userId,
-              { $push: { profilePicture: { $each: imageUrls } } },
+              { profilePicture: imageUrl }, 
               { new: true }
           );
           if (!updatedUser) {
@@ -249,12 +302,10 @@ const upload = multer({ storage: storage }).array('image');
 
 // UPLOAD PRODUCT 
 
-app.post('/products', async (req, res) => {
+app.post('/products', authenticateUser, authenticateAdmin, async (req, res) => {
   const { namaProduk, namaToko, kondisi, deskripsi, hargaProduk, stockProduk, gambarProduk, variants, beratProduk } = req.body;
   console.log('Received data:', req.body);
   try {
-  
-
     const productDoc = new productModel({
       namaProduk,
       hargaProduk,
@@ -270,7 +321,7 @@ app.post('/products', async (req, res) => {
     });
 
     const savedProduct = await productDoc.save();
-    console.log(savedProduct)
+    console.log(savedProduct);
     res.status(201).json(savedProduct);
   } catch (error) {
     res.status(422).json({ error: 'Gagal menyimpan produk', details: error.message });
