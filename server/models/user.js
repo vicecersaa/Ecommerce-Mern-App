@@ -1,5 +1,6 @@
     const mongoose = require('mongoose');
     const {Schema} = mongoose;
+    const bcrypt = require('bcrypt')
 
     const userSchema = new Schema({
         name: String,
@@ -7,7 +8,10 @@
         password: String,
         address: String,
         phoneNumber: String,
-        profilePicture: String,
+        profilePicture: {
+            type: [String],
+            required: false
+        },
         fullName: String,
         metodePembayaran: [{type: String}],
         historiTransaksi: [{

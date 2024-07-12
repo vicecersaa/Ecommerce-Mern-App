@@ -1,12 +1,13 @@
 import { UserContext } from "../UserContext";
 import Header from "../components/header";
 import { useContext, useState } from "react";
-import BLANKPROFILE from '../assets/img/blank.png';
 import BLANKSQUARE from '../assets/img/blankPicture.png';
 import TambahProduk from "../components/TambahProduk";
 import axios from "axios";
 import { Navigate, useNavigate } from "react-router-dom";
-import ChangeProfile from '../properties/ChangeProfile';
+import ChangePasswordForm from '../components/ChangePasswordForm';
+import ProfilePictureUpload from "../components/ProfilePictureUpload";
+
 
 export default function AccountPage() {
 
@@ -27,6 +28,7 @@ export default function AccountPage() {
      // State untuk mengontrol form edit
      const [editingField, setEditingField] = useState(null);
      const [editValue, setEditValue] = useState('');
+    
 
     
     const navigate = useNavigate();
@@ -36,7 +38,7 @@ export default function AccountPage() {
         return <div>Loading...</div>;
     }
 
-
+    // logout
     async function logout() {
         try {
             const response = await axios.post(`${PORT}/logout`, null, { withCredentials: true });
@@ -122,9 +124,7 @@ export default function AccountPage() {
         return <div>Loading...</div>;
     }
 
-    
-
-
+  
     
 
 
@@ -162,10 +162,7 @@ export default function AccountPage() {
                     {bio && (
                         <div className="flex border-x-2 border-b-2 p-3">
                             <div className="mt-4 w-full flex p-5 h-screen min-h-[340px]">
-                                <div className="w-full max-w-[250px] h-full max-h-[300px] flex flex-col justify-center items-center mt-4 mb-4 border-[#E4EBF5] border-2 p-5 rounded-xl shadow-xl"> 
-                                    <img className="w-full max-w-[250px]" src={BLANKPROFILE} alt="Profile" />
-                                    <button className="w-full max-w-[250px] mt-3 border-[#E4EBF5] border-2 py-2 px-3 rounded-lg text-sm font-bol cursor-pointer">Pilih Foto</button>
-                                </div>
+                                <ProfilePictureUpload />
                                 <div className="mt-4 w-full flex flex-col p-5 h-full min-h-[340px] max-h-[300px]">
                                     <p className="font-bold text-[#6D7588]">Ubah Biodata Diri</p>
 
@@ -358,7 +355,23 @@ export default function AccountPage() {
                                     </div>
                                 )}
 
-                                    <p className="mt-2 text-base w-full font-semibold">Password : XXXXXX <span className="text-xs ml-3 text-[#03AC0E] font-normal cursor-pointer">Ubah</span></p>
+                                <div>
+                                    <p className="mt-2 text-base w-full font-semibold">
+                                        Password : XXXXXX   
+                                        <span 
+                                            onClick={() => startEditing('password', user.password || "")}
+                                            className="text-xs ml-3 text-[#03AC0E] font-normal cursor-pointer">
+                                            Ubah
+                                        </span>
+                                    </p>
+
+                                        {editingField === 'password' && (
+                                            <ChangePasswordForm 
+                                                userId={user._id} 
+                                                editing={() => setEditingField(null)}
+                                                />
+                                        )}
+                                </div>
 
 
                                     <div className="mt-auto flex items-end">
