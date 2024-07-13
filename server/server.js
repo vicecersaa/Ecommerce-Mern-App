@@ -11,7 +11,7 @@ const multer = require('multer');
 const path = require('path');
 const { body, validationResult } = require('express-validator');
 require('dotenv').config();
-
+const { addToCart } = require('./controllers/cartController');
 
 // MIDDLEWARE
 const saltRounds = 10;
@@ -63,8 +63,8 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
-app.use(bodyParser.json());  // Untuk parsing aplikasi/json
-app.use(bodyParser.urlencoded({ extended: true }));  // Untuk parsing aplikasi/x-www-form-urlencoded
+app.use(bodyParser.json());  
+app.use(bodyParser.urlencoded({ extended: true }));  
 
 const validateUpdate = [
   body('phoneNumber').optional().isString(),
@@ -228,34 +228,67 @@ app.post('/change-password', authenticateUser, async (req, res) => {
 
 //UPLOAD PROFILE PICTURE
 app.post('/upload-profilePicture', authenticateUser, (req, res) => {
-  const upload = multer({ storage: storage }).single('image');
+  const upload = multer({ storage: storage }).single('image'); // Hanya mengizinkan satu file
   upload(req, res, async function (err) {
-      if (err) {
-          return res.status(400).json({ error: 'Error uploading file', details: err.message });
-      }
-      if (!req.file) { 
-          return res.status(400).json({ error: 'No files uploaded' });
-      }
+    if (err) {
+      console.error('Multer error:', err);
+      return res.status(400).json({ error: 'Error uploading file', details: err.message });
+    }
+    if (!req.file) {
+      return res.status(400).json({ error: 'No file uploaded' });
+    }
 
-      const imageUrl = `/uploads/${req.file.filename}`;
+    const imageUrl = `/uploads/${req.file.filename}`;
+    console.log('Uploaded image URL:', imageUrl);
 
-      // Update the user's profilePicture
-      try {
-          const userId = req.user._id; 
-          const updatedUser = await userModel.findByIdAndUpdate(
-              userId,
-              { profilePicture: imageUrl }, 
-              { new: true }
-          );
-          if (!updatedUser) {
-              return res.status(404).json({ error: 'User not found' });
-          }
-          res.json({ profilePicture: updatedUser.profilePicture });
-      } catch (error) {
-          res.status(500).json({ error: 'Failed to update user', details: error.message });
+    try {
+      const userId = req.user._id;
+      const updatedUser = await userModel.findByIdAndUpdate(
+        userId,
+        { profilePicture: imageUrl }, // Simpan satu URL gambar
+        { new: true }
+      );
+      if (!updatedUser) {
+        return res.status(404).json({ error: 'User not found' });
       }
+      res.json({ profilePicture: updatedUser.profilePicture });
+    } catch (error) {
+      console.error('Update user error:', error);
+      res.status(500).json({ error: 'Failed to update user', details: error.message });
+    }
   });
 });
+
+
+// ADD TO CART 
+app.post('/add-to-cart', async (req,res) => {
+  const {userId, productId, quantity} = req.body
+  try {
+    const updatedUser = await addToCart(userId, productId,quantity);
+    res.status(200).json(updatedUser);
+  } catch (error) {
+    res.status(500).json({message: error.message});
+  }
+})
+
+// GET CART
+app.get('/get-cart', async (req, res) => {
+  const { userId } = req.query;
+  console.log('Received userId:', userId); 
+
+  try {
+      const user = await userModel.findById(userId).populate('cart.productId');
+      if (!user) {
+          console.log('User not found'); 
+          return res.status(404).json({ message: 'User not found' });
+      }
+      res.status(200).json({ cart: user.cart });
+  } catch (error) {
+      console.error('Server error:', error); 
+      res.status(500).json({ message: error.message });
+  }
+});
+
 
 
 
@@ -303,11 +336,12 @@ const upload = multer({ storage: storage }).array('image');
 // UPLOAD PRODUCT 
 
 app.post('/products', authenticateUser, authenticateAdmin, async (req, res) => {
-  const { namaProduk, namaToko, kondisi, deskripsi, hargaProduk, stockProduk, gambarProduk, variants, beratProduk } = req.body;
+  const { namaProduk, namaToko, kondisi, deskripsi, hargaProduk, stockProduk, gambarProduk, variants, beratProduk, categoryProduk } = req.body;
   console.log('Received data:', req.body);
   try {
     const productDoc = new productModel({
       namaProduk,
+      categoryProduk,
       hargaProduk,
       namaToko,
       kondisi,
@@ -329,10 +363,6 @@ app.post('/products', authenticateUser, authenticateAdmin, async (req, res) => {
 });
 
 
-
-
-
-
   // GET PRODUCT 
 
   app.get('/products', async (req, res) => {
@@ -344,6 +374,22 @@ app.post('/products', authenticateUser, authenticateAdmin, async (req, res) => {
         res.status(500).json({ message: err.message });
     }
 });
+
+// GET PRODUCT CATEGORY 
+
+app.get('/categories', authenticateUser, async (req, res) => {
+  let { query } = req.query;
+  query = typeof query === 'string' ? query : '';
+  try {
+    const categories = await productModel.distinct('categoryProduk', {
+      categoryProduk: { $regex: query, $options: 'i' }
+    });
+    res.status(200).json(categories);
+  } catch (error) {
+    res.status(500).json({ error: 'Gagal mengambil kategori', details: error.message });
+  }
+});
+
 
 
 

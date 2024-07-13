@@ -3,6 +3,10 @@ import { useParams } from "react-router-dom";
 import { ProductContext, ProductContextProvider } from "../ProductContext";
 import Header from "../components/header";
 import STARS from "../assets/img/star.png";
+import {UserContext} from '../UserContext';
+import axios from 'axios';
+
+
 
 
  // Formatting function to add thousand separators
@@ -21,6 +25,11 @@ export default function ProdukDetail() {
     const [price, setPrice] = useState(0);
     const [isExpanded, setIsExpanded] = useState(false);
     const [mainImage, setMainImage] = useState("");
+    const {user} = useContext(UserContext);
+    const [error, setError] = useState(null);
+    const [cart, setCart] = useState([]);
+
+    const PORT = 'http://localhost:5000'
 
     // show more dan show less teks
 
@@ -76,7 +85,6 @@ export default function ProdukDetail() {
       }
 
       
-       // Extract unique variant names
         const getUniqueVariantNames = () => {
             const variantNames = product.variants.map(variant => variant.namaVarian);
             return [...new Set(variantNames)];
@@ -85,7 +93,29 @@ export default function ProdukDetail() {
         const uniqueVariantNames = getUniqueVariantNames();
 
 
-
+        const handleAddToCart = async (productId) => {
+            if (!user) {
+                console.error('User not logged in');
+                return;
+            }
+    
+            try {
+                const response = await axios.post(`${PORT}/add-to-cart`, {
+                    userId: user._id,
+                    productId,
+                    quantity: 1
+                });
+    
+                if (response.status === 200) {
+                    setCart(response.data.cart);
+                }
+            } catch (error) {
+                console.error('Failed to add to cart:', error);
+            }
+        };
+    
+        if (loading) return <div>Loading...</div>;
+        if (error) return <div>Error loading cart: {error.message}</div>;
       
 
       return (
@@ -230,7 +260,7 @@ export default function ProdukDetail() {
                         </div>
 
                         <div className="mt-3">
-                            <button className="w-full bg-[#00AA5B] py-2 px-1 text-white font-semibold rounded-lg">+ Keranjang</button>
+                            <button onClick={() => handleAddToCart(product._id)} className="w-full bg-[#00AA5B] py-2 px-1 text-white font-semibold rounded-lg">+ Keranjang</button>
                             <button className="w-full border-[#00AA5B] border-[1px] bg-white py-2 text-[#00AA5B] font-semibold rounded-lg mt-2">Beli Langsung</button>
                         </div>
                     </div>

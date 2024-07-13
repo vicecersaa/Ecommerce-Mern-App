@@ -57,9 +57,9 @@ const productSchema = new Schema({
         type: String,
         required: true
     },
-    kategori: {
-        type: String,
-        required: false
+    categoryProduk: {
+        type: [String],
+        required: true,
     },
     hargaProduk: {
         type: Number,

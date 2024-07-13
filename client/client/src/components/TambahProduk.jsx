@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useState, useEffect } from "react";
 import axios from "axios";
 
 
@@ -6,17 +6,34 @@ export default function TambahProduk() {
 
      // State untuk data produk
     const [namaProduk, setNamaProduk] = useState('');
+    const [categoryProduk, setCategoryProduk] = useState([]);
     const [hargaProduk, setHargaProduk] = useState('');
     const [namaToko, setNamaToko] = useState('');
     const [kondisi, setKondisi] = useState('');
     const [deskripsi, setDeskripsi] = useState('');
-    const [gambarProduk, setGambarProduk] = useState(null); // Update to file input
+    const [gambarProduk, setGambarProduk] = useState(null); 
     const [stockProduk, setStockProduk] = useState('');
     const [beratProduk, setBeratProduk] = useState('');
     const [variants, setVariants] = useState([]);
     const [ratings, setRatings] = useState('')
     const [reviews, setReviews] = useState([]);
-    
+    const [availableCategories, setAvailableCategories] = useState([]);
+    const [filteredCategories, setFilteredCategories] = useState([]);
+
+    useEffect(() => {
+        // Fetch categories from the server
+        const fetchCategories = async () => {
+            try {
+                const response = await axios.get('http://localhost:5000/categories');
+                setAvailableCategories(response.data);
+            } catch (error) {
+                console.error('Error fetching categories:', error);
+            }
+        };
+
+        fetchCategories();
+    }, []);
+   
     
     const uploadImage = async (files) => {
         if (!files || files.length === 0) {
@@ -111,13 +128,33 @@ export default function TambahProduk() {
         setVariants(newVariants);
     };
 
-    
+    const handleCategoryChange = (e) => {
+        const input = e.target.value;
+        if (input === '') {
+            // Kosongkan filteredCategories jika input kosong
+            setFilteredCategories([]);
+        } else {
+            const filtered = availableCategories.filter(category => 
+                category.toLowerCase().includes(input.toLowerCase())
+            );
+            setFilteredCategories(filtered);
+        }
+        setCategoryProduk(input.split(',').map(category => category.trim()).filter(category => category !== ''));
+    };
+      
+      const selectCategory = (category) => {
+        setCategoryProduk([category]);
+        setFilteredCategories([]);
+    };
+
 
      // Fungsi untuk mengirim data produk ke server
      const createProduct = async (e) => {
         e.preventDefault();
     
         let imageUrls = [];
+
+        
     
         if (gambarProduk && gambarProduk.length > 0) {
             try {
@@ -134,21 +171,22 @@ export default function TambahProduk() {
             namaProduk,
             hargaProduk,
             namaToko,
+            categoryProduk,
             kondisi,
             deskripsi,
             stockProduk,
-            gambarProduk: imageUrls, // Array URL gambar
+            gambarProduk: imageUrls, 
             variants,
             reviews,
             ratings,
             beratProduk,
         };
-    
+
         // Mengirim data produk ke server
         try {
             const response = await axios.post('http://localhost:5000/products', productData,);
             alert('Produk berhasil ditambahkan!');
-            console.log(response.data); // Verifikasi respons dari server
+            console.log(response.data); 
         } catch (error) {
             alert('Gagal menambahkan produk. Silakan coba lagi.');
             console.error('Error creating product:', error);
@@ -183,6 +221,34 @@ export default function TambahProduk() {
                     />
                 </div>
 
+                <div className="flex flex-col items-center mt-3 relative">
+                    <div className="flex items-center w-full ">
+                        <p className="w-full max-w-[150px] font-semibold font-sans">Kategori Produk: </p>
+                        <input
+                            className="w-full border-[1px] border-slate-500 w-full py-2 px-2 rounded-md outline-none"
+                            type="text"
+                            placeholder="Kategori Produk"
+                            value={categoryProduk.join(', ')}  
+                            onChange={handleCategoryChange}
+                        />
+                    </div>
+                    <div className="w-full absolute top-10">
+                     {filteredCategories.length > 0 && (
+                        <div className="bg-white border border-gray-300 mt-1 shadow-lg max-h-40 overflow-y-auto ml-[150px]">
+                            {filteredCategories.map((category, index) => (
+                                <div
+                                    key={index}
+                                    className="px-3 py-2 cursor-pointer hover:bg-gray-200"
+                                    onClick={() => selectCategory(category)}
+                                >
+                                    {category}
+                                </div>
+                            ))}
+                        </div>
+                    )}
+                    </div>
+                </div>
+                
                 <div className="flex items-center mt-3">
                     <p className="w-full max-w-[150px] font-semibold font-sans">Harga Produk: </p>
                     <input

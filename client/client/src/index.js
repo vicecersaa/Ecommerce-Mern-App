@@ -13,10 +13,10 @@ root.render(
   <React.StrictMode>
     
       <ProductContextProvider>
-      <UserContextProvider>
-        <Router>
-          <App />
-        </Router>
+        <UserContextProvider>
+          <Router>
+            <App />
+          </Router>
         </UserContextProvider>
       </ProductContextProvider>
     

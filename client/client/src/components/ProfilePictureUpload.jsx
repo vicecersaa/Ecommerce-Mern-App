@@ -32,12 +32,9 @@ const ProfilePictureUpload = () => {
   
       console.log('Upload success:', response.data);
   
-      
       setUser(prev => ({ ...prev, profilePicture: response.data.profilePicture }));
   
-     
       console.log('Updated Profile Picture:', response.data.profilePicture);
-  
     } catch (error) {
       console.error('Error uploading file:', error);
     }
