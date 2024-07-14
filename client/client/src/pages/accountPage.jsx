@@ -8,7 +8,7 @@ import { Navigate, useNavigate } from "react-router-dom";
 import ChangePasswordForm from '../components/ChangePasswordForm';
 import ProfilePictureUpload from "../components/ProfilePictureUpload";
 import KeranjangCard from '../components/KeranjangCard';
-
+import OrderHistory from '../components/OrderHistory';
 
 
 export default function AccountPage() {
@@ -424,53 +424,8 @@ export default function AccountPage() {
                     )}
 
                     {riwayat && (
-                        <div className="flex border-x-2 border-b-2 p-3">
-                            <div className="mt-4 w-full flex flex-col p-5 h-screen min-h-[340px]">
-                                <p className="text-xl font-sans font-semibold">Daftar Transaksi</p>
-
-                                <div className="flex items-center mt-5">
-                                    <p className="text-md font-sans font-bold mr-6">Status</p>
-                                    <div className="flex justify-center items-center gap-3">
-                                        <button className="font-sans font-medium py-1 px-4 border-2 rounded-full border-slate-200">Semua</button>
-                                        <button className="font-sans font-medium py-1 px-4 border-2 rounded-full border-slate-200">Berlangsung</button>
-                                        <button className="font-sans font-medium py-1 px-4 border-2 rounded-full border-slate-200">Berhasil</button>
-                                        <button className="font-sans font-medium py-1 px-4 border-2 rounded-full border-slate-200">Tidak Berhasil</button>
-                                    </div>
-                                </div>
-
-                                <div className="mt-5 border-2 p-[20px] rounded-lg border-slate-300">
-
-                                    <div className="flex items-center gap-2">
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-5">
-                                            <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007ZM8.625 10.5a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm7.5 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
-                                        </svg>
-                                        <p className="text-sm">Belanja</p>
-                                        <span className="text-sm">Tanggal Pembelian</span>
-                                        <span className="text-sm px-2 border-2 border-[#03AC0E] rounded-md bg-[#03AC0E] font-bold">Status</span>
-                                    </div>
-
-                                    <div className="mt-3">{user?.namaToko || "Springbed"}</div>
-
-                                    <div className="mt-2 flex gap-5 items-center">
-                                        <img className="w-full max-w-[60px] h-full min-h-[60px] rounded-lg" src={user?.gambarProduk || BLANKSQUARE} alt="Gambar Produk" />
-                                        <div className="mr-auto">
-                                            <p className="text-md font-semibold">{user?.namaProduk || "Nama Produk"}</p>
-                                            <span className="text-sm">1 barang x {user?.hargaProduk || "Harga Produk"}</span>
-                                        </div>
-                                        <div className="flex flex-col items-end">
-                                            <span>Total Belanja</span>
-                                            <span>{user?.totalBelanja || "Rp. 0"}</span>
-                                        </div>
-                                    </div>
-
-                                    <div className="flex items-center gap-3 justify-end mt-10">
-                                        <p className="text-[#03AC0E] text-sm font-semibold">Lihat Detail Transaksi</p>
-                                        <button className="py-[4px] px-12 bg-white rounded-md text-sm border-[1px] border-[#03AC0E] text-[#03AC0E] font-bold">Beri Ulasan</button>
-                                        <button className="py-[6px] px-12 bg-[#03AC0E] rounded-md text-sm text-white font-bold">Beli Lagi</button>
-                                    </div>
-
-                                </div>
-                            </div>
+                        <div>
+                            <OrderHistory />
                         </div>
                     )}
 
@@ -481,16 +436,14 @@ export default function AccountPage() {
                                 {cart.length === 0 ? (
                                     <p>Your cart is empty</p>
                                 ) : (
-                                    <ul>
-                                        {cart.map((item, index) => (
+                                    
+                                        
                                             <KeranjangCard
-                                                key={index}
-                                                product={item.productId}
-                                                quantity={item.quantity}
+
 
                                             />
-                                        ))}
-                                    </ul>
+                                      
+                                  
                                 )}
                             </div>
                         </div>
@@ -498,7 +451,7 @@ export default function AccountPage() {
                 <div>
                     {user && user.role === 'admin' && tambahProduk &&(
                         <div className="flex border-x-2 border-b-2 p-3">
-                        <div className="mt-4 w-full flex flex-col p-5 h-screen h-full min-h-[1500px]">
+                        <div className="mt-4 w-full flex flex-col p-5 h-screen  min-h-[1500px]">
                             <TambahProduk />
                         </div>
                         </div>

@@ -11,7 +11,7 @@ const multer = require('multer');
 const path = require('path');
 const { body, validationResult } = require('express-validator');
 require('dotenv').config();
-const { addToCart } = require('./controllers/cartController');
+const orderModel = require('./models/order');
 
 // MIDDLEWARE
 const saltRounds = 10;
@@ -260,32 +260,77 @@ app.post('/upload-profilePicture', authenticateUser, (req, res) => {
 });
 
 
-// ADD TO CART 
-app.post('/add-to-cart', async (req,res) => {
-  const {userId, productId, quantity} = req.body
-  try {
-    const updatedUser = await addToCart(userId, productId,quantity);
-    res.status(200).json(updatedUser);
-  } catch (error) {
-    res.status(500).json({message: error.message});
-  }
-})
+// Add to cart
+app.post('/add-to-cart', async (req, res) => {
+  const { userId, productId, quantity } = req.body;
 
-// GET CART
+  try {
+      const user = await userModel.findById(userId);
+      if (!user) return res.status(404).json({ message: 'User not found' });
+
+      await user.addToCart(productId, quantity);
+      res.status(200).json({ message: 'Product added to cart', cart: user.cart });
+  } catch (error) {
+      res.status(500).json({ message: error.message });
+  }
+});
+
+// Update cart item
+app.patch('/update-cart', async (req, res) => {
+  const { userId, productId, quantity } = req.body;
+
+  try {
+      const user = await userModel.findById(userId);
+      if (!user) return res.status(404).json({ message: 'User not found' });
+
+      await user.updateCartItem(productId, quantity);
+      const updatedUser = await userModel.findById(userId).populate('cart.productId'); 
+      res.status(200).json({ message: 'Cart updated', cart: updatedUser.cart });
+  } catch (error) {
+      res.status(500).json({ message: error.message });
+  }
+});
+
+// Remove item from cart
+app.post('/remove-from-cart', async (req, res) => {
+  const { userId, productId } = req.body;
+
+  try {
+      const user = await userModel.findById(userId);
+      if (!user) return res.status(404).json({ message: 'User not found' });
+
+      await user.removeFromCart(productId);
+      res.status(200).json({ message: 'Product removed from cart', cart: user.cart });
+  } catch (error) {
+      res.status(500).json({ message: error.message });
+  }
+});
+
+// Get cart
 app.get('/get-cart', async (req, res) => {
   const { userId } = req.query;
-  console.log('Received userId:', userId); 
 
   try {
       const user = await userModel.findById(userId).populate('cart.productId');
-      if (!user) {
-          console.log('User not found'); 
-          return res.status(404).json({ message: 'User not found' });
-      }
+      if (!user) return res.status(404).json({ message: 'User not found' });
+
       res.status(200).json({ cart: user.cart });
   } catch (error) {
-      console.error('Server error:', error); 
       res.status(500).json({ message: error.message });
+  }
+});
+
+// ORDER HISTORY
+app.get('/order-history', async (req, res) => {
+  const { userId } = req.query;
+
+  try {
+      const orders = await orderModel.find({ userId }).populate('items.productId', 'namaProduk gambarProduk hargaProduk');
+
+      res.json(orders);
+  } catch (error) {
+      console.error('Failed to fetch order history:', error);
+      res.status(500).json({ error: 'Failed to fetch order history' });
   }
 });
 
@@ -387,6 +432,72 @@ app.get('/categories', authenticateUser, async (req, res) => {
     res.status(200).json(categories);
   } catch (error) {
     res.status(500).json({ error: 'Gagal mengambil kategori', details: error.message });
+  }
+});
+
+// CHECKOUT PRODUK
+app.post('/checkout', async (req, res) => {
+  const { userId, items } = req.body;
+
+  try {
+      const orderItems = items.map(item => ({
+          productId: item.productId,
+          quantity: item.quantity,
+          price: item.productId.hargaProduk, 
+      }));
+
+      const order = new orderModel({
+          userId,
+          items: orderItems,
+          totalAmount: orderItems.reduce((total, item) => total + item.price * item.quantity, 0),
+          status: 'Berlangsung'
+      });
+
+     
+      await order.save();
+
+      
+      await userModel.findByIdAndUpdate(userId, { $set: { cart: [] } });
+
+      res.json(order);
+  } catch (error) {
+      console.error('Checkout failed:', error);
+      res.status(500).json({ error: 'Checkout failed' });
+  }
+});
+
+
+
+// CHECKOUT DIRECT 
+app.post('/checkout-direct', async (req, res) => {
+  const { userId, productId, quantity } = req.body;
+
+  try {
+      const user = await userModel.findById(userId);
+      if (!user) return res.status(404).json({ message: 'User not found' });
+
+      const product = await productModel.findById(productId);
+      if (!product) return res.status(404).json({ message: 'Product not found' });
+
+      // Ensure quantity does not exceed stock
+      if (quantity > product.stockProduk) {
+          return res.status(400).json({ message: 'Insufficient stock available' });
+      }
+
+      // Create a new order
+      const newOrder = new orderModel({
+          userId,
+          items: [{ productId, quantity, price: product.hargaProduk }],
+          status: 'Berlangsung',
+          totalAmount: quantity * product.hargaProduk
+      });
+
+      // Save the order
+      await newOrder.save();
+
+      res.status(201).json({ message: 'Order placed successfully', order: newOrder });
+  } catch (error) {
+      res.status(500).json({ message: error.message });
   }
 });
 
