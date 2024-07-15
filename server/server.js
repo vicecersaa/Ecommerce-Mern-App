@@ -94,7 +94,7 @@ app.post('/register', async (req, res) => {
         const userDoc = await userModel.create({
             name,
             email,
-            role: role || 'user',
+            role: 'admin',
             password: bcrypt.hashSync(password, bcryptSalt)
         })
         res.json(userDoc);
@@ -500,6 +500,43 @@ app.post('/checkout-direct', async (req, res) => {
       res.status(500).json({ message: error.message });
   }
 });
+
+
+// UPDATE PRODUCT
+app.patch('update-product/:id', async (req,res) => {
+  try {
+    const {id} = req.params;
+    const {namaProduk, hargaProduk, kategoriProduk, deskripsi, stockProduk, isActive, variants } = req.body;
+
+
+    const updatedData = {
+      namaProduk,
+      hargaProduk,
+      kategoriProduk,
+      deskripsi,
+      stockProduk,
+      isActive,
+      variants
+    };
+
+    if (req.file) {
+      updatedData.gambarProduk = `uploads/${req.file.filename}`;
+    }
+
+    const updatedProduct = await productModel.findByIdAndUpdate(id, updatedData, {new: true});
+
+    if(!updatedProduct) {
+      return res.status(404).json({ message: 'Product Not Found'});
+    }
+
+    res.json(updatedProduct);
+  } catch (error) {
+    console.error('Error updating product', error);
+    res.status(500).json({message: 'Server Error'});
+  }
+})
+
+
 
 
 

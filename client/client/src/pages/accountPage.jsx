@@ -9,6 +9,9 @@ import ChangePasswordForm from '../components/ChangePasswordForm';
 import ProfilePictureUpload from "../components/ProfilePictureUpload";
 import KeranjangCard from '../components/KeranjangCard';
 import OrderHistory from '../components/OrderHistory';
+import { useHistory } from 'react-router-dom';
+import { ProductContext} from '../ProductContext';
+
 
 
 export default function AccountPage() {
@@ -22,7 +25,9 @@ export default function AccountPage() {
     // keranjang state
     const [keranjang, setKeranjang] = useState(false);
     // tambah produk state
-    const [tambahProduk, setTambahProduk] = useState(false)
+    const [tambahProduk, setTambahProduk] = useState(false);
+    // ubah produk state
+    const [produkSaya, setProdukSaya] = useState(false);
     // total barang keranjang state
     const [totalBarang, setTotalBarang] = useState(0);
      // state untuk kontrol edit profile
@@ -33,9 +38,15 @@ export default function AccountPage() {
      const [cart, setCart] = useState([]);
      const [loading, setLoading] = useState(true);
      const [error, setError] = useState(null);
+    const navigate = useNavigate();
+
+    const { products } = useContext(ProductContext);
+
+    const handleEdit = (id) => {
+        navigate(`/account/product-edit/${id}`);
+    };
 
     
-    const navigate = useNavigate();
     const PORT = 'http://localhost:5000'
 
         
@@ -96,6 +107,7 @@ export default function AccountPage() {
         setRiwayat(false);
         setKeranjang(false);
         setTambahProduk(false);
+        setProdukSaya(false);
         setBio(true);
     }
 
@@ -104,6 +116,7 @@ export default function AccountPage() {
         setBio(false);
         setKeranjang(false);
         setTambahProduk(false);
+        setProdukSaya(false);
         setRiwayat(true);
     }
 
@@ -112,6 +125,7 @@ export default function AccountPage() {
         setBio(false);
         setRiwayat(false);
         setTambahProduk(false);
+        setProdukSaya(false);
         setKeranjang(true);
     }
 
@@ -120,7 +134,16 @@ export default function AccountPage() {
         setBio(false)
         setRiwayat(false);
         setKeranjang(false);
+        setProdukSaya(false);
         setTambahProduk(true);
+    }
+
+    function handleUbahProduk() {
+        setBio(false)
+        setRiwayat(false);
+        setKeranjang(false);
+        setTambahProduk(false);
+        setProdukSaya(true);
     }
 
 
@@ -196,6 +219,11 @@ export default function AccountPage() {
                             <button onClick={handleTambahProduk} className={`py-[10px] px-[24px] font-bold ${tambahProduk ? 'text-[#03AC0E] border-b-2 border-[#03AC0E]' : 'text-[#6D7588]'}`}>
                                 <p>Tambah Produk</p>
                             </button>
+                        )}
+                        {user && user.role === 'admin' && (
+                            <button onClick={handleUbahProduk} className={`py-[10px] px-[24px] font-bold ${produkSaya ? 'text-[#03AC0E] border-b-2 border-[#03AC0E]' : 'text-[#6D7588]'}`}>
+                            <p>Produk Saya</p>
+                        </button>
                         )}
 
                     </div>
@@ -457,6 +485,28 @@ export default function AccountPage() {
                         </div>
                     )}
                 </div>
+                    
+                <div>
+                    {user && user.role === 'admin' && produkSaya && (
+                        <div>
+                            {products.map((product) => (
+                                <div key={product._id} className="product-item border p-4 mb-4 rounded-lg shadow-lg">
+                                    <img src={`http://localhost:5000${product.gambarProduk[0]}`} alt="" />
+                                    <h2 className="text-lg font-bold">{product.namaProduk}</h2>
+                                    <p className="text-sm text-gray-600">Harga: {product.hargaProduk}</p>
+                                    <button 
+                                        className="mt-2 px-4 py-2 bg-blue-500 text-white rounded"
+                                        onClick={() => handleEdit(product._id)}
+                                    >
+                                        Edit
+                                    </button>
+                                </div>
+                            ))}
+                        </div>
+                    )}
+                </div>
+
+
             </div>
         </div>
     )
