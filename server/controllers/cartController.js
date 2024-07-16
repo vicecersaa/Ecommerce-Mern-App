@@ -1,6 +1,6 @@
 const userModel = require('../models/user');
 
-const addToCart = async (userId, productId, quantity) => {
+const addToCart = async (userId, productId, quantity, price) => {
   try {
     const user = await userModel.findById(userId);
     if (!user) {
@@ -11,7 +11,7 @@ const addToCart = async (userId, productId, quantity) => {
     if (existingProductIndex > -1) {
       user.cart[existingProductIndex].quantity += quantity;
     } else {
-      user.cart.push({ productId, quantity });
+      user.cart.push({ productId, quantity, price });
     }
 
     await user.save();

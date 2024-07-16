@@ -9,21 +9,23 @@ const ProductEditForm = ({ productId }) => {
         deskripsi: '',
         stockProduk: '',
         isActive: true,
-        gambarProduk: null
+        gambarProduk: [] // Initialize as an array to handle multiple images
     });
 
     useEffect(() => {
-        // Fetch product data
-        const fetchProduct = async () => {
-            try {
-                const response = await axios.get(`http://localhost:5000/products/${productId}`);
-                setProduct(response.data);
-            } catch (error) {
-                console.error('Error fetching product:', error);
-            }
-        };
+        if (productId) {
+            // Fetch product data
+            const fetchProduct = async () => {
+                try {
+                    const response = await axios.get(`http://localhost:5000/products/${productId}`);
+                    setProduct(response.data);
+                } catch (error) {
+                    console.error('Error fetching product:', error);
+                }
+            };
 
-        fetchProduct();
+            fetchProduct();
+        }
     }, [productId]);
 
     const handleInputChange = (e) => {
@@ -32,7 +34,7 @@ const ProductEditForm = ({ productId }) => {
     };
 
     const handleFileChange = (e) => {
-        setProduct({ ...product, gambarProduk: e.target.files[0] });
+        setProduct({ ...product, gambarProduk: Array.from(e.target.files) });
     };
 
     const handleSubmit = async (e) => {
@@ -46,12 +48,12 @@ const ProductEditForm = ({ productId }) => {
         formData.append('stockProduk', product.stockProduk);
         formData.append('isActive', product.isActive);
 
-        if (product.gambarProduk) {
-            formData.append('gambarProduk', product.gambarProduk);
-        }
+        product.gambarProduk.forEach((file, index) => {
+            formData.append(`image`, file);
+        });
 
         try {
-            const response = await axios.patch(`/update-product/${productId}`, formData, {
+            const response = await axios.patch(`http://localhost:5000/update-product/${productId}`, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data'
                 }
@@ -113,6 +115,7 @@ const ProductEditForm = ({ productId }) => {
                 <input
                     type="file"
                     name="gambarProduk"
+                    multiple
                     onChange={handleFileChange}
                 />
             </div>

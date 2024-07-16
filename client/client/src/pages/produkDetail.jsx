@@ -69,12 +69,14 @@ export default function ProdukDetail() {
             const response = await axios.post(`${PORT}/add-to-cart`, {
                 userId: user._id,
                 productId: product._id,
-                quantity
+                quantity,
+                price
             });
 
             if (response.status === 200) {
                 // Handle successful addition to cart (optional)
                 alert('Product added to cart');
+                console.log(price)
             }
         } catch (error) {
             console.error('Failed to add to cart:', error);
@@ -117,7 +119,8 @@ export default function ProdukDetail() {
             const response = await axios.post(`${PORT}/checkout-direct`, {
                 userId: user._id,
                 productId: product._id,
-                quantity
+                quantity,
+                price
             });
             alert('Order placed successfully!');
             // Redirect or update UI as needed
@@ -256,7 +259,7 @@ export default function ProdukDetail() {
 
                     <div className="flex items-center justify-between mt-10">
                         <p className="text-gray-500">Subtotal</p>
-                        <p className="text-[#212121] font-bold text-[18px]">{formatPrice(product.hargaProduk * quantity)}</p>
+                        <p className="text-[#212121] font-bold text-[18px]">{formatPrice(price * quantity)}</p>
                     </div>
 
                     <div className="mt-3">

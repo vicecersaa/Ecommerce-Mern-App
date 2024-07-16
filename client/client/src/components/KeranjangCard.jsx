@@ -14,7 +14,7 @@ export default function KeranjangCard() {
         try {
             const response = await axios.post(`${PORT}/checkout`, {
                 userId: user._id,
-                items: cartItems
+                items: cartItems,
             });
             console.log('Checkout successful:', response.data);
 
@@ -86,12 +86,14 @@ export default function KeranjangCard() {
 
     // Calculate total price
     const calculateTotalPrice = () => {
-        return cartItems.reduce((total, item) => total + (item.productId.hargaProduk * item.quantity), 0);
+        return cartItems.reduce((total, item) => total + (item.price * item.quantity), 0);
     };
 
     if (!user) {
         return <div>Please log in to view your cart</div>;
     }
+
+    
 
     return (
         <div className="container mx-auto p-4">
@@ -108,7 +110,7 @@ export default function KeranjangCard() {
                                 <div>
                                     <h2 className="text-lg font-bold">{item.productId.namaProduk}</h2>
                                     <p className="text-sm text-gray-600">{item.productId.categoryProduk}</p>
-                                    <p className="text-lg font-bold text-green-600">{formatPrice(item.productId.hargaProduk * item.quantity)}</p>
+                                    <p className="text-lg font-bold text-green-600">{formatPrice(item.price * item.quantity)}</p>
                                     <div className="flex items-center mt-2">
                                         <button 
                                             className="px-2 py-1 bg-gray-200 border rounded-l"

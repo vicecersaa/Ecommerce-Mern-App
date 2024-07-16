@@ -262,13 +262,13 @@ app.post('/upload-profilePicture', authenticateUser, (req, res) => {
 
 // Add to cart
 app.post('/add-to-cart', async (req, res) => {
-  const { userId, productId, quantity } = req.body;
+  const { userId, productId, quantity, price } = req.body;
 
   try {
       const user = await userModel.findById(userId);
       if (!user) return res.status(404).json({ message: 'User not found' });
 
-      await user.addToCart(productId, quantity);
+      await user.addToCart(productId, quantity, price);
       res.status(200).json({ message: 'Product added to cart', cart: user.cart });
   } catch (error) {
       res.status(500).json({ message: error.message });
@@ -437,18 +437,19 @@ app.get('/categories', authenticateUser, async (req, res) => {
 
 // CHECKOUT PRODUK
 app.post('/checkout', async (req, res) => {
-  const { userId, items } = req.body;
+  const { userId, items, price } = req.body;
 
   try {
       const orderItems = items.map(item => ({
           productId: item.productId,
           quantity: item.quantity,
-          price: item.productId.hargaProduk, 
+          price: item.price
       }));
 
       const order = new orderModel({
           userId,
           items: orderItems,
+          price,
           totalAmount: orderItems.reduce((total, item) => total + item.price * item.quantity, 0),
           status: 'Berlangsung'
       });
@@ -470,7 +471,7 @@ app.post('/checkout', async (req, res) => {
 
 // CHECKOUT DIRECT 
 app.post('/checkout-direct', async (req, res) => {
-  const { userId, productId, quantity } = req.body;
+  const { userId, productId, quantity, price } = req.body;
 
   try {
       const user = await userModel.findById(userId);
@@ -487,9 +488,10 @@ app.post('/checkout-direct', async (req, res) => {
       // Create a new order
       const newOrder = new orderModel({
           userId,
-          items: [{ productId, quantity, price: product.hargaProduk }],
+          price,
+          items: [{ productId, quantity, price: price }],
           status: 'Berlangsung',
-          totalAmount: quantity * product.hargaProduk
+          totalAmount: quantity * price
       });
 
       // Save the order
@@ -503,38 +505,37 @@ app.post('/checkout-direct', async (req, res) => {
 
 
 // UPDATE PRODUCT
-app.patch('update-product/:id', async (req,res) => {
-  try {
-    const {id} = req.params;
-    const {namaProduk, hargaProduk, kategoriProduk, deskripsi, stockProduk, isActive, variants } = req.body;
+app.patch('/update-product/:id', authenticateUser, authenticateAdmin, (req, res) => {
+  upload(req, res, async function (err) {
+    if (err) return res.status(400).json({ error: 'Error uploading files', details: err.message });
+    
+    const { id } = req.params;
+    const { namaProduk, hargaProduk, kategoriProduk, deskripsi, stockProduk, isActive, variants } = req.body;
 
+    try {
+      const product = await productModel.findById(id);
+      if (!product) return res.status(404).json({ message: "Product not found" });
 
-    const updatedData = {
-      namaProduk,
-      hargaProduk,
-      kategoriProduk,
-      deskripsi,
-      stockProduk,
-      isActive,
-      variants
-    };
+      product.namaProduk = namaProduk || product.namaProduk;
+      product.hargaProduk = hargaProduk || product.hargaProduk;
+      product.kategoriProduk = kategoriProduk || product.kategoriProduk;
+      product.deskripsi = deskripsi || product.deskripsi;
+      product.stockProduk = stockProduk || product.stockProduk;
+      product.isActive = isActive !== undefined ? isActive : product.isActive;
+      product.variants = variants || product.variants;
 
-    if (req.file) {
-      updatedData.gambarProduk = `uploads/${req.file.filename}`;
+      if (req.files && req.files.length > 0) {
+        const imageUrls = req.files.map(file => `/uploads/${file.filename}`);
+        product.gambarProduk = imageUrls;
+      }
+
+      const updatedProduct = await product.save();
+      res.status(200).json({ message: "Product updated successfully", product: updatedProduct });
+    } catch (error) {
+      res.status(500).json({ error: 'Failed to update product', details: error.message });
     }
-
-    const updatedProduct = await productModel.findByIdAndUpdate(id, updatedData, {new: true});
-
-    if(!updatedProduct) {
-      return res.status(404).json({ message: 'Product Not Found'});
-    }
-
-    res.json(updatedProduct);
-  } catch (error) {
-    console.error('Error updating product', error);
-    res.status(500).json({message: 'Server Error'});
-  }
-})
+  });
+});
 
 
 

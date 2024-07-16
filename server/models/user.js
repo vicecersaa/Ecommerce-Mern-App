@@ -24,7 +24,8 @@ const userSchema = new Schema({
     },
     cart: [{
         productId: { type: Schema.Types.ObjectId, ref: "Product" },
-        quantity: { type: Number, required: true, default: 1 }
+        quantity: { type: Number, required: true, default: 1 },
+        price: { type: Number, required: true }
     }],
     totalBelanja: Number,
     createdAt: { type: Date, default: Date.now },
@@ -36,13 +37,13 @@ userSchema.pre('save', function (next) {
     next();
 });
 
-userSchema.methods.addToCart = async function (productId, quantity) {
+userSchema.methods.addToCart = async function (productId, quantity, price) {
     const existingCartItem = this.cart.find(item => item.productId.equals(productId));
 
     if (existingCartItem) {
         existingCartItem.quantity += quantity;
     } else {
-        this.cart.push({ productId, quantity });
+        this.cart.push({ productId, quantity, price });
     }
 
     await this.calculateTotalBelanja();  // Calculate totalBelanja after adding
