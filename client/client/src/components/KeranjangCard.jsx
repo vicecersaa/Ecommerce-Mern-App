@@ -9,24 +9,6 @@ export default function KeranjangCard() {
     const [cartItems, setCartItems] = useState([]);
     const [error, setError] = useState(null);
 
-    // Checkout
-    const handleCheckout = async () => {
-        try {
-            const response = await axios.post(`${PORT}/checkout`, {
-                userId: user._id,
-                items: cartItems,
-            });
-            console.log('Checkout successful:', response.data);
-
-            
-            setCartItems([]);
-            alert('Checkout successful!');
-        } catch (error) {
-            console.error('Checkout failed:', error);
-            setError('Checkout failed');
-        }
-    };
-
     useEffect(() => {
         if (user) {
             fetchCartItems();
@@ -37,10 +19,11 @@ export default function KeranjangCard() {
     const fetchCartItems = async () => {
         try {
             const response = await axios.get(`${PORT}/get-cart`, {
-                params: { userId: user._id } 
+                params: { userId: user._id }
             });
-            setCartItems(response.data.cart);
-            console.log('Fetched cart items:', response.data.cart);
+
+            const validItems = response.data.cart.filter(item => item.productId);
+            setCartItems(validItems);
         } catch (error) {
             setError('Failed to fetch cart items');
             console.error(error);
@@ -49,7 +32,7 @@ export default function KeranjangCard() {
 
     // Update item quantity
     const updateQuantity = async (productId, newQuantity) => {
-        if (newQuantity <= 0) return; 
+        if (newQuantity <= 0) return;
 
         try {
             const response = await axios.patch(`${PORT}/update-cart`, {
@@ -78,22 +61,51 @@ export default function KeranjangCard() {
         }
     };
 
-    useEffect(() => {
-        if (user) {
-            fetchCartItems();
-        }
-    }, [user]);
-
     // Calculate total price
     const calculateTotalPrice = () => {
         return cartItems.reduce((total, item) => total + (item.price * item.quantity), 0);
     };
 
+    // Checkout
+    const handleCheckout = async () => {
+        try {
+            const response = await axios.post(`${PORT}/checkout`, {
+                items: cartItems,
+            });
+    
+            if (response.data.paymentToken) {
+                window.snap.pay(response.data.paymentToken, {
+                    onSuccess: function(result) {
+                        console.log('Payment success:', result);
+                        setCartItems([]);
+                        alert('Checkout successful!');
+                    },
+                    onPending: function(result) {
+                        console.log('Payment pending:', result);
+                        alert('Payment is pending. Please complete the payment.');
+                    },
+                    onError: function(result) {
+                        console.error('Payment failed:', result);
+                        alert('Payment failed. Please try again.');
+                    },
+                    onClose: function() {
+                        console.log('Payment popup closed without completing payment.');
+                        alert('Payment popup closed. Please complete the payment.');
+                    }
+                });
+            } else {
+                console.error('Failed to get payment token');
+                setError('Checkout failed');
+            }
+        } catch (error) {
+            console.error('Checkout failed:', error);
+            setError('Checkout failed');
+        }
+    };
+
     if (!user) {
         return <div>Please log in to view your cart</div>;
     }
-
-    
 
     return (
         <div className="container mx-auto p-4">
@@ -110,53 +122,23 @@ export default function KeranjangCard() {
                                 <div>
                                     <h2 className="text-lg font-bold">{item.productId.namaProduk}</h2>
                                     <p className="text-sm text-gray-600">{item.productId.categoryProduk}</p>
-                                    <p className="text-lg font-bold text-green-600">{formatPrice(item.price * item.quantity)}</p>
-                                    <div className="flex items-center mt-2">
-                                        <button 
-                                            className="px-2 py-1 bg-gray-200 border rounded-l"
-                                            onClick={() => updateQuantity(item.productId._id, item.quantity - 1)}
-                                            disabled={item.quantity <= 1}
-                                        >
-                                            -
-                                        </button>
-                                        <span className="px-4 py-1 border-t border-b border-gray-300">{item.quantity}</span>
-                                        <button 
-                                            className="px-2 py-1 bg-gray-200 border rounded-r"
-                                            onClick={() => updateQuantity(item.productId._id, item.quantity + 1)}
-                                        >
-                                            +
-                                        </button>
-                                    </div>
-                                    <button 
-                                        className="mt-2 text-red-500 underline"
-                                        onClick={() => removeItem(item.productId._id)}
-                                    >
-                                        Remove
-                                    </button>
+                                    <p className="text-lg font-bold text-green-600">Rp {item.price}</p>
                                 </div>
+                            </div>
+                            <div className="flex items-center">
+                                <button className="bg-red-500 text-white px-3 py-1 rounded mr-2" onClick={() => updateQuantity(item.productId._id, item.quantity - 1)}>-</button>
+                                <p className="text-lg">{item.quantity}</p>
+                                <button className="bg-green-500 text-white px-3 py-1 rounded ml-2" onClick={() => updateQuantity(item.productId._id, item.quantity + 1)}>+</button>
+                                <button className="bg-red-500 text-white px-3 py-1 rounded ml-auto" onClick={() => removeItem(item.productId._id)}>Remove</button>
                             </div>
                         </div>
                     ))}
-                    <div className="border-t pt-4 mt-4">
-                        <div className="flex justify-between">
-                            <h2 className="text-xl font-bold">Total Harga:</h2>
-                            <p className="text-xl font-bold text-green-600">{formatPrice(calculateTotalPrice())}</p>
-                        </div>
-                        <button 
-                            className="mt-4 w-full bg-green-600 text-white py-2 rounded-lg"
-                            onClick={handleCheckout}
-                        >
-                            Checkout
-                        </button>
+                    <div className="mt-4">
+                        <p className="text-xl font-bold">Total Price: Rp {calculateTotalPrice()}</p>
+                        <button className="bg-blue-500 text-white px-4 py-2 rounded mt-2" onClick={handleCheckout}>Checkout</button>
                     </div>
                 </div>
             )}
         </div>
     );
 }
-
-// Formatting function to add thousand separators
-const formatPrice = (num) => {
-    if (!num) return '';
-    return `Rp${parseFloat(num).toLocaleString('id-ID', { minimumFractionDigits: 0 })}`;
-};

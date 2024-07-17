@@ -40,7 +40,7 @@ export default function AccountPage() {
      const [error, setError] = useState(null);
     const navigate = useNavigate();
 
-    const { products } = useContext(ProductContext);
+    const { products, setProducts } = useContext(ProductContext);
 
     const handleEdit = (id) => {
         navigate(`/account/product-edit/${id}`);
@@ -164,6 +164,51 @@ export default function AccountPage() {
             }
         }
     };
+
+    const checkOrderStatus = async (orderId) => {
+        try {
+          const response = await fetch(`/order-status?orderId=${orderId}`);
+          const data = await response.json();
+          
+          if (data.status === 'Berhasil') {
+            // Tampilkan pesan sukses
+          } else if (data.status === 'Berlangsung') {
+            // Tampilkan pesan pembayaran masih dalam proses
+          } else if (data.status === 'Tidak Berhasil') {
+            // Tampilkan pesan gagal
+          }
+        } catch (error) {
+          console.error('Error checking order status:', error);
+        }
+      };
+
+
+      // delete product
+      const handleDelete = async (productId) => {
+        if (window.confirm('Are you sure you want to delete this product?')) {
+            try {
+                const response = await fetch(`http://localhost:5000/products/${productId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                });
+    
+                if (response.ok) {
+                    // Successfully deleted, update the context
+                    setProducts(products.filter(product => product._id !== productId));
+                    alert('Product deleted successfully');
+                } else {
+                    const errorData = await response.json();
+                    alert(`Failed to delete product: ${errorData.error}`);
+                }
+            } catch (error) {
+                console.error('Error deleting product:', error);
+                alert('Error deleting product');
+            }
+        }
+    };
+    
 
 
      // Edit profile handler
@@ -499,6 +544,11 @@ export default function AccountPage() {
                                         onClick={() => handleEdit(product._id)}
                                     >
                                         Edit
+                                    </button>
+                                    <button
+                                        onClick={() => handleDelete(product._id)}
+                                    >
+                                        Delete
                                     </button>
                                 </div>
                             ))}

@@ -225,7 +225,7 @@ export default function TambahProduk() {
                     <div className="flex items-center w-full ">
                         <p className="w-full max-w-[150px] font-semibold font-sans">Kategori Produk: </p>
                         <input
-                            className="w-full border-[1px] border-slate-500 w-full py-2 px-2 rounded-md outline-none"
+                            className="border-[1px] border-slate-500 w-full py-2 px-2 rounded-md outline-none"
                             type="text"
                             placeholder="Kategori Produk"
                             value={categoryProduk.join(', ')}  

@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import axios from 'axios';
 import { UserContext } from '../UserContext';
+import BLANK from '../assets/img/blankPicture.png';
 
 const PORT = 'http://localhost:5000';
 
@@ -48,10 +49,14 @@ export default function OrderHistory() {
                                 <p className="text-lg font-bold text-green-600">Total Belanja: {formatPrice(order.totalAmount)}</p>
                             </div>
                             {order.items.map(item => (
-                                <div key={item.productId._id} className="flex items-center mb-4">
-                                    <img className="w-20 h-20 object-cover mr-4" src={`http://localhost:5000${item.productId.gambarProduk}`} alt={item.productId.namaProduk} />
+                                <div key={item.productId ? item.productId._id : item._id} className="flex items-center mb-4">
+                                    <img 
+                                        className="w-20 h-20 object-cover mr-4" 
+                                        src={item.productId && item.productId.gambarProduk ? `http://localhost:5000${item.productId.gambarProduk[0]}` : BLANK} 
+                                        alt={item.productId ? item.productId.namaProduk : 'Product Image'} 
+                                    />
                                     <div>
-                                        <h2 className="text-lg font-bold">{item.productId.namaProduk}</h2>
+                                        <h2 className="text-lg font-bold">{item.name}</h2>
                                         <p className="text-lg font-bold text-green-600">{formatPrice(item.price)}</p>
                                         <p>Jumlah: {item.quantity}</p>
                                         <p>Total Harga: {formatPrice(item.price * item.quantity)}</p>

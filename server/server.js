@@ -12,6 +12,7 @@ const path = require('path');
 const { body, validationResult } = require('express-validator');
 require('dotenv').config();
 const orderModel = require('./models/order');
+const midtrans = require('./config/midtransConfig');
 
 // MIDDLEWARE
 const saltRounds = 10;
@@ -325,7 +326,10 @@ app.get('/order-history', async (req, res) => {
   const { userId } = req.query;
 
   try {
-      const orders = await orderModel.find({ userId }).populate('items.productId', 'namaProduk gambarProduk hargaProduk');
+      const orders = await orderModel.find({ userId }).populate({
+        path: 'items.productId',
+        select: 'namaProduk gambarProduk hargaProduk'
+      });
 
       res.json(orders);
   } catch (error) {
@@ -420,6 +424,24 @@ app.post('/products', authenticateUser, authenticateAdmin, async (req, res) => {
     }
 });
 
+// DELETE PRODUCT
+
+app.delete('/products/:id', async (req, res) => {
+  const { id } = req.params;
+
+  try {
+      const product = await productModel.findByIdAndDelete(id);
+      if (!product) {
+          return res.status(404).json({ error: 'Product not found' });
+      }
+      res.status(200).json({ message: 'Product deleted successfully' });
+  } catch (error) {
+      console.error('Error deleting product:', error);
+      res.status(500).json({ error: 'Failed to delete product' });
+  }
+});
+
+
 // GET PRODUCT CATEGORY 
 
 app.get('/categories', authenticateUser, async (req, res) => {
@@ -436,36 +458,144 @@ app.get('/categories', authenticateUser, async (req, res) => {
 });
 
 // CHECKOUT PRODUK
-app.post('/checkout', async (req, res) => {
-  const { userId, items, price } = req.body;
 
-  try {
-      const orderItems = items.map(item => ({
-          productId: item.productId,
-          quantity: item.quantity,
-          price: item.price
-      }));
+app.post('/checkout', authenticateUser, async (req, res) => {
+    const { items } = req.body;
+    const userId = req.user._id;
 
-      const order = new orderModel({
-          userId,
-          items: orderItems,
-          price,
-          totalAmount: orderItems.reduce((total, item) => total + item.price * item.quantity, 0),
-          status: 'Berlangsung'
-      });
+    if (!items || !Array.isArray(items) || items.length === 0) {
+        return res.status(400).json({ error: 'No items provided for checkout' });
+    }
 
-     
-      await order.save();
+    try {
+        // Fetch user and calculate total price
+        const user = await userModel.findById(userId).populate('cart.productId');
+        if (!user) return res.status(404).json({ error: 'User not found' });
 
-      
-      await userModel.findByIdAndUpdate(userId, { $set: { cart: [] } });
+        let totalAmount = 0;
+        const orderItems = [];
+        for (const item of items) {
+            const product = await productModel.findById(item.productId);
+            if (!product) {
+                return res.status(404).json({ error: `Product with ID ${item.productId} not found` });
+            }
 
-      res.json(order);
-  } catch (error) {
-      console.error('Checkout failed:', error);
-      res.status(500).json({ error: 'Checkout failed' });
-  }
+            if (item.quantity > product.stockProduk) {
+                return res.status(400).json({ error: `Insufficient stock for product ${item.productId}` });
+            }
+
+            orderItems.push({
+                productId: item.productId,
+                quantity: item.quantity,
+                price: item.price,
+                name: product.namaProduk
+            });
+
+            totalAmount += item.price * item.quantity;
+        }
+
+        // Create an order
+        const order = new orderModel({
+            userId,
+            items: orderItems,
+            totalAmount,
+            status: 'Berlangsung'
+        });
+
+        const savedOrder = await order.save();
+
+        // Check and log the user address
+        if (!user.address) {
+            console.log('User address is missing:', user);
+        } else {
+            console.log('User address:', user.address);
+        }
+
+        // Prepare Midtrans transaction
+        const transactionDetails = {
+            order_id: savedOrder._id.toString(),
+            gross_amount: totalAmount,
+        };
+
+        const itemDetails = orderItems.map(item => ({
+            id: item.productId.toString(),
+            price: item.price,
+            quantity: item.quantity,
+            name: item.name
+        }));
+
+        const midtransTransaction = await midtrans.createTransaction({
+            transaction_details: transactionDetails,
+            item_details: itemDetails,
+            customer_details: {
+                first_name: user.name,
+                email: user.email,
+                phone: user.phoneNumber,
+                billing_address: {
+                    first_name: user.name,
+                    email: user.email,
+                    phone: user.phoneNumber,
+                    address: user.address 
+                },
+                shipping_address: {
+                    first_name: user.name,
+                    email: user.email,
+                    phone: user.phoneNumber,
+                    address: user.address 
+                }
+            }
+        });
+
+        // Save transaction token in order document
+        savedOrder.midtransToken = midtransTransaction.token;
+        await savedOrder.save();
+
+        res.json({ 
+            message: 'Order created successfully',
+            order: savedOrder,
+            paymentUrl: midtransTransaction.redirect_url,
+            paymentToken: midtransTransaction.token 
+        });
+
+    } catch (error) {
+        console.error('Checkout failed:', error);
+        res.status(500).json({ error: 'Checkout failed', details: error.message });
+    }
 });
+
+// Midtrans notification endpoint
+app.post('/midtrans-notification', async (req, res) => {
+    try {
+        const { order_id, transaction_status } = req.body;
+        const order = await orderModel.findById(order_id);
+
+        if (!order) {
+            return res.status(404).json({ error: 'Order not found' });
+        }
+
+        if (transaction_status === 'capture' || transaction_status === 'settlement') {
+            order.status = 'Berhasil';
+            await order.save();
+
+            // Clear cart
+            await userModel.findByIdAndUpdate(order.userId, { $set: { cart: [] } });
+        } else if (transaction_status === 'deny' || transaction_status === 'cancel' || transaction_status === 'expire') {
+            order.status = 'Tidak Berhasil';
+            await order.save();
+        } else if (transaction_status === 'pending') {
+            order.status = 'Berlangsung';
+            await order.save();
+        }
+
+        res.status(200).send('OK');
+    } catch (error) {
+        console.error('Midtrans notification failed:', error);
+        res.status(500).send('Notification handling failed');
+    }
+});
+
+
+
 
 
 
