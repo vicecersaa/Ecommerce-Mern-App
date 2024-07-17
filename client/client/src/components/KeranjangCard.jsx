@@ -75,10 +75,9 @@ export default function KeranjangCard() {
     
             if (response.data.paymentToken) {
                 window.snap.pay(response.data.paymentToken, {
-                    onSuccess: function(result) {
+                    onSuccess: async function(result) {
                         console.log('Payment success:', result);
-                        setCartItems([]);
-                        alert('Checkout successful!');
+                        
                     },
                     onPending: function(result) {
                         console.log('Payment pending:', result);
@@ -102,6 +101,7 @@ export default function KeranjangCard() {
             setError('Checkout failed');
         }
     };
+    
 
     if (!user) {
         return <div>Please log in to view your cart</div>;

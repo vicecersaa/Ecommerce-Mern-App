@@ -10,22 +10,29 @@ export default function OrderHistory() {
     const [orders, setOrders] = useState([]);
     const [error, setError] = useState(null);
 
-    // Fetch order history for the user
+    // FETCH ORDER HISTORY
     const fetchOrderHistory = async () => {
         try {
             const response = await axios.get(`${PORT}/order-history`, {
                 params: { userId: user._id }
             });
-            setOrders(response.data);
+
+            console.log('Order history response:', response.data);
+            // Filter orders to include only those with status 'Berhasil'
+            const successfulOrders = response.data.filter(order => order.status === 'Berhasil');
+            setOrders(successfulOrders);
         } catch (error) {
             setError('Failed to fetch order history');
             console.error(error);
         }
     };
-
+    
+    
     useEffect(() => {
         if (user) {
-            fetchOrderHistory();
+            fetchOrderHistory(); // Initial fetch
+            const intervalId = setInterval(fetchOrderHistory, 60000); 
+            return () => clearInterval(intervalId); // Clean up the interval on component unmount
         }
     }, [user]);
 
@@ -42,7 +49,7 @@ export default function OrderHistory() {
             ) : (
                 <div>
                     {orders.map(order => (
-                        <div key={order._id} className="border p-4 mb-4 rounded-lg shadow-lg">
+                        <div key={order._id} className={`border p-4 mb-4 rounded-lg shadow-lg ${order.status === 'Tidak Berhasil' ? 'bg-red-100' : ''}`}>
                             <div className="mb-4">
                                 <h2 className="text-lg font-bold">Tanggal Pesanan: {new Date(order.createdAt).toLocaleDateString()}</h2>
                                 <p className="text-sm text-gray-600">Status: {order.status}</p>

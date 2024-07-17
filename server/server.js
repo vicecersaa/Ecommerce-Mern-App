@@ -322,15 +322,10 @@ app.get('/get-cart', async (req, res) => {
 });
 
 // ORDER HISTORY
-app.get('/order-history', async (req, res) => {
-  const { userId } = req.query;
-
+app.get('/order-history', authenticateUser, async (req, res) => {
+  const userId = req.query.userId;
   try {
-      const orders = await orderModel.find({ userId }).populate({
-        path: 'items.productId',
-        select: 'namaProduk gambarProduk hargaProduk'
-      });
-
+      const orders = await orderModel.find({ userId }).populate('items.productId');
       res.json(orders);
   } catch (error) {
       console.error('Failed to fetch order history:', error);
@@ -457,145 +452,128 @@ app.get('/categories', authenticateUser, async (req, res) => {
   }
 });
 
+
 // CHECKOUT PRODUK
-
 app.post('/checkout', authenticateUser, async (req, res) => {
-    const { items } = req.body;
-    const userId = req.user._id;
+  const { items } = req.body;
+  const userId = req.user._id;
 
-    if (!items || !Array.isArray(items) || items.length === 0) {
-        return res.status(400).json({ error: 'No items provided for checkout' });
-    }
+  if (!items || !Array.isArray(items) || items.length === 0) {
+      return res.status(400).json({ error: 'No items provided for checkout' });
+  }
 
-    try {
-        // Fetch user and calculate total price
-        const user = await userModel.findById(userId).populate('cart.productId');
-        if (!user) return res.status(404).json({ error: 'User not found' });
+  try {
+      const user = await userModel.findById(userId).populate('cart.productId');
+      if (!user) return res.status(404).json({ error: 'User not found' });
 
-        let totalAmount = 0;
-        const orderItems = [];
-        for (const item of items) {
-            const product = await productModel.findById(item.productId);
-            if (!product) {
-                return res.status(404).json({ error: `Product with ID ${item.productId} not found` });
-            }
+      let totalAmount = 0;
+      const orderItems = [];
+      for (const item of items) {
+          const product = await productModel.findById(item.productId);
+          if (!product) {
+              return res.status(404).json({ error: `Product with ID ${item.productId} not found` });
+          }
 
-            if (item.quantity > product.stockProduk) {
-                return res.status(400).json({ error: `Insufficient stock for product ${item.productId}` });
-            }
+          if (item.quantity > product.stockProduk) {
+              return res.status(400).json({ error: `Insufficient stock for product ${item.productId}` });
+          }
 
-            orderItems.push({
-                productId: item.productId,
-                quantity: item.quantity,
-                price: item.price,
-                name: product.namaProduk
-            });
+          orderItems.push({
+              productId: item.productId,
+              quantity: item.quantity,
+              price: item.price,
+              name: product.namaProduk
+          });
 
-            totalAmount += item.price * item.quantity;
-        }
+          totalAmount += item.price * item.quantity;
+      }
 
-        // Create an order
-        const order = new orderModel({
-            userId,
-            items: orderItems,
-            totalAmount,
-            status: 'Berlangsung'
-        });
+      const order = new orderModel({
+          userId,
+          items: orderItems,
+          totalAmount,
+          status: 'Berlangsung' // Set status to 'Berlangsung' initially
+      });
 
-        const savedOrder = await order.save();
+      const savedOrder = await order.save();
 
-        // Check and log the user address
-        if (!user.address) {
-            console.log('User address is missing:', user);
-        } else {
-            console.log('User address:', user.address);
-        }
+      const transactionDetails = {
+          order_id: savedOrder._id.toString(),
+          gross_amount: totalAmount,
+      };
 
-        // Prepare Midtrans transaction
-        const transactionDetails = {
-            order_id: savedOrder._id.toString(),
-            gross_amount: totalAmount,
-        };
+      const itemDetails = orderItems.map(item => ({
+          id: item.productId.toString(),
+          price: item.price,
+          quantity: item.quantity,
+          name: item.name
+      }));
 
-        const itemDetails = orderItems.map(item => ({
-            id: item.productId.toString(),
-            price: item.price,
-            quantity: item.quantity,
-            name: item.name
-        }));
+      const midtransTransaction = await midtrans.createTransaction({
+          transaction_details: transactionDetails,
+          item_details: itemDetails,
+          customer_details: {
+              first_name: user.name,
+              email: user.email,
+              phone: user.phoneNumber,
+              billing_address: user.address,
+              shipping_address: user.address
+          }
+      });
 
-        const midtransTransaction = await midtrans.createTransaction({
-            transaction_details: transactionDetails,
-            item_details: itemDetails,
-            customer_details: {
-                first_name: user.name,
-                email: user.email,
-                phone: user.phoneNumber,
-                billing_address: {
-                    first_name: user.name,
-                    email: user.email,
-                    phone: user.phoneNumber,
-                    address: user.address 
-                },
-                shipping_address: {
-                    first_name: user.name,
-                    email: user.email,
-                    phone: user.phoneNumber,
-                    address: user.address 
-                }
-            }
-        });
+      savedOrder.midtransToken = midtransTransaction.token;
+      await savedOrder.save();
 
-        // Save transaction token in order document
-        savedOrder.midtransToken = midtransTransaction.token;
-        await savedOrder.save();
+      res.json({ 
+          message: 'Order created successfully',
+          order: savedOrder,
+          paymentUrl: midtransTransaction.redirect_url,
+          paymentToken: midtransTransaction.token 
+      });
 
-        res.json({ 
-            message: 'Order created successfully',
-            order: savedOrder,
-            paymentUrl: midtransTransaction.redirect_url,
-            paymentToken: midtransTransaction.token 
-        });
-
-    } catch (error) {
-        console.error('Checkout failed:', error);
-        res.status(500).json({ error: 'Checkout failed', details: error.message });
-    }
+  } catch (error) {
+      console.error('Checkout failed:', error);
+      res.status(500).json({ error: 'Checkout failed', details: error.message });
+  }
 });
+
 
 // Midtrans notification endpoint
 app.post('/midtrans-notification', async (req, res) => {
-    try {
-        const { order_id, transaction_status } = req.body;
-        const order = await orderModel.findById(order_id);
+  const { order_id, transaction_status } = req.body;
 
-        if (!order) {
-            return res.status(404).json({ error: 'Order not found' });
-        }
+  console.log('Midtrans notification received:', req.body);
 
-        if (transaction_status === 'capture' || transaction_status === 'settlement') {
-            order.status = 'Berhasil';
-            await order.save();
+  try {
+      const order = await orderModel.findById(order_id);
 
-            // Clear cart
-            await userModel.findByIdAndUpdate(order.userId, { $set: { cart: [] } });
-        } else if (transaction_status === 'deny' || transaction_status === 'cancel' || transaction_status === 'expire') {
-            order.status = 'Tidak Berhasil';
-            await order.save();
-        } else if (transaction_status === 'pending') {
-            order.status = 'Berlangsung';
-            await order.save();
-        }
+      if (!order) {
+          console.error('Order not found:', order_id);
+          return res.status(404).json({ error: 'Order not found' });
+      }
 
-        res.status(200).send('OK');
-    } catch (error) {
-        console.error('Midtrans notification failed:', error);
-        res.status(500).send('Notification handling failed');
-    }
+      if (transaction_status === 'capture' || transaction_status === 'settlement') {
+          order.status = 'Berhasil';
+          await order.save();
+
+          // Optionally, clear cart or perform additional actions
+          await userModel.findByIdAndUpdate(order.userId, { $set: { cart: [] } });
+      } else if (transaction_status === 'deny' || transaction_status === 'cancel' || transaction_status === 'expire') {
+          order.status = 'Tidak Berhasil';
+          await order.save();
+      } else if (transaction_status === 'pending') {
+          order.status = 'Berlangsung';
+          await order.save();
+      }
+
+      console.log('Order updated:', order);
+
+      res.status(200).send('OK');
+  } catch (error) {
+      console.error('Midtrans notification failed:', error);
+      res.status(500).send('Notification handling failed');
+  }
 });
-
-
-
 
 
 
@@ -604,34 +582,85 @@ app.post('/checkout-direct', async (req, res) => {
   const { userId, productId, quantity, price } = req.body;
 
   try {
-      const user = await userModel.findById(userId);
-      if (!user) return res.status(404).json({ message: 'User not found' });
+    const user = await userModel.findById(userId);
+    if (!user) return res.status(404).json({ message: 'User not found' });
 
-      const product = await productModel.findById(productId);
-      if (!product) return res.status(404).json({ message: 'Product not found' });
+    const product = await productModel.findById(productId);
+    if (!product) return res.status(404).json({ message: 'Product not found' });
 
-      // Ensure quantity does not exceed stock
-      if (quantity > product.stockProduk) {
-          return res.status(400).json({ message: 'Insufficient stock available' });
-      }
+    // Ensure quantity does not exceed stock
+    if (quantity > product.stockProduk) {
+      return res.status(400).json({ message: 'Insufficient stock available' });
+    }
 
-      // Create a new order
-      const newOrder = new orderModel({
-          userId,
-          price,
-          items: [{ productId, quantity, price: price }],
-          status: 'Berlangsung',
-          totalAmount: quantity * price
-      });
+    // Calculate total amount
+    const totalAmount = quantity * price;
 
-      // Save the order
-      await newOrder.save();
+    // Create a new order
+    const newOrder = new orderModel({
+      userId,
+      items: [{ 
+        productId, 
+        quantity, 
+        price, 
+        name: product.namaProduk // Ensure the name field is included here
+      }],
+      totalAmount,
+    });
 
-      res.status(201).json({ message: 'Order placed successfully', order: newOrder });
-  } catch (error) {
-      res.status(500).json({ message: error.message });
-  }
-});
+    // Save the order
+    const savedOrder = await newOrder.save();
+
+    // Prepare Midtrans transaction
+    const transactionDetails = {
+      order_id: savedOrder._id.toString(),
+      gross_amount: totalAmount,
+    };
+
+    const itemDetails = [{
+      id: product._id.toString(),
+      price: price,
+      quantity: quantity,
+      name: product.namaProduk
+    }];
+
+    const midtransTransaction = await midtrans.createTransaction({
+      transaction_details: transactionDetails,
+      item_details: itemDetails,
+      customer_details: {
+        first_name: user.name,
+        email: user.email,
+        phone: user.phoneNumber,
+        billing_address: {
+          first_name: user.name,
+          email: user.email,
+          phone: user.phoneNumber,
+          address: user.address 
+        },
+        shipping_address: {
+             first_name:user.name,
+             email: user.email,
+             phone: user.phoneNumber,
+             address: user.address 
+           }
+         }
+       });
+
+       // Save transaction token in order document
+       savedOrder.midtransToken = midtransTransaction.token;
+       await savedOrder.save();
+
+       res.status(201).json({ 
+         message: 'Order placed successfully',
+         order: savedOrder,
+         paymentUrl: midtransTransaction.redirect_url,
+         paymentToken: midtransTransaction.token 
+       });
+     } catch (error) {
+       console.error('Checkout-direct failed:', error);
+       res.status(500).json({ message: error.message });
+     }
+   });
 
 
 // UPDATE PRODUCT

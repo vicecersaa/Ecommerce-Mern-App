@@ -22,7 +22,6 @@ export default function ProdukDetail() {
     const [price, setPrice] = useState(0);
     const [isExpanded, setIsExpanded] = useState(false);
     const [mainImage, setMainImage] = useState("");
-    const [error, setError] = useState(null);
     const [quantity, setQuantity] = useState(1); // Added state for quantity
 
     const PORT = 'http://localhost:5000';
@@ -74,9 +73,7 @@ export default function ProdukDetail() {
             });
 
             if (response.status === 200) {
-                // Handle successful addition to cart (optional)
                 alert('Product added to cart');
-                console.log(price)
             }
         } catch (error) {
             console.error('Failed to add to cart:', error);
@@ -109,26 +106,53 @@ export default function ProdukDetail() {
             alert('Please log in to proceed');
             return;
         }
-
+    
         if (quantity <= 0) {
             alert('Quantity must be greater than zero');
             return;
         }
-
+    
         try {
+            // Mengirim data checkout ke server
             const response = await axios.post(`${PORT}/checkout-direct`, {
                 userId: user._id,
                 productId: product._id,
                 quantity,
-                price
+                price,
             });
-            alert('Order placed successfully!');
-            // Redirect or update UI as needed
+    
+            if (response.status === 201) {
+                // Mendapatkan token dari respons server
+                const { paymentToken } = response.data; // Pastikan nama field sesuai dengan yang dikirim dari server
+    
+                if (!paymentToken) {
+                    throw new Error('Failed to retrieve payment token');
+                }
+    
+                // Menggunakan token untuk memulai pembayaran dengan Midtrans Snap
+                window.snap.pay(paymentToken, {
+                    onSuccess: function(result) {
+                        console.log('Payment success:', result);
+                    },
+                    onPending: function(result) {
+                        console.log('Payment pending:', result);
+                    },
+                    onError: function(result) {
+                        console.error('Payment error:', result);
+                    },
+                    onClose: function() {
+                        console.log('Payment popup closed');
+                    }
+                });
+            } else {
+                alert('Failed to place the order. Please try again.');
+            }
         } catch (error) {
             console.error('Failed to process the order:', error);
             alert('Failed to place the order. Please try again.');
         }
     };
+    
 
     return (
         <div>
@@ -220,7 +244,7 @@ export default function ProdukDetail() {
                         Toko : <span className="text-[#03AC0E] font-semibold">{product.namaToko}</span>
                     </p>
 
-                    <p className="whitespace-pre-wrap text-[16px]">
+                    <p className="whitespace-pre-wrap text-[16px] w-full max-w-[450px] overflow-wrap break-word">
                         {getDisplayText(product.deskripsi)}
                     </p>
                     {product.deskripsi.length > 100 && (
