@@ -9,7 +9,7 @@ import ChangePasswordForm from '../components/ChangePasswordForm';
 import ProfilePictureUpload from "../components/ProfilePictureUpload";
 import KeranjangCard from '../components/KeranjangCard';
 import OrderHistory from '../components/OrderHistory';
-import { useHistory } from 'react-router-dom';
+import AccountSettings from '../pages/AccountSettings';
 import { ProductContext} from '../ProductContext';
 
 
@@ -26,13 +26,10 @@ export default function AccountPage() {
     const [keranjang, setKeranjang] = useState(false);
     // tambah produk state
     const [tambahProduk, setTambahProduk] = useState(false);
+    // set akun state
+    const [akun, setAkun] = useState(false);
     // ubah produk state
     const [produkSaya, setProdukSaya] = useState(false);
-    // total barang keranjang state
-    const [totalBarang, setTotalBarang] = useState(0);
-     // state untuk kontrol edit profile
-     const [editField, setEditField] = useState(null);
-     // State untuk mengontrol form edit
      const [editingField, setEditingField] = useState(null);
      const [editValue, setEditValue] = useState('');
      const [cart, setCart] = useState([]);
@@ -108,6 +105,7 @@ export default function AccountPage() {
         setKeranjang(false);
         setTambahProduk(false);
         setProdukSaya(false);
+        setAkun(false);
         setBio(true);
     }
 
@@ -117,6 +115,7 @@ export default function AccountPage() {
         setKeranjang(false);
         setTambahProduk(false);
         setProdukSaya(false);
+        setAkun(false);
         setRiwayat(true);
     }
 
@@ -126,6 +125,7 @@ export default function AccountPage() {
         setRiwayat(false);
         setTambahProduk(false);
         setProdukSaya(false);
+        setAkun(false);
         setKeranjang(true);
     }
 
@@ -135,6 +135,7 @@ export default function AccountPage() {
         setRiwayat(false);
         setKeranjang(false);
         setProdukSaya(false);
+        setAkun(false);
         setTambahProduk(true);
     }
 
@@ -143,7 +144,17 @@ export default function AccountPage() {
         setRiwayat(false);
         setKeranjang(false);
         setTambahProduk(false);
+        setAkun(false);
         setProdukSaya(true);
+    }
+
+    function handleAkun() {
+        setBio(false)
+        setRiwayat(false);
+        setKeranjang(false);
+        setTambahProduk(false);
+        setProdukSaya(false);
+        setAkun(true);
     }
 
 
@@ -164,24 +175,6 @@ export default function AccountPage() {
             }
         }
     };
-
-    const checkOrderStatus = async (orderId) => {
-        try {
-          const response = await fetch(`/order-status?orderId=${orderId}`);
-          const data = await response.json();
-          
-          if (data.status === 'Berhasil') {
-            // Tampilkan pesan sukses
-          } else if (data.status === 'Berlangsung') {
-            // Tampilkan pesan pembayaran masih dalam proses
-          } else if (data.status === 'Tidak Berhasil') {
-            // Tampilkan pesan gagal
-          }
-        } catch (error) {
-          console.error('Error checking order status:', error);
-        }
-      };
-
 
       // delete product
       const handleDelete = async (productId) => {
@@ -268,6 +261,11 @@ export default function AccountPage() {
                         {user && user.role === 'admin' && (
                             <button onClick={handleUbahProduk} className={`py-[10px] px-[24px] font-bold ${produkSaya ? 'text-[#03AC0E] border-b-2 border-[#03AC0E]' : 'text-[#6D7588]'}`}>
                             <p>Produk Saya</p>
+                        </button>
+                        )}
+                        {user && user.role === 'admin' && (
+                            <button onClick={handleAkun} className={`py-[10px] px-[24px] font-bold ${akun ? 'text-[#03AC0E] border-b-2 border-[#03AC0E]' : 'text-[#6D7588]'}`}>
+                            <p>Pengaturan Akun</p>
                         </button>
                         )}
 
@@ -553,6 +551,12 @@ export default function AccountPage() {
                                 </div>
                             ))}
                         </div>
+                    )}
+                </div>
+
+                <div>
+                    {user && user.role === 'admin' && akun && (
+                        <AccountSettings />
                     )}
                 </div>
 

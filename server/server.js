@@ -95,7 +95,7 @@ app.post('/register', async (req, res) => {
         const userDoc = await userModel.create({
             name,
             email,
-            role: 'admin',
+            role: 'user',
             password: bcrypt.hashSync(password, bcryptSalt)
         })
         res.json(userDoc);

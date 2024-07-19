@@ -7,7 +7,7 @@ const userSchema = new Schema({
     password: String,
     address: String,
     phoneNumber: String,
-    role: { type: String, default: 'admin' },
+    role: { type: String, default: 'user' },
     profilePicture: {
         type: String,
         required: false
