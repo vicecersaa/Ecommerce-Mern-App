@@ -357,7 +357,19 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage }).array('image');
 
 
-
+  // get product id v
+  app.get('/products/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const product = await productModel.findById(id);
+        if (!product) {
+            return res.status(404).json({ message: "Product not found" });
+        }
+        res.status(200).json(product);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+});
 
   // Endpoint untuk meng-upload gambar
   app.post('/upload-image', (req, res) => {
