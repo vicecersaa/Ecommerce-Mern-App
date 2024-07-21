@@ -529,36 +529,47 @@ export default function AccountPage() {
                     )}
                 </div>
                     
-                <div>
+                <div className="flex flex-col align-middle justify-center border-x-2 border-b-2 p-3">
                     {user && user.role === 'admin' && produkSaya && (
-                        <div>
+                        <div className="mt-4 w-full flex flex-col p-5 h-screen  min-h-[1500px]">
+                            <h2 className="text-4xl font-sans font-bold mb-10">Pengaturan Produk</h2>
                             {products.map((product) => (
-                                <div key={product._id} className="product-item border p-4 mb-4 rounded-lg shadow-lg">
-                                    <img src={`http://localhost:5000${product.gambarProduk[0]}`} alt="" />
-                                    <h2 className="text-lg font-bold">{product.namaProduk}</h2>
-                                    <p className="text-sm text-gray-600">Harga: {product.hargaProduk}</p>
-                                    <button 
-                                        className="mt-2 px-4 py-2 bg-blue-500 text-white rounded"
-                                        onClick={() => handleEdit(product._id)}
-                                    >
-                                        Edit
-                                    </button>
-                                    <button
-                                        onClick={() => handleDelete(product._id)}
-                                    >
-                                        Delete
-                                    </button>
+                                <div key={product._id} className="flex border align-middle vp-4 mb-4 rounded-lg shadow-lg gap-5 p-[20px]">
+                                    <img className="w-full max-w-[100px] h-full min-h-[80px] rounded-md" src={`http://localhost:5000${product.gambarProduk[0]}`} alt="" />
+                                    
+                                    <div className="flex flex-col align-middle justify-center w-full">
+                                        <h2 className="text-lg font-bold">{product.namaProduk}</h2>
+                                        <p className="text-sm text-gray-600">Rp.{product.hargaProduk}</p>
+                                    </div>
+                                    <div className="flex gap-5 align-middle max-h-[100%] m-auto">
+                                        <button 
+                                            className="rounded-md border-slate-500 bg-slate-500 h-10 px-8 text-white font-semibold"
+                                            onClick={() => handleEdit(product._id)}
+                                        >
+                                            Edit
+                                        </button>
+                                        <button
+                                            className="rounded-md border-[#EF4444] bg-[#EF4444] h-10 px-8 text-white font-semibold"
+                                            onClick={() => handleDelete(product._id)}
+                                        >
+                                            Delete
+                                        </button>
+                                    </div>
                                 </div>
                             ))}
                         </div>
                     )}
                 </div>
 
-                <div>
+                
                     {user && user.role === 'admin' && akun && (
-                        <AccountSettings />
+                        <div className="flex border-x-2 border-b-2 p-3">
+                            <div className="mt-4 w-full flex flex-col p-5 h-screen  min-h-[1500px]">
+                            <AccountSettings />
+                            </div>
+                        </div>
                     )}
-                </div>
+                    
 
 
             </div>
