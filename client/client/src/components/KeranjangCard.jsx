@@ -109,32 +109,34 @@ export default function KeranjangCard() {
 
     return (
         <div className="container mx-auto p-4">
-            <h1 className="text-2xl font-bold mb-4">Keranjang Belanja</h1>
+            <h2 className="text-4xl font-sans font-bold mb-4">Keranjang Belanja</h2>
             {error && <p className="text-red-500">{error}</p>}
             {cartItems.length === 0 ? (
                 <p>Your cart is empty</p>
             ) : (
                 <div>
                     {cartItems.map(item => (
-                        <div key={item.productId._id} className="border p-4 mb-4 rounded-lg shadow-lg">
-                            <div className="flex items-center mb-4">
+                        <div key={item.productId._id} className="flex align-middle border p-4 mb-4 rounded-lg shadow-lg">
+                            <div className="flex w-full items-center mb-4">
                                 <img className="w-20 h-20 object-cover mr-4" src={`${PORT}${item.productId.gambarProduk[0]}`} alt={item.productId.namaProduk} />
-                                <div>
+                                <div className="w-full">
                                     <h2 className="text-lg font-bold">{item.productId.namaProduk}</h2>
                                     <p className="text-sm text-gray-600">{item.productId.categoryProduk}</p>
                                     <p className="text-lg font-bold text-green-600">Rp {item.price}</p>
                                 </div>
                             </div>
-                            <div className="flex items-center">
-                                <button className="bg-red-500 text-white px-3 py-1 rounded mr-2" onClick={() => updateQuantity(item.productId._id, item.quantity - 1)}>-</button>
-                                <p className="text-lg">{item.quantity}</p>
-                                <button className="bg-green-500 text-white px-3 py-1 rounded ml-2" onClick={() => updateQuantity(item.productId._id, item.quantity + 1)}>+</button>
-                                <button className="bg-red-500 text-white px-3 py-1 rounded ml-auto" onClick={() => removeItem(item.productId._id)}>Remove</button>
+                            <div className="flex flex-col items-center justify-center">
+                                <div className="flex justify-center align-middle mb-3">
+                                    <button className="bg-slate-500 text-white px-3 py-1 rounded mr-2" onClick={() => updateQuantity(item.productId._id, item.quantity - 1)}>-</button>
+                                    <p className="text-lg">{item.quantity}</p>
+                                    <button className="bg-slate-500 text-white px-3 py-1 rounded ml-2" onClick={() => updateQuantity(item.productId._id, item.quantity + 1)}>+</button>
+                                </div>
+                                <button className="bg-red-500 text-white px-3 py-1 rounded ml-auto w-full" onClick={() => removeItem(item.productId._id)}>Remove</button>
                             </div>
                         </div>
                     ))}
-                    <div className="mt-4">
-                        <p className="text-xl font-bold">Total Price: Rp {calculateTotalPrice()}</p>
+                    <div className="flex flex-col mt-4 items-end">
+                        <p className="text-xl font-bold">Total Price: <span className="text-green-600">Rp {calculateTotalPrice()}</span></p>
                         <button className="bg-blue-500 text-white px-4 py-2 rounded mt-2" onClick={handleCheckout}>Checkout</button>
                     </div>
                 </div>

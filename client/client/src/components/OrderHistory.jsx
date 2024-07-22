@@ -42,7 +42,7 @@ export default function OrderHistory() {
 
     return (
         <div className="container mx-auto p-4">
-            <h1 className="text-2xl font-bold mb-4">Riwayat Pesanan</h1>
+            <h2 className="text-4xl font-bold mb-4">Riwayat Pesanan</h2>
             {error && <p className="text-red-500">{error}</p>}
             {orders.length === 0 ? (
                 <p>Anda belum memiliki riwayat pesanan.</p>
@@ -53,7 +53,7 @@ export default function OrderHistory() {
                             <div className="mb-4">
                                 <h2 className="text-lg font-bold">Tanggal Pesanan: {new Date(order.createdAt).toLocaleDateString()}</h2>
                                 <p className="text-sm text-gray-600">Status: {order.status}</p>
-                                <p className="text-lg font-bold text-green-600">Total Belanja: {formatPrice(order.totalAmount)}</p>
+                                
                             </div>
                             {order.items.map(item => (
                                 <div key={item.productId ? item.productId._id : item._id} className="flex items-center mb-4">
@@ -62,11 +62,15 @@ export default function OrderHistory() {
                                         src={item.productId && item.productId.gambarProduk ? `http://localhost:5000${item.productId.gambarProduk[0]}` : BLANK} 
                                         alt={item.productId ? item.productId.namaProduk : 'Product Image'} 
                                     />
-                                    <div>
-                                        <h2 className="text-lg font-bold">{item.name}</h2>
-                                        <p className="text-lg font-bold text-green-600">{formatPrice(item.price)}</p>
-                                        <p>Jumlah: {item.quantity}</p>
-                                        <p>Total Harga: {formatPrice(item.price * item.quantity)}</p>
+                                    <div className='w-full flex items-end'>
+                                        <div className='w-full'>
+                                            <h2 className="text-lg font-bold">{item.name}</h2>
+                                            <p className="text-lg font-bold text-green-600">{formatPrice(item.price)}</p>
+                                            <p>Jumlah: {item.quantity}</p>
+                                        </div>
+                                        <div className="w-full ml-auto text-end">
+                                            <p className="w-full text-lg font-semibold text-green-600">Total Belanja : {formatPrice(order.totalAmount)}</p>
+                                        </div>
                                     </div>
                                 </div>
                             ))}

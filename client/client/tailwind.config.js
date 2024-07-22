@@ -5,8 +5,10 @@ module.exports = {
   ],
   theme: {
     extend: {
-       
-         textOverflow: {
+        fontFamily: {
+          sans: ['Roboto', 'sans-serif']
+        },
+        textOverflow: {
           ellipsis: 'ellipsis', 
         },
         whitespace: {

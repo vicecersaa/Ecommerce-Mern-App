@@ -495,8 +495,10 @@ export default function AccountPage() {
                     )}
 
                     {riwayat && (
-                        <div>
-                            <OrderHistory />
+                        <div className="flex border-x-2 border-b-2 p-3">
+                            <div className="mt-4 w-full flex flex-col p-5 h-screen min-h-[340px]">
+                                <OrderHistory />
+                            </div>
                         </div>
                     )}
 
