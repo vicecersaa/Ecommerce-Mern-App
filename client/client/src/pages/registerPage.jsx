@@ -32,7 +32,7 @@ export default function RegisterPage() {
         } finally {
             setLoading(false);
         }
-    }, 2000) 
+    }, 5000) 
 }
 
     return (

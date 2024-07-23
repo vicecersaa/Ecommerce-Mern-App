@@ -23,19 +23,30 @@ export default function LoginPage() {
     // Login Account 
     async function handleLoginSubmit(e) {
         e.preventDefault();
+      
+        // Validate input
+        if (!email || !password) {
+          alert('Please enter both email and password');
+          return;
+        }
+      
         setLoading(true);
+
+
         setTimeout(async () => {
             try {
-              const { data } = await axios.post(`${PORT}/login`, { email, password });
-              setUser(data);
-              setRedirect(true);
-            } catch (e) {
-              console.error('Login Failed', e);
-            } finally {
-              setLoading(false); // Set loading to false after the request is completed
-            }
-          }, 2000); // 2000ms = 2 seconds delay
-        };
+                const { data } = await axios.post(`${PORT}/login`, { email, password });
+                setUser(data);
+                setRedirect(true);
+              } catch (e) {
+                console.error('Login Failed', e);
+                alert('Login Failed');
+              } finally {
+                setLoading(false);
+              }
+        }, 6000)
+       
+      }
       
         if (redirect) {
           return <Navigate to={'/'} />;

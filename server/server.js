@@ -143,21 +143,29 @@ app.post('/register-admin', authenticateUser, async (req, res) => {
 // LOGIN USER 
 app.post('/login', async (req, res) => {
   const { email, password } = req.body;
+
+  // Check if email and password are provided
+  if (!email || !password) {
+    return res.status(400).json({ error: 'Email and password are required' });
+  }
+
   try {
-      const userDoc = await userModel.findOne({ email });
-      if (userDoc && bcrypt.compareSync(password, userDoc.password)) {
-          jwt.sign({
-              email: userDoc.email,
-              id: userDoc._id
-          }, jwtSecret, {}, (err, token) => {
-              if (err) return res.status(500).json({ error: 'Failed to generate token' });
-              res.cookie('token', token, { httpOnly: true, path: '/' }).json(userDoc);
-          });
-      } else {
-          res.status(422).json({ error: 'Invalid credentials' });
-      }
+    const userDoc = await userModel.findOne({ email });
+
+    // Check if user exists and password matches
+    if (userDoc && bcrypt.compareSync(password, userDoc.password)) {
+      jwt.sign({
+          email: userDoc.email,
+          id: userDoc._id
+      }, jwtSecret, {}, (err, token) => {
+          if (err) return res.status(500).json({ error: 'Failed to generate token' });
+          res.cookie('token', token, { httpOnly: true, path: '/' }).json(userDoc);
+      });
+    } else {
+      res.status(422).json({ error: 'Invalid credentials' });
+    }
   } catch (err) {
-      res.status(500).json({ error: 'Failed to login', details: err.message });
+    res.status(500).json({ error: 'Failed to login', details: err.message });
   }
 });
 
