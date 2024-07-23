@@ -1,4 +1,5 @@
 const express = require('express');
+require('dotenv').config();
 const mongoose = require("mongoose");
 const cors = require("cors");
 const bodyParser = require("body-parser");
@@ -10,9 +11,10 @@ const jwt = require('jsonwebtoken');
 const multer = require('multer');
 const path = require('path');
 const { body, validationResult } = require('express-validator');
-require('dotenv').config();
 const orderModel = require('./models/order');
 const midtrans = require('./config/midtransConfig');
+const nodemailer = require('nodemailer');
+const crypto = require('crypto');
 
 // MIDDLEWARE
 const saltRounds = 10;
@@ -71,7 +73,12 @@ const validateUpdate = [
   body('phoneNumber').optional().isString(),
   body('address').optional().isString(),
   // Add more validations as needed
+
+  
 ];
+
+console.log('EMAIL:', process.env.EMAIL); 
+console.log('APPLICATION_SPECIFIC_PASSWORD:', process.env.APPLICATION_SPECIFIC_PASSWORD);
 
 
 
@@ -87,24 +94,34 @@ mongoose.connect(process.env.MONGO_URL)
 //ACCOUNT SETTINGS :
 
 
-// REGISTER USER
+const transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: process.env.EMAIL,
+    pass: process.env.APPLICATION_SPECIFIC_PASSWORD
+  }
+});
+
+
+
+// REGISTER ACCOUNT 
+
 app.post('/register', async (req, res) => {
-    const {name, email, password} = req.body;
+  const {name, email, password} = req.body;
 
-    try {
-        const userDoc = await userModel.create({
-            name,
-            email,
-            role: 'user',
-            password: bcrypt.hashSync(password, bcryptSalt)
-        })
-        res.json(userDoc);
-    } catch (e) {
-        res.status(422).json(e);
-    }
-    
+  try {
+      const userDoc = await userModel.create({
+          name,
+          email,
+          role: 'user',
+          password: bcrypt.hashSync(password, bcryptSalt)
+      })
+      res.json(userDoc);
+  } catch (e) {
+      res.status(422).json(e);
+  }
+  
 })
-
 
 // REGISTER ADMIN ACCOUNT
 app.post('/register-admin', authenticateUser, async (req, res) => {
@@ -168,6 +185,73 @@ app.post('/login', async (req, res) => {
     res.status(500).json({ error: 'Failed to login', details: err.message });
   }
 });
+
+
+// FORGOT PASSWORD
+
+app.post('/forgot-password', async (req, res) => {
+  const { email } = req.body;
+
+  try {
+    const user = await userModel.findOne({ email });
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    const resetToken = crypto.randomBytes(32).toString('hex');
+    const resetPasswordUrl = `http://localhost:3000/reset-password?token=${resetToken}`;
+
+    user.resetPasswordToken = resetToken;
+    user.resetPasswordExpires = Date.now() + 3600000; // 1 hour from now
+    await user.save();
+
+    console.log(`Sending reset email to: ${user.email}`);
+    console.log(`From: ${process.env.EMAIL}`);
+
+    const info = await transporter.sendMail({
+      from: process.env.EMAIL,
+      to: user.email,
+      subject: 'Reset Password',
+      html: `<p>To reset your password, please click the link below:</p><p><a href="${resetPasswordUrl}">${resetPasswordUrl}</a></p>`,
+    });
+
+    console.log('Email sent:', info.response); // Log email sending status
+
+    res.json({ message: 'Reset password email sent' });
+  } catch (error) {
+    console.error('Error sending email:', error.message); // Log detailed error
+    res.status(500).json({ error: 'Failed to send reset password email' });
+  }
+});
+
+
+
+// RESET PASSWORD 
+
+app.post('/reset-password', async (req, res) => {
+  const { token, newPassword } = req.body;
+
+  try {
+      const userDoc = await userModel.findOne({
+          resetPasswordToken: token,
+          resetPasswordExpires: { $gt: Date.now() }
+      });
+
+      if (!userDoc) {
+          return res.status(400).json({ error: 'Invalid or expired reset token' });
+      }
+
+      userDoc.password = bcrypt.hashSync(newPassword, bcryptSalt);
+      userDoc.resetPasswordToken = undefined;
+      userDoc.resetPasswordExpires = undefined;
+      await userDoc.save();
+
+      res.json({ message: 'Password reset successfully' });
+  } catch (err) {
+      res.status(500).json({ error: 'Failed to reset password', details: err.message });
+  }
+});
+
 
 
 

@@ -27,6 +27,8 @@ const userSchema = new Schema({
         quantity: { type: Number, required: true, default: 1 },
         price: { type: Number, required: true }
     }],
+    resetPasswordToken: String,
+    resetPasswordExpires: Date,
     totalBelanja: Number,
     createdAt: { type: Date, default: Date.now },
     updatedAt: { type: Date, default: Date.now }

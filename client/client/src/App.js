@@ -13,6 +13,9 @@ import React from 'react';
 import ProdukDetail from './pages/produkDetail.jsx';
 import ProductEdit from './pages/ProductEdit.jsx';
 import {useParams} from 'react-router-dom';
+import ForgotPassword from './components/ForgotPassword.jsx';
+import ResetPassword from './components/ResetPassword.jsx';
+import VerifyEmail from './components/VerifyEmail.jsx';
 
 axios.defaults.baseUrl = 'http://localhost:5000'
 axios.defaults.withCredentials = true;
@@ -28,6 +31,9 @@ function App() {
             <Route path='/account' element={<AccountPage />} />
             <Route path='/account/product-edit/:id' element={<ProductEditWrapper />} />
             <Route path='/products/:id' element={<ProdukDetail />}/>
+            <Route path="/forgot-password" element={<ForgotPassword />} />
+            <Route path="/reset-password" element={<ResetPassword />} />
+            <Route path="/verify-email" component={<VerifyEmail />} />
           </Routes>
   );
 }
