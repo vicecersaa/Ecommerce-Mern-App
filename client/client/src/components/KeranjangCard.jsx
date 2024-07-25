@@ -118,7 +118,7 @@ export default function KeranjangCard() {
                     {cartItems.map(item => (
                         <div key={item.productId._id} className="flex align-middle border p-4 mb-4 rounded-lg shadow-lg">
                             <div className="flex w-full items-center mb-4">
-                                <img className="w-20 h-20 object-cover mr-4" src={`${PORT}${item.productId.gambarProduk[0]}`} alt={item.productId.namaProduk} />
+                                <img className="w-20 h-20 object-cover mr-4" src={`${PORT}${item.productId.gambarProduk}`} alt={item.productId.namaProduk} />
                                 <div className="w-full">
                                     <h2 className="text-lg font-bold">{item.productId.namaProduk}</h2>
                                     <p className="text-sm text-gray-600">{item.productId.categoryProduk}</p>

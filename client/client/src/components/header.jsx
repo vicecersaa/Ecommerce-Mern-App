@@ -1,6 +1,7 @@
 import React, { useContext } from "react";
 import { Link } from "react-router-dom";
 import { UserContext } from "../UserContext";
+import LOGO from '../assets/img/LOGO2.jpg';
 
 export default function Header() {
 
@@ -27,14 +28,15 @@ export default function Header() {
             </div>
             <div className="flex items-center align-middle py-2 px-4 w-full gap-5 h-30 border-gray-200 border-b-2">
                 
-                <div className="flex items-center align-middle gap-10">
-                    <Link to={'/'} className="text-[#03AC0E] text-4xl ml-8 font-semibold font-sans">davidpedia</Link>
-
-                    <p className="text-[#505050] text-lg font-semibold font-sans mt-2 hover:bg-gray-200 py-3 px-3 rounded-md cursor-pointer">Kategori</p>
+                <div className="flex items-center align-middle gap-10 mr-6">
+                    <Link to={'/'} className="ml-8">
+                        <img src={LOGO} alt="Forland Living" className="w-full max-w-[270px]" />
+                    </Link>
                 </div>
+
                 <div className="mt-3 w-full relative">
-                    <input className="text-black border-2 border-[#BFC9D9]  rounded-md py-2 px-3 w-full focus:outline-none focus:border-[#03AC0E]" type="text" placeholder="Cari di Davidpedia" />
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="absolute top-3 right-3 size-5">
+                    <input className="text-black border-2 border-[#BFC9D9]  text-sm rounded-md py-2 px-3 w-full focus:outline-none" type="text" placeholder="Cari di Forland Living" />
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="absolute top-3 right-3 size-4 text-[#BFC9D9]">
                         <path strokeLinecap="round" strokeLinejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
                     </svg>
                 </div>
@@ -50,8 +52,8 @@ export default function Header() {
               
                 {!user && (
                     <div className="flex items-center align-middle gap-3 mt-3">
-                        <Link to={'/login'} className="bg-white border-[#03AC0E] py-2 px-5 border-2 rounded-xl text-[#03AC0E] font-bold text-base">Masuk</Link>
-                        <Link to={'/register'} className="bg-[#03AC0E] border-[#03AC0E] py-2 px-5 mr-10 border-4 rounded-xl text-white font-bold text-base">Daftar</Link>
+                        <Link to={'/login'} className="bg-white border-[2px] border-[#000000] py-2 px-5 rounded-md text-[#000000] font-semibold font-sans text-base">Masuk</Link>
+                        <Link to={'/register'} className="bg-[#000000] border-[#000000] py-2 px-5 mr-5 border-4 rounded-md text-white font-semibold font-sans text-base">Daftar</Link>
                     </div>
                 )}
                 

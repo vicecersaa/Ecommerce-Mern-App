@@ -9,7 +9,7 @@ import MATRAS from '../assets/img/air-mattress.png';
 import SemuaProduk from "./SemuaProduk";
 import { ProductContextProvider } from "../ProductContext";
 
-export default function Main() {
+export default function  Main() {
 
         // banner slider
  
@@ -125,7 +125,7 @@ export default function Main() {
           
 
             
-            <div className="w-full border-[1px] rounded-md shadow-md p-[16px]  mt-6 mb-20">
+            <div className="w-full border-[1px] rounded-md shadow-md p-[16px]  mt-6 mb-10">
 
 
                 <div className="flex w-full">
@@ -168,44 +168,49 @@ export default function Main() {
                       </div>
                   </div>
                 </div>
-
-                <div className="flex items-center gap-5 mt-10">
-                  
-                  <button className="flex justify-center items-center py-2 px-4 border-[1px] rounded-full border-slate-300">
-                    <img className="w-full max-w-[22px] mr-2" src={BED} alt="" />
-                    Springbed
-                  </button>
-
-                  <button className="flex justify-center items-center py-2 px-4 border-[1px] rounded-full border-slate-300">
-                    <img className="w-full max-w-[22px] mr-2" src={SOFA} alt="" />
-                    Furnitur
-                  </button>
-
-                  <button className="flex justify-center items-center py-2 px-4 border-[1px] rounded-full border-slate-300">
-                    <img className="w-full max-w-[22px] mr-2" src={FASHION} alt="" />
-                    Fashion
-                  </button>
-
-                  <button className="flex justify-center items-center py-2 px-4 border-[1px] rounded-full border-slate-300">
-                    <img className="w-full max-w-[22px] mr-2" src={MATRAS} alt="" />
-                    Matras
-                  </button>
-
-                  <button className="flex justify-center items-center py-2 px-4 border-[1px] rounded-full border-slate-300">
-                    <img className="w-full max-w-[22px] mr-2" src={BOX} alt="" />
-                    In A Box
-                  </button>
-
-                  <button className="flex justify-center items-center py-2 px-4 border-[1px] rounded-full border-slate-300">
-                    <img className="w-full max-w-[22px] mr-2" src={AKSESORIS} alt="" />
-                    Aksesoris
-                  </button>
-                </div>
-
             </div>
 
+            <div className="flex flex-col items-center gap-5 mt-5 mb-10 justify-center align-middle w-4/5 m-auto">
+                  <div className="flex justify-center items-center">
+                    <button className="flex justify-center items-center py-2 px-4 border-[1px] rounded-full border-slate-300">
+                      <img className="w-full max-w-[22px] mr-2" src={BED} alt="" />
+                      Springbed
+                    </button>
 
-            <SemuaProduk />
+                    <button className="flex justify-center items-center py-2 px-4 border-[1px] rounded-full border-slate-300">
+                      <img className="w-full max-w-[22px] mr-2" src={SOFA} alt="" />
+                      Furnitur
+                    </button>
+
+                    <button className="flex justify-center items-center py-2 px-4 border-[1px] rounded-full border-slate-300">
+                      <img className="w-full max-w-[22px] mr-2" src={FASHION} alt="" />
+                      Fashion
+                    </button>
+
+                    <button className="flex justify-center items-center py-2 px-4 border-[1px] rounded-full border-slate-300">
+                      <img className="w-full max-w-[22px] mr-2" src={MATRAS} alt="" />
+                      Matras
+                    </button>
+
+                    <button className="flex justify-center items-center py-2 px-4 border-[1px] rounded-full border-slate-300">
+                      <img className="w-full max-w-[22px] mr-2" src={BOX} alt="" />
+                      In A Box
+                    </button>
+
+                    <button className="flex justify-center items-center py-2 px-4 border-[1px] rounded-full border-slate-300">
+                      <img className="w-full max-w-[22px] mr-2" src={AKSESORIS} alt="" />
+                      Aksesoris
+                    </button>
+                  </div>
+                  
+                  <div className="flex justify-center items-center">
+                    <SemuaProduk />
+                  </div>
+                  
+                </div>
+
+               
+            
 
         </div>
       </ProductContextProvider>

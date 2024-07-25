@@ -1,5 +1,5 @@
 import React from 'react';
-import FORLANDLOGO from '../assets/img/LOGO1.png';
+import FORLANDLOGO from '../assets/img/LOGO1.jpg';
 
 const LoadingSpinner = () => {
   return (
@@ -8,6 +8,7 @@ const LoadingSpinner = () => {
         <img
           src={FORLANDLOGO}
           alt="Forland Living"
+          loading='lazy'
           className="w-full h-full animate-bounce"
         />
       </div>
