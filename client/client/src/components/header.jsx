@@ -1,11 +1,51 @@
-import React, { useContext } from "react";
-import { Link } from "react-router-dom";
+import React, { useContext, useState, useRef, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { UserContext } from "../UserContext";
 import LOGO from '../assets/img/LOGO2.jpg';
-
+import {ProductContext} from '../ProductContext';
 export default function Header() {
 
     const {user} = useContext(UserContext)
+    const { searchProducts, searchResults, fetchDefaultProducts } = useContext(ProductContext);
+    const [query, setQuery] = useState('');
+    const [showRecommendations, setShowRecommendations] = useState(false);
+    const searchBoxRef = useRef(null);
+    const navigate = useNavigate();
+
+    const handleInputChange = (e) => {
+        const newQuery = e.target.value;
+        setQuery(newQuery);
+        if (newQuery) {
+            searchProducts(newQuery);
+        } else {
+            fetchDefaultProducts();
+        }
+        setShowRecommendations(true);
+    };
+
+    const handleClickOutside = (e) => {
+        if (searchBoxRef.current && !searchBoxRef.current.contains(e.target)) {
+            setShowRecommendations(false);
+        }
+    };
+
+    const handleRecommendationClick = (productId) => {
+        navigate(`/products/${productId}`);
+        setShowRecommendations(false);
+    };
+
+    useEffect(() => {
+        document.addEventListener('click', handleClickOutside);
+        return () => {
+            document.removeEventListener('click', handleClickOutside);
+        };
+    }, []);
+
+    useEffect(() => {
+        if (!query) {
+            fetchDefaultProducts();
+        }
+    }, [query, fetchDefaultProducts]);
 
     return (
         <div className="w-full">
@@ -34,11 +74,51 @@ export default function Header() {
                     </Link>
                 </div>
 
-                <div className="mt-3 w-full relative">
-                    <input className="text-black border-2 border-[#BFC9D9]  text-sm rounded-md py-2 px-3 w-full focus:outline-none" type="text" placeholder="Cari di Forland Living" />
+                <div className="mt-3 w-full relative" ref={searchBoxRef}>
+                    <input
+                        className="text-black border-2 border-[#BFC9D9] text-sm rounded-md py-2 px-3 w-full focus:outline-none"
+                        type="text"
+                        placeholder="Cari di Forland Living"
+                        value={query}
+                        onChange={handleInputChange}
+                        onFocus={() => setShowRecommendations(true)}
+                    />
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="absolute top-3 right-3 size-4 text-[#BFC9D9]">
                         <path strokeLinecap="round" strokeLinejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
                     </svg>
+                    {showRecommendations && (
+                        <div className="absolute z-10 bg-white border border-gray-300 w-full mt-1 rounded-md shadow-lg">
+                            {Array.isArray(searchResults) && searchResults.length > 0 ? (
+                                <ul>
+                                    {searchResults.map(product => (
+                                        <li
+                                            key={product._id}
+                                            className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                                            onClick={() => handleRecommendationClick(product._id)}
+                                        >   
+                                            <div className="flex items-center gap-2">
+                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-5 text-slate-300">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+                                                </svg>
+                                                <p className="text-sm text-gray-500">
+                                                    {product.namaProduk}
+                                                </p>
+                                            </div>
+                                        </li>
+                                    ))}
+                                </ul>
+                            ) : (
+                                <div className="px-4 py-2 flex gap-2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-5 text-slate-300">
+                                        <path strokeLinecap="round" strokeLinejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+                                    </svg>
+                                    <p className="text-sm text-gray-500">
+                                        Pencarian Tidak Ditemukan
+                                    </p>
+                                </div>
+                            )}
+                        </div>
+                    )}
                 </div>
 
                 <div className="mr-5 ml-5 mt-3">

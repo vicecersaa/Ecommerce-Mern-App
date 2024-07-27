@@ -463,6 +463,28 @@ const upload = multer({ storage: storage }).array('image');
     }
 });
 
+  // Search Filter 
+  app.get('/search', async (req, res) => {
+    try {
+        const { query } = req.query;
+        let products;
+
+        if (!query) {
+         
+            products = await productModel.find().limit(5);
+        } else {
+       
+            products = await productModel.find({
+                namaProduk: { $regex: query, $options: 'i' }
+            });
+        }
+
+        res.json(products);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
   // Endpoint untuk meng-upload gambar
   app.post('/upload-image', (req, res) => {
     upload(req, res, function (err) {

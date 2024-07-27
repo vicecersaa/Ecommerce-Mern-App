@@ -1,15 +1,19 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useContext } from "react";
 import SliderComponent from "../properties/slider";
 import BED from '../assets/img/double-bed.png';
 import BOX from '../assets/img/open-box.png';
 import SOFA from '../assets/img/sofa.png';
-import FASHION from '../assets/img/shop.png';
+import PRODUCT from '../assets/img/products.png';
 import AKSESORIS from '../assets/img/jewelry.png';
 import MATRAS from '../assets/img/air-mattress.png';
+import MULTIBED from '../assets/img/bunk-bed.png';
 import SemuaProduk from "./SemuaProduk";
 import { ProductContextProvider } from "../ProductContext";
+import { ProductContext } from '../ProductContext';
 
 export default function  Main() {
+
+  const { products } = useContext(ProductContext);
 
         // banner slider
  
@@ -23,7 +27,21 @@ export default function  Main() {
 
         const [currentIndex, setCurrentIndex] = useState(1);
         const [isTransitioning, setIsTransitioning] = useState(false);
+        const [selectedCategory, setSelectedCategory] = useState('Semua');
+        const [filteredProducts, setFilteredProducts] = useState(products);
         const slideCountOne = images.length;
+
+        useEffect(() => {
+          if (selectedCategory === 'Semua') {
+              setFilteredProducts(products);
+          } else {
+              setFilteredProducts(products.filter(product => product.categoryProduk.includes(selectedCategory)));
+          }
+          }, [selectedCategory, products]);
+      
+          const handleCategoryClick = (category) => {
+              setSelectedCategory(category);
+          };
 
         const prevSlide = () => {
           setIsTransitioning(true);
@@ -170,41 +188,46 @@ export default function  Main() {
                 </div>
             </div>
 
-            <div className="flex flex-col items-center gap-5 mt-5 mb-10 justify-center align-middle w-4/5 m-auto">
-                  <div className="flex justify-center items-center">
-                    <button className="flex justify-center items-center py-2 px-4 border-[1px] rounded-full border-slate-300">
-                      <img className="w-full max-w-[22px] mr-2" src={BED} alt="" />
-                      Springbed
+            <div className="flex flex-col items-center gap-8 mt-5 mb-10 justify-center align-middle w-4/5 m-auto">
+                <div className="flex justify-center items-center gap-4">
+                    <button onClick={() => handleCategoryClick('Semua')} className={`${selectedCategory === 'Semua' ? 'bg-gradient-to-r from-emerald-900 to-emerald-600 text-white' : 'bg-slate-100 border border-slate-200'}} flex w-full max-w-[150px] justify-center items-center py-4 px-4 border-[1px] rounded-md`}>
+                        <img className="w-full max-w-[22px] mr-2" src={PRODUCT} alt="" />
+                        Semua
                     </button>
 
-                    <button className="flex justify-center items-center py-2 px-4 border-[1px] rounded-full border-slate-300">
-                      <img className="w-full max-w-[22px] mr-2" src={SOFA} alt="" />
-                      Furnitur
+                    <button onClick={() => handleCategoryClick('Sofa')} className={`${selectedCategory === 'Sofa' ? 'bg-gradient-to-r from-emerald-900 to-emerald-600 text-white' : 'bg-slate-100 border border-slate-200'}} flex w-full max-w-[150px] justify-center items-center py-4 px-4 border-[1px] rounded-md`}>
+                        <img className="w-full max-w-[22px] mr-2" src={SOFA} alt="" />
+                        Furniture
                     </button>
 
-                    <button className="flex justify-center items-center py-2 px-4 border-[1px] rounded-full border-slate-300">
-                      <img className="w-full max-w-[22px] mr-2" src={FASHION} alt="" />
-                      Fashion
+                    <button onClick={() => handleCategoryClick('Springbed')} className={`${selectedCategory === 'Springbed' ? 'bg-gradient-to-r from-emerald-900 to-emerald-600 text-white' : 'bg-slate-100 border border-slate-200'}} flex w-full max-w-[150px] justify-center items-center py-4 px-4 border-[1px] rounded-md`}>
+                        <img className="w-full max-w-[22px] mr-2" src={BED} alt="" />
+                        Springbed
                     </button>
 
-                    <button className="flex justify-center items-center py-2 px-4 border-[1px] rounded-full border-slate-300">
-                      <img className="w-full max-w-[22px] mr-2" src={MATRAS} alt="" />
-                      Matras
+                    <button onClick={() => handleCategoryClick('Multibed')} className={`${selectedCategory === 'Multibed' ? 'bg-gradient-to-r from-emerald-900 to-emerald-600 text-white' : 'bg-slate-100 border border-slate-200'}} flex w-full max-w-[150px] justify-center items-center py-4 px-4 border-[1px] rounded-md`}>
+                        <img className="w-full max-w-[22px] mr-2" src={MULTIBED} alt="" />
+                        Multibed
                     </button>
 
-                    <button className="flex justify-center items-center py-2 px-4 border-[1px] rounded-full border-slate-300">
-                      <img className="w-full max-w-[22px] mr-2" src={BOX} alt="" />
-                      In A Box
+                    <button onClick={() => handleCategoryClick('Matras')} className={`${selectedCategory === 'Matras' ? 'bg-gradient-to-r from-emerald-900 to-emerald-600 text-white' : 'bg-slate-100 border border-slate-200'}} flex w-full max-w-[150px] justify-center items-center py-4 px-4 border-[1px] rounded-md`}>
+                        <img className="w-full max-w-[22px] mr-2" src={MATRAS} alt="" />
+                        Matras
                     </button>
 
-                    <button className="flex justify-center items-center py-2 px-4 border-[1px] rounded-full border-slate-300">
-                      <img className="w-full max-w-[22px] mr-2" src={AKSESORIS} alt="" />
-                      Aksesoris
+                    <button onClick={() => handleCategoryClick('Box')} className={`${selectedCategory === 'Box' ? 'bg-gradient-to-r from-emerald-900 to-emerald-600 text-white' : 'bg-slate-100 border border-slate-200'}} flex w-full max-w-[150px] justify-center items-center py-4 px-4 border-[1px] rounded-md`}>
+                        <img className="w-full max-w-[22px] mr-2" src={BOX} alt="" />
+                        In A Box
                     </button>
-                  </div>
+
+                    <button onClick={() => handleCategoryClick('Aksesoris')} className={`${selectedCategory === 'Aksesoris' ? 'bg-gradient-to-r from-emerald-900 to-emerald-600 text-white' : 'bg-slate-100 border border-slate-200'}} flex w-full max-w-[150px] justify-center items-center py-4 px-4 border-[1px] rounded-md`}>
+                        <img className="w-full max-w-[22px] mr-2" src={AKSESORIS} alt="" />
+                        Aksesoris
+                    </button>
+            </div>
                   
                   <div className="flex justify-center items-center">
-                    <SemuaProduk />
+                    <SemuaProduk products={filteredProducts} />
                   </div>
                   
                 </div>
