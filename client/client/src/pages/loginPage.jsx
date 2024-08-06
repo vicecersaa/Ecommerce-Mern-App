@@ -52,7 +52,7 @@ export default function LoginPage() {
       <div className='flex flex-col justify-start align-center m-auto'>
         {loading && <LoadingSpinner />}
         <div className='flex flex-col mb-3'>
-          <p className='font-sans text-black font-semibold text-3xl text-center mb-1'>Welcome to Forland Living</p>
+          <p className='font-sans text-black font-semibold text-3xl text-center mb-1'>Welcome to <span className='text-[#194719]'>Forland Living</span></p>
           <span className='text-center text-xs font-sans'>Menyempurnakan Tidur Anda dengan Springbed Berkualitas.</span>
         </div>
         <div className='flex flex-col'>
@@ -71,13 +71,13 @@ export default function LoginPage() {
               value={password}
               onChange={e => setPassword(e.target.value)}
             />
-            <button className='w-full bg-[#000000] rounded-md py-3 px-4 text-white font-sans font-bold text-[16px] hover:cursor-pointer'>Login</button>
+            <button className='w-full bg-[#194719] rounded-md py-3 px-4 text-white font-sans font-bold text-[16px] hover:cursor-pointer'>Login</button>
           </form>
           <p className='text-center font-sans text-[14px]'>
             <Link to={'/forgot-password'} className="">Lupa Password?</Link>
           </p>
           <p className='text-center font-sans text-[14px]'>
-            Tidak mempunyai akun? <Link to={'/register'} className="text-[#1A4D2E]">Daftar</Link>
+            Tidak mempunyai akun? <Link to={'/register'} className="text-[#194719]">Daftar</Link>
           </p>
         </div>
         <div className='absolute bottom-0 w-full max-w-[357px] m-auto mb-4'>

@@ -585,83 +585,87 @@ app.post('/checkout', authenticateUser, async (req, res) => {
   const userId = req.user._id;
 
   if (!items || !Array.isArray(items) || items.length === 0) {
-      return res.status(400).json({ error: 'No items provided for checkout' });
+    return res.status(400).json({ error: 'No items provided for checkout' });
   }
 
   try {
-      const user = await userModel.findById(userId).populate('cart.productId');
-      if (!user) return res.status(404).json({ error: 'User not found' });
+    const user = await userModel.findById(userId).populate('cart.productId');
+    if (!user) return res.status(404).json({ error: 'User not found' });
 
-      let totalAmount = 0;
-      const orderItems = [];
-      for (const item of items) {
-          const product = await productModel.findById(item.productId);
-          if (!product) {
-              return res.status(404).json({ error: `Product with ID ${item.productId} not found` });
-          }
-
-          if (item.quantity > product.stockProduk) {
-              return res.status(400).json({ error: `Insufficient stock for product ${item.productId}` });
-          }
-
-          orderItems.push({
-              productId: item.productId,
-              quantity: item.quantity,
-              price: item.price,
-              name: product.namaProduk
-          });
-
-          totalAmount += item.price * item.quantity;
+    let totalAmount = 0;
+    const orderItems = [];
+    for (const item of items) {
+      const product = await productModel.findById(item.productId);
+      if (!product) {
+        return res.status(404).json({ error: `Product with ID ${item.productId} not found` });
       }
 
-      const order = new orderModel({
-          userId,
-          items: orderItems,
-          totalAmount,
-          status: 'Berlangsung' // Set status to 'Berlangsung' initially
+      if (item.quantity > product.stockProduk) {
+        return res.status(400).json({ error: `Insufficient stock for product ${item.productId}` });
+      }
+
+      // Ensure product name length is within limits
+      const productName = product.namaProduk.length > 50 ? product.namaProduk.substring(0, 50) : product.namaProduk;
+
+      orderItems.push({
+        productId: item.productId,
+        quantity: item.quantity,
+        price: item.price,
+        name: productName
       });
 
-      const savedOrder = await order.save();
+      totalAmount += item.price * item.quantity;
+    }
 
-      const transactionDetails = {
-          order_id: savedOrder._id.toString(),
-          gross_amount: totalAmount,
-      };
+    const order = new orderModel({
+      userId,
+      items: orderItems,
+      totalAmount,
+      status: 'Berlangsung' // Set status to 'Berlangsung' initially
+    });
 
-      const itemDetails = orderItems.map(item => ({
-          id: item.productId.toString(),
-          price: item.price,
-          quantity: item.quantity,
-          name: item.name
-      }));
+    const savedOrder = await order.save();
 
-      const midtransTransaction = await midtrans.createTransaction({
-          transaction_details: transactionDetails,
-          item_details: itemDetails,
-          customer_details: {
-              first_name: user.name,
-              email: user.email,
-              phone: user.phoneNumber,
-              billing_address: user.address,
-              shipping_address: user.address
-          }
-      });
+    const transactionDetails = {
+      order_id: savedOrder._id.toString(),
+      gross_amount: totalAmount,
+    };
 
-      savedOrder.midtransToken = midtransTransaction.token;
-      await savedOrder.save();
+    const itemDetails = orderItems.map(item => ({
+      id: item.productId.toString(),
+      price: item.price,
+      quantity: item.quantity,
+      name: item.name
+    }));
 
-      res.json({ 
-          message: 'Order created successfully',
-          order: savedOrder,
-          paymentUrl: midtransTransaction.redirect_url,
-          paymentToken: midtransTransaction.token 
-      });
+    const midtransTransaction = await midtrans.createTransaction({
+      transaction_details: transactionDetails,
+      item_details: itemDetails,
+      customer_details: {
+        first_name: user.name,
+        email: user.email,
+        phone: user.phoneNumber,
+        billing_address: user.address,
+        shipping_address: user.address
+      }
+    });
+
+    savedOrder.midtransToken = midtransTransaction.token;
+    await savedOrder.save();
+
+    res.json({ 
+      message: 'Order created successfully',
+      order: savedOrder,
+      paymentUrl: midtransTransaction.redirect_url,
+      paymentToken: midtransTransaction.token 
+    });
 
   } catch (error) {
-      console.error('Checkout failed:', error);
-      res.status(500).json({ error: 'Checkout failed', details: error.message });
+    console.error('Checkout failed:', error);
+    res.status(500).json({ error: 'Checkout failed', details: error.message });
   }
 });
+
 
 
 // Midtrans notification endpoint
@@ -747,7 +751,7 @@ app.post('/checkout-direct', async (req, res) => {
       id: product._id.toString(),
       price: price,
       quantity: quantity,
-      name: product.namaProduk
+      name: product.namaProduk.substring(0, 50) // Truncate name if necessary
     }];
 
     const midtransTransaction = await midtrans.createTransaction({
@@ -764,29 +768,30 @@ app.post('/checkout-direct', async (req, res) => {
           address: user.address 
         },
         shipping_address: {
-             first_name:user.name,
-             email: user.email,
-             phone: user.phoneNumber,
-             address: user.address 
-           }
-         }
-       });
+          first_name: user.name,
+          email: user.email,
+          phone: user.phoneNumber,
+          address: user.address 
+        }
+      }
+    });
 
-       // Save transaction token in order document
-       savedOrder.midtransToken = midtransTransaction.token;
-       await savedOrder.save();
+    // Save transaction token in order document
+    savedOrder.midtransToken = midtransTransaction.token;
+    await savedOrder.save();
 
-       res.status(201).json({ 
-         message: 'Order placed successfully',
-         order: savedOrder,
-         paymentUrl: midtransTransaction.redirect_url,
-         paymentToken: midtransTransaction.token 
-       });
-     } catch (error) {
-       console.error('Checkout-direct failed:', error);
-       res.status(500).json({ message: error.message });
-     }
-   });
+    res.status(201).json({ 
+      message: 'Order placed successfully',
+      order: savedOrder,
+      paymentUrl: midtransTransaction.redirect_url,
+      paymentToken: midtransTransaction.token 
+    });
+  } catch (error) {
+    console.error('Checkout-direct failed:', error);
+    res.status(500).json({ message: error.message });
+  }
+});
+
 
 
 // UPDATE PRODUCT

@@ -132,8 +132,8 @@ export default function Header() {
               
                 {!user && (
                     <div className="flex items-center align-middle gap-3 mt-3">
-                        <Link to={'/login'} className="bg-white border-[2px] border-[#000000] py-2 px-5 rounded-md text-[#000000] font-semibold font-sans text-base">Masuk</Link>
-                        <Link to={'/register'} className="bg-[#000000] border-[#000000] py-2 px-5 mr-5 border-4 rounded-md text-white font-semibold font-sans text-base">Daftar</Link>
+                        <Link to={'/login'} className="bg-white border-[2px] border-[#194719] py-2 px-5 rounded-md text-[#194719] font-medium font-sans text-base">Masuk</Link>
+                        <Link to={'/register'} className="bg-[#194719] border-[#194719] py-2 px-5 mr-5 border-4 rounded-md text-white font-medium font-sans text-base">Daftar</Link>
                     </div>
                 )}
                 

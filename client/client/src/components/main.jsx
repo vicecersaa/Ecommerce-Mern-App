@@ -10,6 +10,10 @@ import MULTIBED from '../assets/img/bunk-bed.png';
 import SemuaProduk from "./SemuaProduk";
 import { ProductContextProvider } from "../ProductContext";
 import { ProductContext } from '../ProductContext';
+import BANNER1 from '../assets/img/banner1.PNG'
+import BANNER2 from '../assets/img/banner2.PNG'
+import BANNER3 from '../assets/img/banner3.PNG'
+import BANNER4 from '../assets/img/banner4.PNG'
 
 export default function  Main() {
 
@@ -188,6 +192,19 @@ export default function  Main() {
                 </div>
             </div>
 
+            <div className="flex flex-col flex-wrap w-full mt-20 mb-20">
+              <div className="flex flex-col justify-center">
+                <p className="text-center text-xl">- Our Discount</p>
+                <h2 className="text-4xl font-sans font-medium text-center mt-2 mb-8"><span className="text-[#194719]">Forland Living</span> Diskon</h2>
+              </div>
+              <div className="flex flex-wrap w-full gap-4 justify-center">
+                <img className="w-full max-w-[600px] max-h-[337px] " src={BANNER1} alt="Forland Living Banner" />
+                <img className="w-full max-w-[400px] max-h-[300px] mt-auto " src={BANNER2} alt="Forland Living Banner" />
+                <img className="w-full max-w-[400px] max-h-[300px] object-contain object-top" src={BANNER3} alt="Forland Living Banner" />
+                <img className="w-full max-w-[600px] max-h-[300px] " src={BANNER4} alt="Forland Living Banner" />
+              </div>
+            </div>
+
             <div className="flex flex-col items-center gap-8 mt-5 mb-10 justify-center align-middle w-4/5 m-auto">
                 <div className="flex justify-center items-center gap-4">
                     <button onClick={() => handleCategoryClick('Semua')} className={`${selectedCategory === 'Semua' ? 'bg-gradient-to-r from-emerald-900 to-emerald-600 text-white' : 'bg-slate-100 border border-slate-200'}} flex w-full max-w-[150px] justify-center items-center py-4 px-4 border-[1px] rounded-md`}>
@@ -229,9 +246,24 @@ export default function  Main() {
                   <div className="flex justify-center items-center">
                     <SemuaProduk products={filteredProducts} />
                   </div>
+
                   
                 </div>
 
+                <div className="w-full max-w-[800px] mx-auto">
+                    <div>
+                      <p className="text-center text-xl">- Follow Us</p>
+                      <h2 className="text-4xl font-sans font-medium text-center mt-2">Follow Kita Di <span className="text-[#194719]">Instagram</span></h2>
+                    </div>
+                    <div className="flex flex-wrap gap-4 mt-8 justify-center">
+                      <img className="w-full max-w-[250px] rounded-md" src="https://instagram.fcgk31-1.fna.fbcdn.net/v/t39.30808-6/440445439_18028032743059396_2877836332051300367_n.jpg?stp=dst-jpg_e35&amp;efg=eyJ2ZW5jb2RlX3RhZyI6ImltYWdlX3VybGdlbi4xMDgweDEwODAuc2RyLmYzMDgwOCJ9&amp;_nc_ht=instagram.fcgk31-1.fna.fbcdn.net&amp;_nc_cat=104&amp;_nc_ohc=mF97jRiIS1UQ7kNvgG5pNoA&amp;edm=APs17CUAAAAA&amp;ccb=7-5&amp;ig_cache_key=MzM2MDkyMjkyNTI4NzgzNDA0OQ%3D%3D.2-ccb7-5&amp;oh=00_AYDiWn8PrWvoSjxkynd5oiruQ30Xf8njrb1eNffcYicfjQ&amp;oe=66B7A35E&amp;_nc_sid=10d13b"/>
+                      <img className="w-full max-w-[250px] rounded-md" src="https://instagram.fcgk31-1.fna.fbcdn.net/v/t39.30808-6/444482903_18030064232059396_7697780094494666767_n.jpg?stp=dst-jpg_e35&amp;efg=eyJ2ZW5jb2RlX3RhZyI6ImltYWdlX3VybGdlbi4xMDgweDEwODAuc2RyLmYzMDgwOCJ9&amp;_nc_ht=instagram.fcgk31-1.fna.fbcdn.net&amp;_nc_cat=104&amp;_nc_ohc=FPponJIBaLEQ7kNvgHeiS_y&amp;edm=APs17CUAAAAA&amp;ccb=7-5&amp;ig_cache_key=MzM3NDA4MTg2NDY2MTUwNDE4NA%3D%3D.2-ccb7-5&amp;oh=00_AYCyfvqQrkBgaYVYk25rCycCxRCkD70kxfsgbpQb39atyQ&amp;oe=66B7A615&amp;_nc_sid=10d13b"></img>
+                      <img className="w-full max-w-[250px] rounded-md" src="https://instagram.fcgk31-1.fna.fbcdn.net/v/t39.30808-6/440113439_18027145511059396_3075250420791859734_n.jpg?stp=dst-jpg_e35&amp;efg=eyJ2ZW5jb2RlX3RhZyI6ImltYWdlX3VybGdlbi4xMDgweDEwODAuc2RyLmYzMDgwOCJ9&amp;_nc_ht=instagram.fcgk31-1.fna.fbcdn.net&amp;_nc_cat=104&amp;_nc_ohc=kL6_CbMhRHAQ7kNvgGOYIBd&amp;edm=APs17CUAAAAA&amp;ccb=7-5&amp;ig_cache_key=MzM1MzY3MDEyMDU4MzkyNjk5MQ%3D%3D.2-ccb7-5&amp;oh=00_AYC_3L8QlMhyJlJEKpXrqXfnDF1hHFGlIF81oW2WWz0egw&amp;oe=66B7AEDB&amp;_nc_sid=10d13b"></img>
+                      <img className="w-full max-w-[250px] rounded-md" src="https://instagram.fcgk31-1.fna.fbcdn.net/v/t39.30808-6/436301994_18026618222059396_7764280160470062101_n.jpg?stp=dst-jpg_e35&amp;efg=eyJ2ZW5jb2RlX3RhZyI6ImltYWdlX3VybGdlbi4xMDgweDEwODAuc2RyLmYzMDgwOCJ9&amp;_nc_ht=instagram.fcgk31-1.fna.fbcdn.net&amp;_nc_cat=104&amp;_nc_ohc=ggMijAYiRrsQ7kNvgFw3p9O&amp;edm=APs17CUAAAAA&amp;ccb=7-5&amp;ig_cache_key=MzM0OTA3OTM1ODY3MjAxMjI4OQ%3D%3D.2-ccb7-5&amp;oh=00_AYAsV9ayhLYWRrQ8ssr_OR7xreCyksVBnM1rOt-6moFMSQ&amp;oe=66B7AFFE&amp;_nc_sid=10d13b"></img>
+                      <img className="w-full max-w-[250px] rounded-md" src="https://instagram.fcgk31-1.fna.fbcdn.net/v/t39.30808-6/440367003_18027144809059396_5118538823498032477_n.jpg?stp=dst-jpg_e35&amp;efg=eyJ2ZW5jb2RlX3RhZyI6ImltYWdlX3VybGdlbi4xMDgweDEwODAuc2RyLmYzMDgwOCJ9&amp;_nc_ht=instagram.fcgk31-1.fna.fbcdn.net&amp;_nc_cat=104&amp;_nc_ohc=016zh_OQTWEQ7kNvgEVUn0v&amp;edm=APs17CUAAAAA&amp;ccb=7-5&amp;ig_cache_key=MzM1MzAxNjM0NzkwMTQzODE0NA%3D%3D.2-ccb7-5&amp;oh=00_AYD9Dlo0DqcxafxBtDCSsRnuVoQcXfy9Nqas0Br4TFmlkw&amp;oe=66B7C88C&amp;_nc_sid=10d13b"></img>
+                      <img className="w-full max-w-[250px] rounded-md"src="https://instagram.fcgk31-1.fna.fbcdn.net/v/t39.30808-6/436270607_18026293181059396_9164350759498850734_n.jpg?stp=dst-jpg_e35&amp;efg=eyJ2ZW5jb2RlX3RhZyI6ImltYWdlX3VybGdlbi4xMDgweDEwODAuc2RyLmYzMDgwOCJ9&amp;_nc_ht=instagram.fcgk31-1.fna.fbcdn.net&amp;_nc_cat=104&amp;_nc_ohc=0r9F8C4zcTsQ7kNvgFfreYo&amp;edm=APs17CUAAAAA&amp;ccb=7-5&amp;ig_cache_key=MzM0Nzg4OTM5NTY3MDY0ODIxOA%3D%3D.2-ccb7-5&amp;oh=00_AYDnDOmKEQ6ljHeseGxrMuVrAP7wPkgBgrz6G77PQQYByg&amp;oe=66B7C9A0&amp;_nc_sid=10d13b"></img>
+                    </div>
+                  </div>
                
             
 
