@@ -355,18 +355,27 @@ app.post('/upload-profilePicture', authenticateUser, (req, res) => {
 
 // Add to cart
 app.post('/add-to-cart', async (req, res) => {
-  const { userId, productId, quantity, price, selectedSize, selectedVariant } = req.body;
+  const { userId, productId, quantity, price, selectedVariant, selectedSize } = req.body;
+
+  if (!selectedVariant || typeof selectedVariant !== 'object') {
+      return res.status(400).json({ message: 'Invalid selectedVariant' });
+  }
+
+  if (!selectedSize || typeof selectedSize !== 'object') {
+      return res.status(400).json({ message: 'Invalid selectedSize' });
+  }
 
   try {
       const user = await userModel.findById(userId);
       if (!user) return res.status(404).json({ message: 'User not found' });
 
-      await user.addToCart(productId, quantity, price, selectedSize, selectedVariant);
+      await user.addToCart(productId, quantity, price, selectedVariant, selectedSize);
       res.status(200).json({ message: 'Product added to cart', cart: user.cart });
   } catch (error) {
       res.status(500).json({ message: error.message });
   }
 });
+
 
 
 // Update cart item

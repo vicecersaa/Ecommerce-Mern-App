@@ -32,6 +32,33 @@ export default function ProdukDetail() {
 
     const PORT = 'http://localhost:5000';
 
+    useEffect(() => {
+        if (product && product.variants && product.variants.length > 0) {
+            const firstVariant = product.variants[0];
+            const firstSize = firstVariant.ukuranVarian && firstVariant.ukuranVarian.length > 0 
+                ? firstVariant.ukuranVarian[0]  
+                : { ukuran: '', harga: 0, _id: '' }; // Set _id kosong jika tidak ada ukuran
+    
+            setSelectedVariant({
+                namaVarian: firstVariant.namaVarian,
+                ukuranVarian: firstVariant.ukuranVarian
+            });
+    
+            setSelectedSize({
+                ukuran: firstSize.ukuran,
+                harga: firstSize.harga,
+                _id: firstSize._id  // Tambahkan _id ke selectedSize
+            });
+    
+            console.log('Updated selectedSize:', {
+                ukuran: firstSize.ukuran,
+                harga: firstSize.harga,
+                _id: firstSize._id
+            });
+        }
+    }, [product]);
+    
+
     const toggleExpansion = () => {
         setIsExpanded(!isExpanded);
     };
@@ -51,8 +78,13 @@ export default function ProdukDetail() {
     };
 
     const handleSizeClick = (size) => {
-        setSelectedSize(size);
+        setSelectedSize({
+            ukuran: size.ukuran,
+            harga: size.harga,
+            _id: size._id
+        });
         setPrice(size.harga);
+
     };
 
     const handleThumbnailClick = (image) => {
@@ -262,13 +294,14 @@ export default function ProdukDetail() {
                     <p className="mb-5 text-slate-500">
                         {getDisplayText(product.deskripsi)}
                         {product.deskripsi.length > 243 && (
-                            <button className="text-blue-500" onClick={toggleExpansion}>
+                            <button className="text-blue-500 ml-2" onClick={toggleExpansion}>
                                 {isExpanded ? 'Show Less' : 'Show More'}
                             </button>
                         )}
                     </p>
+                    
 
-                    <div className="flex gap-5">
+                    <div className="flex gap-5 items-center">
                         <div className="flex border border-gray-300 rounded-md p-1">
                             <button
                                 className="w-[40px] h-[40px] flex items-center justify-center text-[18px] bg-gray-200 hover:bg-gray-300"
@@ -289,20 +322,27 @@ export default function ProdukDetail() {
                                 +
                             </button>
                         </div>
+                        <div className="flex items-center justify-center gap-3">
+                                <p className="text-gray-500 font-sans">Subtotal</p>
+                                <p className="text-[#212121] font-bold font-sanstext-[18px]">{formatPrice(price * quantity)}</p>
+                        </div>
+                        
+                    </div>
+                  
                         <button
-                            className="w-[100%] max-w-[150px] h-[40px] bg-[#194719] text-white rounded-md hover:bg-green-700"
+                            className="w-[100%] max-w-[120px] h-[40px] bg-[#194719] text-white rounded-md mr-3 text-sm"
                             onClick={handleAddToCart}
                         >
-                            Add to Cart
+                            + Keranjang
                         </button>
-                    </div>
 
-                    <button
-                        className="w-full max-w-[150px] h-[40px] bg-[#007bff] text-white rounded-md mt-4 hover:bg-blue-700"
-                        onClick={handleBuyNow}
-                    >
-                        Buy Now
-                    </button>
+                        <button
+                            className="w-full max-w-[120px] h-[40px] bg-[#194719] text-white rounded-md mt-4 text-sm"
+                            onClick={handleBuyNow}
+                        >
+                            Beli Sekarang
+                        </button>
+
                 </div>
             </div>
 

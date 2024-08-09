@@ -47,7 +47,7 @@ export default function KeranjangCard() {
         }
     };
 
-    // Remove item from cart
+    // Remove Item from Cart
     const removeItem = async (productId) => {
         try {
             const response = await axios.post(`${PORT}/remove-from-cart`, {
@@ -56,6 +56,9 @@ export default function KeranjangCard() {
             });
             setCartItems(response.data.cart);
             console.log('Removed cart item:', response.data.cart);
+    
+            // Force page refresh after removing the item
+            window.location.reload();
         } catch (error) {
             console.error('Failed to remove item:', error);
         }
@@ -114,15 +117,27 @@ export default function KeranjangCard() {
                 <p>Your cart is empty</p>
             ) : (
                 <div>
-                    {cartItems.map(item => (
-                        <div key={item._id} className="flex align-middle border p-4 mb-4 rounded-lg shadow-lg">
-                            <div className="flex w-full items-center mb-4">
-                                <img className="w-20 h-20 object-cover mr-4" src={`${PORT}${item.productId.gambarProduk[0]}`} alt={item.productId.namaProduk} />
+                    {cartItems.length === 0 ? (
+    <p>Your cart is empty</p>
+) : (
+    <div>
+            {cartItems.map(item => (
+                    <div key={item._id} className="flex align-middle border p-4 mb-4 rounded-lg shadow-lg">
+                        <div className="flex w-full items-center mb-4">
+                                <img
+                                    className="w-20 h-20 object-cover mr-4"
+                                    src={item.productId.gambarProduk ? `${PORT}${item.productId.gambarProduk[0]}` : 'default-image-url'}
+                                    alt={item.productId.namaProduk || 'Product Image'}
+                                />
                                 <div className="w-full">
-                                    <h2 className="text-lg font-bold">
+                                    <h2 className="text-lg font-bold w-full max-w-[500px] mb-3">
                                         {item.productId.namaProduk}
-                                        {item.selectedVariant ? ` - ${item.selectedVariant.namaVarian}` : ' - No Variant'}
-                                        {item.selectedSize && item.selectedSize.ukuran ? ` - ${item.selectedSize.ukuran}` : ' - No Size'}
+                                        {item.selectedVariant && item.selectedVariant.namaVarian 
+                                            ? ` - ${item.selectedVariant.namaVarian}` 
+                                            : ' - Tidak ada Varian'}
+                                        {item.selectedSize && item.selectedSize.ukuran 
+                                            ? ` - ${item.selectedSize.ukuran}` 
+                                            : ' - Tidak ada Ukuran'}
                                     </h2>
                                     <p className="text-sm text-gray-600">{item.productId.categoryProduk ? item.productId.categoryProduk.join(", ") : 'No Categories'}</p>
                                     <p className="text-lg font-bold text-green-600">Rp {item.price}</p>
@@ -137,7 +152,10 @@ export default function KeranjangCard() {
                                 <button className="bg-red-500 text-white px-3 py-1 rounded ml-auto w-full" onClick={() => removeItem(item.productId._id)}>Remove</button>
                             </div>
                         </div>
-                    ))}
+                ))}
+                    </div>
+            )}
+
 
                     <div className="flex flex-col mt-4 items-end">
                         <p className="text-xl font-bold">Total Price: <span className="text-green-600">Rp {calculateTotalPrice()}</span></p>

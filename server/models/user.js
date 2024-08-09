@@ -1,18 +1,16 @@
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
-// Define ukuranSchema to match the size schema used in Product
-const ukuranSchema = new Schema([{
+const ukuranSchema = new Schema({
     ukuran: { type: String },
     harga: { type: Number }
-}], { _id: false });
+}, { _id: false });
 
-// Define variantSchema to match the variant schema used in Product
-const variantSchema = new Schema([{
+const variantSchema = new Schema({
     namaVarian: { type: String },
     ukuranVarian: [ukuranSchema],
     harga: { type: Number }
-}], { _id: false });
+}, { _id: false });
 
 const userSchema = new Schema({
     name: String,
@@ -30,8 +28,8 @@ const userSchema = new Schema({
         productId: { type: Schema.Types.ObjectId, ref: "Product" },
         quantity: { type: Number, required: true, default: 1 },
         price: { type: Number, required: true },
-        selectedVariant: variantSchema,  
-        selectedSize: ukuranSchema        
+        selectedVariant: { type: variantSchema, default: {} },  
+        selectedSize: { type: ukuranSchema, default: {} }
     }],
     resetPasswordToken: String,
     resetPasswordExpires: Date,
@@ -46,14 +44,13 @@ userSchema.pre('save', function (next) {
 });
 
 userSchema.methods.addToCart = async function (productId, quantity, price, selectedVariant, selectedSize) {
+    console.log('Adding to cart:', { productId, quantity, price, selectedVariant, selectedSize });
+
     const existingCartItem = this.cart.find(item => item.productId.equals(productId));
 
     if (existingCartItem) {
         existingCartItem.quantity += quantity;
     } else {
-        if (typeof selectedVariant !== 'object' || typeof selectedSize !== 'object') {
-            throw new Error('selectedVariant and selectedSize must be objects');
-        }
         this.cart.push({ productId, quantity, price, selectedSize, selectedVariant });
     }
 
