@@ -355,18 +355,19 @@ app.post('/upload-profilePicture', authenticateUser, (req, res) => {
 
 // Add to cart
 app.post('/add-to-cart', async (req, res) => {
-  const { userId, productId, quantity, price } = req.body;
+  const { userId, productId, quantity, price, selectedSize, selectedVariant } = req.body;
 
   try {
       const user = await userModel.findById(userId);
       if (!user) return res.status(404).json({ message: 'User not found' });
 
-      await user.addToCart(productId, quantity, price);
+      await user.addToCart(productId, quantity, price, selectedSize, selectedVariant);
       res.status(200).json({ message: 'Product added to cart', cart: user.cart });
   } catch (error) {
       res.status(500).json({ message: error.message });
   }
 });
+
 
 // Update cart item
 app.patch('/update-cart', async (req, res) => {

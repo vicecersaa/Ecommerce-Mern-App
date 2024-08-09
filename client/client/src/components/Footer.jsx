@@ -7,7 +7,7 @@ import INSTAGRAM from '../assets/img/instagram.png';
 export default function Footer() {
     return (
         <div className="w-full bg-[#194719] min-h-[350px] mt-20">
-            <div className='p-[60px] flex'>
+            <div className='p-[60px] flex min-h-[350px]'>
                 <div className="w-full max-w-[36%]">
                     <img className="w-full max-w-[250px]" src={LOGO} alt="Forland Living Logo" />
                     <p className='font-sans text-white text-sm mt-5 w-full max-w-[600px]'>Forland Living berdiri sejak 2020, Forland Living adalah perusahaan springbed terbaik yang memiliki visi & misi untuk memberikan kenyamanan pada setiap pelanggan</p>

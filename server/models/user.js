@@ -1,6 +1,19 @@
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
+// Define ukuranSchema to match the size schema used in Product
+const ukuranSchema = new Schema([{
+    ukuran: { type: String },
+    harga: { type: Number }
+}], { _id: false });
+
+// Define variantSchema to match the variant schema used in Product
+const variantSchema = new Schema([{
+    namaVarian: { type: String },
+    ukuranVarian: [ukuranSchema],
+    harga: { type: Number }
+}], { _id: false });
+
 const userSchema = new Schema({
     name: String,
     email: { type: String, unique: true },
@@ -8,24 +21,17 @@ const userSchema = new Schema({
     address: String,
     phoneNumber: String,
     role: { type: String, default: 'user' },
-    profilePicture: {
-        type: String,
-        required: false
-    },
+    profilePicture: String,
     fullName: String,
     metodePembayaran: [{ type: String }],
-    historiTransaksi: [{
-        type: Schema.Types.ObjectId, ref: "Transaksi"
-    }],
-    totalBarang: {
-        type: Number,
-        required: true,
-        default: 0
-    },
+    historiTransaksi: [{ type: Schema.Types.ObjectId, ref: "Transaksi" }],
+    totalBarang: { type: Number, required: true, default: 0 },
     cart: [{
         productId: { type: Schema.Types.ObjectId, ref: "Product" },
         quantity: { type: Number, required: true, default: 1 },
-        price: { type: Number, required: true }
+        price: { type: Number, required: true },
+        selectedVariant: variantSchema,  
+        selectedSize: ukuranSchema        
     }],
     resetPasswordToken: String,
     resetPasswordExpires: Date,
@@ -39,16 +45,19 @@ userSchema.pre('save', function (next) {
     next();
 });
 
-userSchema.methods.addToCart = async function (productId, quantity, price) {
+userSchema.methods.addToCart = async function (productId, quantity, price, selectedVariant, selectedSize) {
     const existingCartItem = this.cart.find(item => item.productId.equals(productId));
 
     if (existingCartItem) {
         existingCartItem.quantity += quantity;
     } else {
-        this.cart.push({ productId, quantity, price });
+        if (typeof selectedVariant !== 'object' || typeof selectedSize !== 'object') {
+            throw new Error('selectedVariant and selectedSize must be objects');
+        }
+        this.cart.push({ productId, quantity, price, selectedSize, selectedVariant });
     }
 
-    await this.calculateTotalBelanja();  // Calculate totalBelanja after adding
+    await this.calculateTotalBelanja(); 
 
     return this.save();
 };
@@ -56,7 +65,7 @@ userSchema.methods.addToCart = async function (productId, quantity, price) {
 userSchema.methods.removeFromCart = async function (productId) {
     this.cart = this.cart.filter(item => !item.productId.equals(productId));
 
-    await this.calculateTotalBelanja();  // Calculate totalBelanja after removal
+    await this.calculateTotalBelanja();  
 
     return this.save();
 };
@@ -68,7 +77,7 @@ userSchema.methods.updateCartItem = async function (productId, quantity) {
         item.quantity = quantity;
     }
 
-    await this.calculateTotalBelanja();  // Calculate totalBelanja after updating
+    await this.calculateTotalBelanja(); 
 
     return this.save();
 };

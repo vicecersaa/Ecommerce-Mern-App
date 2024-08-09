@@ -15,14 +15,14 @@ export default function KeranjangCard() {
         }
     }, [user]);
 
-    // Fetch cart items for the user
     const fetchCartItems = async () => {
         try {
             const response = await axios.get(`${PORT}/get-cart`, {
                 params: { userId: user._id }
             });
-
+    
             const validItems = response.data.cart.filter(item => item.productId);
+            console.log('Fetched cart items:', validItems); 
             setCartItems(validItems);
         } catch (error) {
             setError('Failed to fetch cart items');
@@ -77,7 +77,7 @@ export default function KeranjangCard() {
                 window.snap.pay(response.data.paymentToken, {
                     onSuccess: async function(result) {
                         console.log('Payment success:', result);
-                        
+                        // Handle post-payment actions here (e.g., update order status)
                     },
                     onPending: function(result) {
                         console.log('Payment pending:', result);
@@ -101,7 +101,6 @@ export default function KeranjangCard() {
             setError('Checkout failed');
         }
     };
-    
 
     if (!user) {
         return <div>Please log in to view your cart</div>;
@@ -116,12 +115,16 @@ export default function KeranjangCard() {
             ) : (
                 <div>
                     {cartItems.map(item => (
-                        <div key={item.productId._id} className="flex align-middle border p-4 mb-4 rounded-lg shadow-lg">
+                        <div key={item._id} className="flex align-middle border p-4 mb-4 rounded-lg shadow-lg">
                             <div className="flex w-full items-center mb-4">
-                                <img className="w-20 h-20 object-cover mr-4" src={`${PORT}${item.productId.gambarProduk}`} alt={item.productId.namaProduk} />
+                                <img className="w-20 h-20 object-cover mr-4" src={`${PORT}${item.productId.gambarProduk[0]}`} alt={item.productId.namaProduk} />
                                 <div className="w-full">
-                                    <h2 className="text-lg font-bold">{item.productId.namaProduk}</h2>
-                                    <p className="text-sm text-gray-600">{item.productId.categoryProduk}</p>
+                                    <h2 className="text-lg font-bold">
+                                        {item.productId.namaProduk}
+                                        {item.selectedVariant ? ` - ${item.selectedVariant.namaVarian}` : ' - No Variant'}
+                                        {item.selectedSize && item.selectedSize.ukuran ? ` - ${item.selectedSize.ukuran}` : ' - No Size'}
+                                    </h2>
+                                    <p className="text-sm text-gray-600">{item.productId.categoryProduk ? item.productId.categoryProduk.join(", ") : 'No Categories'}</p>
                                     <p className="text-lg font-bold text-green-600">Rp {item.price}</p>
                                 </div>
                             </div>
@@ -135,6 +138,7 @@ export default function KeranjangCard() {
                             </div>
                         </div>
                     ))}
+
                     <div className="flex flex-col mt-4 items-end">
                         <p className="text-xl font-bold">Total Price: <span className="text-green-600">Rp {calculateTotalPrice()}</span></p>
                         <button className="bg-blue-500 text-white px-4 py-2 rounded mt-2" onClick={handleCheckout}>Checkout</button>

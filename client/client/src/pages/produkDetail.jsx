@@ -2,11 +2,11 @@ import React, { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { ProductContext } from "../ProductContext";
 import Header from "../components/header";
+import Footer from "../components/Footer";
 import STARS from "../assets/img/star.png";
 import { UserContext } from '../UserContext';
 import axios from 'axios';
 
-// Formatting function to add thousand separators
 const formatPrice = (num) => {
     if (!num) return '';
     return `Rp${parseFloat(num).toLocaleString('id-ID', { minimumFractionDigits: 0 })}`;
@@ -17,16 +17,21 @@ export default function ProdukDetail() {
     const { products, loading } = useContext(ProductContext);
     const { user } = useContext(UserContext);
     const [product, setProduct] = useState(null);
-    const [selectedVariant, setSelectedVariant] = useState(null);
-    const [selectedSize, setSelectedSize] = useState('');
+    const [selectedVariant, setSelectedVariant] = useState({
+        namaVarian: '',
+        ukuranVarian: []
+    });
+    const [selectedSize, setSelectedSize] = useState({
+        ukuran: '',
+        harga: 0
+    });
     const [price, setPrice] = useState(0);
     const [isExpanded, setIsExpanded] = useState(false);
     const [mainImage, setMainImage] = useState("");
-    const [quantity, setQuantity] = useState(1); // Added state for quantity
+    const [quantity, setQuantity] = useState(1); 
 
     const PORT = 'http://localhost:5000';
 
-    // show more dan show less teks
     const toggleExpansion = () => {
         setIsExpanded(!isExpanded);
     };
@@ -41,13 +46,13 @@ export default function ProdukDetail() {
 
     const handleVariantClick = (variant) => {
         setSelectedVariant(variant);
-        setSelectedSize('');
+        setSelectedSize({ ukuran: '', harga: 0 });
         setPrice(variant.harga || product.hargaProduk);
     };
 
-    const handleSizeClick = (size, harga) => {
+    const handleSizeClick = (size) => {
         setSelectedSize(size);
-        setPrice(harga);
+        setPrice(size.harga);
     };
 
     const handleThumbnailClick = (image) => {
@@ -60,7 +65,7 @@ export default function ProdukDetail() {
 
     const handleAddToCart = async () => {
         if (!user) {
-            console.error('User not logged in');
+            alert('Please log in to add items to the cart');
             return;
         }
 
@@ -69,14 +74,78 @@ export default function ProdukDetail() {
                 userId: user._id,
                 productId: product._id,
                 quantity,
-                price
+                price,
+                selectedVariant,
+                selectedSize
             });
 
             if (response.status === 200) {
                 alert('Product added to cart');
+                console.log("Select Variant:", selectedVariant)
+                console.log("Select Size:", selectedSize)
             }
         } catch (error) {
-            console.error('Failed to add to cart:', error);
+            alert('Failed to add to cart');
+            console.error('Error:', error);
+        }
+    };
+
+    const handleBuyNow = async () => {
+        if (!user) {
+            alert('Please log in to proceed');
+            return;
+        }
+
+        if (product.variants.length > 0 && !selectedVariant) {
+            alert('Please select a variant first');
+            return;
+        }
+
+        if (selectedVariant && selectedVariant.ukuranVarian.length > 0 && !selectedSize) {
+            alert('Please select a size first');
+            return;
+        }
+
+        if (quantity <= 0) {
+            alert('Quantity must be greater than zero');
+            return;
+        }
+
+        try {
+            const response = await axios.post(`${PORT}/checkout-direct`, {
+                userId: user._id,
+                productId: product._id,
+                quantity,
+                price
+            });
+
+            if (response.status === 201) {
+                const { paymentToken } = response.data;
+
+                if (!paymentToken) {
+                    throw new Error('Failed to retrieve payment token');
+                }
+
+                window.snap.pay(paymentToken, {
+                    onSuccess: function(result) {
+                        console.log('Payment success:', result);
+                    },
+                    onPending: function(result) {
+                        console.log('Payment pending:', result);
+                    },
+                    onError: function(result) {
+                        console.error('Payment error:', result);
+                    },
+                    onClose: function() {
+                        console.log('Payment popup closed');
+                    }
+                });
+            } else {
+                alert('Failed to place the order. Please try again.');
+            }
+        } catch (error) {
+            console.error('Failed to process the order:', error);
+            alert('Failed to place the order. Please try again.');
         }
     };
 
@@ -101,66 +170,13 @@ export default function ProdukDetail() {
 
     const uniqueVariantNames = getUniqueVariantNames();
 
-    const handleBuyNow = async () => {
-        if (!user) {
-            alert('Please log in to proceed');
-            return;
-        }
-    
-        if (quantity <= 0) {
-            alert('Quantity must be greater than zero');
-            return;
-        }
-    
-        try {
-            // Mengirim data checkout ke server
-            const response = await axios.post(`${PORT}/checkout-direct`, {
-                userId: user._id,
-                productId: product._id,
-                quantity,
-                price,
-            });
-    
-            if (response.status === 201) {
-                // Mendapatkan token dari respons server
-                const { paymentToken } = response.data; // Pastikan nama field sesuai dengan yang dikirim dari server
-    
-                if (!paymentToken) {
-                    throw new Error('Failed to retrieve payment token');
-                }
-    
-                // Menggunakan token untuk memulai pembayaran dengan Midtrans Snap
-                window.snap.pay(paymentToken, {
-                    onSuccess: function(result) {
-                        console.log('Payment success:', result);
-                    },
-                    onPending: function(result) {
-                        console.log('Payment pending:', result);
-                    },
-                    onError: function(result) {
-                        console.error('Payment error:', result);
-                    },
-                    onClose: function() {
-                        console.log('Payment popup closed');
-                    }
-                });
-            } else {
-                alert('Failed to place the order. Please try again.');
-            }
-        } catch (error) {
-            console.error('Failed to process the order:', error);
-            alert('Failed to place the order. Please try again.');
-        }
-    };
-    
-
     return (
         <div>
             <Header />
 
-            <div className="container mx-auto w-full max-w-[1200px] mt-5 flex justify-between gap-5">
-                <div className="w-full max-w-[350px]">
-                    <img className="w-full max-w-[350px] bg-[#DEDEDE] p-[20px] rounded-lg" src={`http://localhost:5000${mainImage}`} alt={product.namaProduk} />
+            <div className="container mx-auto w-full max-w-[1400px] mt-10 flex justify-center gap-5">
+                <div className="w-full max-w-[400px]">
+                    <img className="w-full max-w-[400px] bg-[#DEDEDE] p-[20px] rounded-lg" src={`http://localhost:5000${mainImage}`} alt={product.namaProduk} />
                     <div className="flex mt-2 gap-5">
                         {product.gambarProduk.map((image, index) => (
                             <img
@@ -174,25 +190,24 @@ export default function ProdukDetail() {
                     </div>
                 </div>
 
-                <div className="w-full max-w-[450px]">
+                <div className="w-full max-w-[600px]">
                     <h1 className="font-bold text-[20px]">{product.namaProduk}</h1>
 
                     <div className="flex items-center gap-1">
-                        <img className="w-full max-w-[13px]" src={STARS} alt="" />
+                        <img className="w-full max-w-[13px]" src={STARS} alt="Rating stars" />
                         <span>{product.ratings}</span>
                     </div>
 
                     <p className="font-bold text-[30px] mb-5 mt-3">{formatPrice(price)}</p>
 
                     <div>
-                        <h2 className="font-bold text-xl mb-3">Pilih Varian:</h2>
                         {product.variants && product.variants.length > 0 ? (
-                            uniqueVariantNames.map((variantName) => (
+                            uniqueVariantNames.map((variantName) => (       
                                 <button
                                     key={variantName}
                                     onClick={() => handleVariantClick(product.variants.find(v => v.namaVarian === variantName))}
                                     style={{
-                                        backgroundColor: selectedVariant && selectedVariant.namaVarian === variantName ? 'green' : '#DEDEDE',
+                                        backgroundColor: selectedVariant && selectedVariant.namaVarian === variantName ? '#194719' : '#DEDEDE',
                                         color: selectedVariant && selectedVariant.namaVarian === variantName ? 'white' : 'black',
                                         padding: '8px 16px',
                                         margin: '4px',
@@ -204,7 +219,7 @@ export default function ProdukDetail() {
                                 </button>
                             ))
                         ) : (
-                            <p>No variants available</p>
+                            <div></div>   
                         )}
                     </div>
 
@@ -214,10 +229,10 @@ export default function ProdukDetail() {
                             selectedVariant.ukuranVarian.map((size) => (
                                 <button
                                     key={size._id}
-                                    onClick={() => handleSizeClick(size.ukuran, size.harga)}
+                                    onClick={() => handleSizeClick(size)}
                                     style={{
-                                        backgroundColor: selectedSize === size.ukuran ? 'green' : '#DEDEDE',
-                                        color: selectedSize === size.ukuran ? 'white' : 'black',
+                                        backgroundColor: selectedSize._id === size._id ? '#194719' : '#DEDEDE',
+                                        color: selectedSize._id === size._id ? 'white' : 'black',
                                         padding: '8px 16px',
                                         margin: '4px',
                                         borderRadius: '4px',
@@ -241,57 +256,57 @@ export default function ProdukDetail() {
                     </p>
 
                     <p className="mb-3 text-slate-500 font-medium">
-                        Toko : <span className="text-[#03AC0E] font-semibold">{product.namaToko}</span>
+                        Toko : <span className="text-[#194719] font-semibold">{product.namaToko}</span>
                     </p>
 
-                    <p className="whitespace-pre-wrap text-[16px] w-full max-w-[450px] overflow-wrap break-word">
+                    <p className="mb-5 text-slate-500">
                         {getDisplayText(product.deskripsi)}
+                        {product.deskripsi.length > 243 && (
+                            <button className="text-blue-500" onClick={toggleExpansion}>
+                                {isExpanded ? 'Show Less' : 'Show More'}
+                            </button>
+                        )}
                     </p>
-                    {product.deskripsi.length > 100 && (
-                        <button
-                            className="text-[#00AA5B] text-sm"
-                            onClick={toggleExpansion}
-                        >
-                            {isExpanded ? "Lihat Lebih Sedikit" : "Baca Selengkapnya"}
-                        </button>
-                    )}
-                </div>
 
-                <div className="w-full max-w-[300px] p-[12px] border-[1px] shadow-md h-full rounded-lg">
-                    <p className="font-bold text-[#212121] text-[18px] mb-[12px]">Atur jumlah dan catatan</p>
-
-                    <div className="flex items-center">
-                        <img className="w-full max-w-[60px] mr-2" src={`http://localhost:5000${product.gambarProduk[0]}`} alt={product.namaProduk} />
-                        <p className="w-full truncate max-w-[200px]">{product.namaProduk}</p>
-                    </div>
-
-                    <div className="flex items-center mt-5">
-                        <div className="flex w-full max-w-[100px] items-center justify-between border-[1px] border-slate-400 rounded-lg mr-3">
-                            <button onClick={() => handleQuantityChange(-1)} className="px-3 text-black rounded-l-md">-</button>
-                            <span className="px-4 py-1 bg-gray-100 text-gray-800 font-bold">{quantity}</span>
-                            <button onClick={() => handleQuantityChange(1)} className="px-3 text-black rounded-r-md">+</button>
+                    <div className="flex gap-5">
+                        <div className="flex border border-gray-300 rounded-md p-1">
+                            <button
+                                className="w-[40px] h-[40px] flex items-center justify-center text-[18px] bg-gray-200 hover:bg-gray-300"
+                                onClick={() => handleQuantityChange(-1)}
+                            >
+                                -
+                            </button>
+                            <input
+                                className="w-[50px] h-[40px] text-center border-none outline-none"
+                                type="text"
+                                value={quantity}
+                                readOnly
+                            />
+                            <button
+                                className="w-[40px] h-[40px] flex items-center justify-center text-[18px] bg-gray-200 hover:bg-gray-300"
+                                onClick={() => handleQuantityChange(1)}
+                            >
+                                +
+                            </button>
                         </div>
-                        <p>Stok: <span className="font-bold">{product.stockProduk}</span></p>
+                        <button
+                            className="w-[100%] max-w-[150px] h-[40px] bg-[#194719] text-white rounded-md hover:bg-green-700"
+                            onClick={handleAddToCart}
+                        >
+                            Add to Cart
+                        </button>
                     </div>
 
-                    <div className="flex items-center mt-3">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-5 mr-1 text-[#03AC0E]">
-                            <path strokeLinecap="round" strokeLinejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
-                        </svg>
-                        <p className="text-sm text-[#03AC0E] font-semibold">Tambahkan Catatan</p>
-                    </div>
-
-                    <div className="flex items-center justify-between mt-10">
-                        <p className="text-gray-500">Subtotal</p>
-                        <p className="text-[#212121] font-bold text-[18px]">{formatPrice(price * quantity)}</p>
-                    </div>
-
-                    <div className="mt-3">
-                        <button onClick={handleAddToCart} className="w-full bg-[#00AA5B] py-2 px-1 text-white font-semibold rounded-lg">+ Keranjang</button>
-                        <button onClick={handleBuyNow} className="w-full border-[#00AA5B] border-[1px] bg-white py-2 text-[#00AA5B] font-semibold rounded-lg mt-2">Beli Langsung</button>
-                    </div>
+                    <button
+                        className="w-full max-w-[150px] h-[40px] bg-[#007bff] text-white rounded-md mt-4 hover:bg-blue-700"
+                        onClick={handleBuyNow}
+                    >
+                        Buy Now
+                    </button>
                 </div>
             </div>
+
+            <Footer />
         </div>
     );
 }

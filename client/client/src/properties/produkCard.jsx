@@ -15,7 +15,7 @@ export default function ProdukCard(props) {
                     <p className="w-full text-sm mb-1 text-clamp-2 max-w-[180px]">{props.namaProduk}</p>
                     <span className="font-bold mb-1">{props.hargaProduk}</span>
                     <span className="text-xs">{props.deskripsiProduk}</span>
-                    <span className="text-xs text-[#03AC0E] font-semibold">{props.kondisiProduk}</span>
+                    <span className="text-xs text-[#194719] font-semibold">{props.kondisiProduk}</span>
                     <span className="font-semibold text-sm">{props.namaToko} -</span>
                 </div>
             </div>

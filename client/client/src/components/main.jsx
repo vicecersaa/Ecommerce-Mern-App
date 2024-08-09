@@ -192,16 +192,16 @@ export default function  Main() {
                 </div>
             </div>
 
-            <div className="flex flex-col flex-wrap w-full mt-20 mb-20">
+            <div className="flex flex-col flex-wrap w-full mt-20 mb-20 mx-auto">
               <div className="flex flex-col justify-center">
                 <p className="text-center text-xl">- Our Discount</p>
-                <h2 className="text-4xl font-sans font-medium text-center mt-2 mb-8"><span className="text-[#194719]">Forland Living</span> Diskon</h2>
+                <h2 className="text-4xl font-sans font-medium text-center mt-2 mb-14"><span className="text-[#194719]">Forland Living</span> Diskon</h2>
               </div>
-              <div className="flex flex-wrap w-full gap-4 justify-center">
-                <img className="w-full max-w-[600px] max-h-[337px] " src={BANNER1} alt="Forland Living Banner" />
-                <img className="w-full max-w-[400px] max-h-[300px] mt-auto " src={BANNER2} alt="Forland Living Banner" />
-                <img className="w-full max-w-[400px] max-h-[300px] object-contain object-top" src={BANNER3} alt="Forland Living Banner" />
-                <img className="w-full max-w-[600px] max-h-[300px] " src={BANNER4} alt="Forland Living Banner" />
+              <div className="flex flex-wrap w-full gap-4 justify-center m-auto">
+                <img className="w-full max-w-[700px] max-h-[300px] object-cover" src={BANNER1} alt="Forland Living Banner" />
+                <img className="w-full max-w-[400px] min-h-[300px] object-cover object-left" src={BANNER2} alt="Forland Living Banner" />
+                <img className="w-full max-w-[400px] min-h-[300px] object-cover object-left" src={BANNER3} alt="Forland Living Banner" />
+                <img className="w-full max-w-[700px] max-h-[300px] object-cover" src={BANNER4} alt="Forland Living Banner" />
               </div>
             </div>
 
