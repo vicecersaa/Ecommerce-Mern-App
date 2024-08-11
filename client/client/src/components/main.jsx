@@ -14,18 +14,19 @@ import BANNER1 from '../assets/img/banner1.PNG'
 import BANNER2 from '../assets/img/banner2.PNG'
 import BANNER3 from '../assets/img/banner3.PNG'
 import BANNER4 from '../assets/img/banner4.PNG'
+import ProdukUnggulan from "./ProdukUnggulan";
 
 export default function  Main() {
 
   const { products } = useContext(ProductContext);
 
-        // banner slider
+       
  
         const images = [
-            'https://images.tokopedia.net/img/cache/1200/BgtCLw/2022/6/27/0f25d058-81d4-48ed-b463-f765d8ba241d.jpg.webp?ect=4g',
-            'https://images.tokopedia.net/img/cache/1200/BgtCLw/2022/2/13/dd9f7770-c831-4262-b454-8b14d1956412.jpg.webp?ect=4g',
-            'https://images.tokopedia.net/img/cache/1200/BgtCLw/2022/6/25/30f3579c-99f8-468b-8162-06df5e655f8b.jpg.webp?ect=4g',
-            'https://images.tokopedia.net/img/cache/1200/BgtCLw/2022/7/15/01e1f2f4-20ea-4f69-9e7a-3b3df5166553.jpg.webp?ect=4g'
+            BANNER1,
+            BANNER2,
+            BANNER3,
+            BANNER4
         ]
    
 
@@ -144,64 +145,15 @@ export default function  Main() {
                   buttonClassNameOne="absolute left-[10px] top-1/2 transform -translate-y-1/2 bg-white rounded-full hover:bg-opacity-75 text-black font-bold py-2 px-4"
                   buttonClassNameTwo="absolute right-[10px] top-1/2 transform -translate-y-1/2 bg-white rounded-full hover:bg-opacity-75 text-black font-bold py-2 px-4"
               />
-          
-
-            
-            <div className="w-full border-[1px] rounded-md shadow-md p-[16px]  mt-6 mb-10">
-
-
-                <div className="flex w-full">
-                  <div className="w-[50%]">
-                    <p className="text-xl font-bold mb-[20px]">Produk Unggulan</p>
-
-                    <div className="w-full max-w-[500px] flex justify-center items-center">
-                        <SliderComponent 
-                          images={ProdukUnggulanImages}
-                          currentIndex={currentProdukIndex}
-                          isTransitioning={isProdukTransitioning}
-                          prevSlide={prevSlideProdukUnggulan}
-                          nextSlide={nextSlideProdukUnggulan}
-                          slideClassName="w-full flex justify-center items-center flex-shrink-0"
-                          imgClassName="w-full max-w-[135px] max-h-[130px] rounded-lg cursor-pointer"
-                          visibleSlides={3}
-                          buttonClassNameOne="absolute left-[10px] top-1/2 transform -translate-y-1/2 bg-white rounded-full hover:bg-opacity-75 text-black font-bold py-2 px-4"
-                          buttonClassNameTwo="absolute right-[10px] top-1/2 transform -translate-y-1/2 bg-white rounded-full hover:bg-opacity-75 text-black font-bold py-2 px-4"
-                          linkToCategory="/"
-                        />
-                    </div>
-                  </div>
-                  <div className="w-50%">
-                    <p className="text-xl font-bold mb-[20px]">Kategori Pilihan</p>
-                      
-                      <div className="w-full max-w-[500px] flex justify-center items-center">
-                          <SliderComponent 
-                            images={kategoriPilihanImages}
-                            currentIndex={currentKategoriIndex}
-                            isTransitioning={isKategoriTransitioning}
-                            prevSlide={prevSlideKategoriPilihan}
-                            nextSlide={nextSlideKategoriPilihan}
-                            slideClassName="w-full flex justify-center items-center flex-shrink-0"
-                            imgClassName="w-full max-w-[135px] max-h-[150px] rounded-lg cursor-pointer"
-                            visibleSlides={3}
-                            buttonClassNameOne="absolute left-[10px] top-1/2 transform -translate-y-1/2 bg-white rounded-full hover:bg-opacity-75 text-black font-bold py-2 px-4"
-                            buttonClassNameTwo="absolute right-[10px] top-1/2 transform -translate-y-1/2 bg-white rounded-full hover:bg-opacity-75 text-black font-bold py-2 px-4"
-                            linkToCategory="/"
-                          />
-                      </div>
-                  </div>
-                </div>
-            </div>
+        
 
             <div className="flex flex-col flex-wrap w-full mt-20 mb-20 mx-auto">
               <div className="flex flex-col justify-center">
-                <p className="text-center text-xl">- Our Discount</p>
-                <h2 className="text-4xl font-sans font-medium text-center mt-2 mb-14"><span className="text-[#194719]">Forland Living</span> Diskon</h2>
+                <p className="text-center text-xl">- Produk Terlaris</p>
+                <h2 className="text-4xl font-sans font-medium text-center mt-2 mb-14"><span className="text-[#194719]">Produk Unggulan</span> Forland Living</h2>
               </div>
-              <div className="flex flex-wrap w-full gap-4 justify-center m-auto">
-                <img className="w-full max-w-[700px] max-h-[300px] object-cover" src={BANNER1} alt="Forland Living Banner" />
-                <img className="w-full max-w-[400px] min-h-[300px] object-cover object-left" src={BANNER2} alt="Forland Living Banner" />
-                <img className="w-full max-w-[400px] min-h-[300px] object-cover object-left" src={BANNER3} alt="Forland Living Banner" />
-                <img className="w-full max-w-[700px] max-h-[300px] object-cover" src={BANNER4} alt="Forland Living Banner" />
+              <div>
+                <ProdukUnggulan />
               </div>
             </div>
 

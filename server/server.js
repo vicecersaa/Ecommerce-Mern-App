@@ -436,6 +436,16 @@ app.get('/order-history', authenticateUser, async (req, res) => {
 });
 
 
+// GET ADMIN 
+
+app.get('/admin-users', async (req, res) => {
+  try {
+      const admins = await userModel.find({ role: 'admin' });
+      res.status(200).json(admins);
+  } catch (err) {
+      res.status(500).json({ message: err.message });
+  }
+});
 
 
 
@@ -614,14 +624,14 @@ app.post('/checkout', authenticateUser, async (req, res) => {
         return res.status(400).json({ error: `Insufficient stock for product ${item.productId}` });
       }
 
-      // Ensure product name length is within limits
+      
       const productName = product.namaProduk.length > 50 ? product.namaProduk.substring(0, 50) : product.namaProduk;
 
       orderItems.push({
         productId: item.productId,
         quantity: item.quantity,
         price: item.price,
-        name: productName
+        name: productName,
       });
 
       totalAmount += item.price * item.quantity;
@@ -631,7 +641,7 @@ app.post('/checkout', authenticateUser, async (req, res) => {
       userId,
       items: orderItems,
       totalAmount,
-      status: 'Berlangsung' // Set status to 'Berlangsung' initially
+      status: 'Berlangsung'
     });
 
     const savedOrder = await order.save();
@@ -645,7 +655,7 @@ app.post('/checkout', authenticateUser, async (req, res) => {
       id: item.productId.toString(),
       price: item.price,
       quantity: item.quantity,
-      name: item.name
+      name: item.name,
     }));
 
     const midtransTransaction = await midtrans.createTransaction({
@@ -743,7 +753,7 @@ app.post('/checkout-direct', async (req, res) => {
         productId, 
         quantity, 
         price, 
-        name: product.namaProduk // Ensure the name field is included here
+        name: product.namaProduk,
       }],
       totalAmount,
     });
@@ -761,7 +771,7 @@ app.post('/checkout-direct', async (req, res) => {
       id: product._id.toString(),
       price: price,
       quantity: quantity,
-      name: product.namaProduk.substring(0, 50) // Truncate name if necessary
+      name: product.namaProduk.substring(0, 50),
     }];
 
     const midtransTransaction = await midtrans.createTransaction({

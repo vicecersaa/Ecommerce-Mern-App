@@ -57,7 +57,7 @@ export default function KeranjangCard() {
             setCartItems(response.data.cart);
             console.log('Removed cart item:', response.data.cart);
     
-            // Force page refresh after removing the item
+            
             window.location.reload();
         } catch (error) {
             console.error('Failed to remove item:', error);
@@ -125,12 +125,12 @@ export default function KeranjangCard() {
                     <div key={item._id} className="flex align-middle border p-4 mb-4 rounded-lg shadow-lg">
                         <div className="flex w-full items-center mb-4">
                                 <img
-                                    className="w-20 h-20 object-cover mr-4"
+                                    className="w-24 h-24 object-cover mr-4"
                                     src={item.productId.gambarProduk ? `${PORT}${item.productId.gambarProduk[0]}` : 'default-image-url'}
                                     alt={item.productId.namaProduk || 'Product Image'}
                                 />
                                 <div className="w-full">
-                                    <h2 className="text-lg font-bold w-full max-w-[500px] mb-3">
+                                    <h2 className="font-semibold w-full max-w-[500px] mb-3">
                                         {item.productId.namaProduk}
                                         {item.selectedVariant && item.selectedVariant.namaVarian 
                                             ? ` - ${item.selectedVariant.namaVarian}` 
@@ -139,7 +139,7 @@ export default function KeranjangCard() {
                                             ? ` - ${item.selectedSize.ukuran}` 
                                             : ' - Tidak ada Ukuran'}
                                     </h2>
-                                    <p className="text-sm text-gray-600">{item.productId.categoryProduk ? item.productId.categoryProduk.join(", ") : 'No Categories'}</p>
+                                    <p className="text-sm text-gray-600 mb-3">{item.productId.categoryProduk ? item.productId.categoryProduk.join(", ") : 'No Categories'}</p>
                                     <p className="text-lg font-bold text-green-600">Rp {item.price}</p>
                                 </div>
                             </div>

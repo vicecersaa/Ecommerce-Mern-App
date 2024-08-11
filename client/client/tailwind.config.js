@@ -6,7 +6,7 @@ module.exports = {
   theme: {
     extend: {
         fontFamily: {
-          sans: ['Roboto', 'sans-serif']
+          sans: ['Lato', 'sans-serif']
         },
         textOverflow: {
           ellipsis: 'ellipsis', 

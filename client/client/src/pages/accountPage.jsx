@@ -11,6 +11,7 @@ import KeranjangCard from '../components/KeranjangCard';
 import OrderHistory from '../components/OrderHistory';
 import AccountSettings from '../pages/AccountSettings';
 import { ProductContext} from '../ProductContext';
+import AdminList from "../components/AdminList";
 
 
 
@@ -36,8 +37,21 @@ export default function AccountPage() {
      const [loading, setLoading] = useState(true);
      const [error, setError] = useState(null);
     const navigate = useNavigate();
+    const [searchTerm, setSearchTerm] = useState('');
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 10;
+
 
     const { products, setProducts } = useContext(ProductContext);
+
+    const filteredProducts = products.filter(product =>
+        product.namaProduk.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
+    const indexOfLastProduct = currentPage * itemsPerPage;
+    const indexOfFirstProduct = indexOfLastProduct - itemsPerPage;
+    const visibleProducts = filteredProducts.slice(indexOfFirstProduct, indexOfLastProduct);
+    const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
 
     const handleEdit = (id) => {
         navigate(`/account/product-edit/${id}`);
@@ -224,6 +238,11 @@ export default function AccountPage() {
         return <div>Loading...</div>;
     }
 
+
+    const formatPrice = (num) => {
+        if (!num) return '';
+        return `Rp ${parseFloat(num).toLocaleString('id-ID', { minimumFractionDigits: 0 })}`;
+    };
     
   
     
@@ -531,43 +550,96 @@ export default function AccountPage() {
                     )}
                 </div>
                     
-                <div className="flex flex-col align-middle justify-center border-x-2 border-b-2 p-3">
+                <div className="flex flex-col h-full align-middle justify-center border-x-2 border-b-2">
                     {user && user.role === 'admin' && produkSaya && (
-                        <div className="mt-4 w-full flex flex-col p-5 h-screen  min-h-[1500px]">
-                            <h2 className="text-4xl font-sans font-bold mb-10">Pengaturan Produk</h2>
-                            {products.map((product) => (
-                                <div key={product._id} className="flex border align-middle vp-4 mb-4 rounded-lg shadow-lg gap-5 p-[20px]">
-                                    <img className="w-full max-w-[100px] h-full min-h-[80px] rounded-md" src={`http://localhost:5000${product.gambarProduk[0]}`} alt="" />
-                                    
-                                    <div className="flex flex-col align-middle justify-center w-full">
-                                        <h2 className="text-lg font-bold">{product.namaProduk}</h2>
-                                        <p className="text-sm text-gray-600">Rp.{product.hargaProduk}</p>
-                                    </div>
-                                    <div className="flex gap-5 align-middle max-h-[100%] m-auto">
-                                        <button 
-                                            className="rounded-md border-slate-500 bg-slate-500 h-10 px-8 text-white font-semibold"
-                                            onClick={() => handleEdit(product._id)}
-                                        >
-                                            Edit
-                                        </button>
-                                        <button
-                                            className="rounded-md border-[#EF4444] bg-[#EF4444] h-10 px-8 text-white font-semibold"
-                                            onClick={() => handleDelete(product._id)}
-                                        >
-                                            Delete
-                                        </button>
-                                    </div>
+                        <div className="mt-4 w-full flex flex-col p-5 h-full">
+                            <div className="flex items-center gap-2 mb-5 pt-5 pb-5">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-5">
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007ZM8.625 10.5a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm7.5 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
+                                </svg>
+                                <h2 className="text-xl font-sans font-medium">Pengaturan Produk</h2>
+                            </div>
+                            <div>
+                                <div className="flex items-center relative">
+                                    <input 
+                                        type="text" 
+                                        placeholder="Cari Nama Produk..." 
+                                        value={searchTerm} 
+                                        onChange={(e) => setSearchTerm(e.target.value)} 
+                                        className="w-full py-2 px-3 mb-3 border-[1px] border-gray-500 rounded-md outline-none font-sans"
+                                    />
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-5 absolute top-3 right-2">
+                                        <path strokeLinecap="round" strokeLinejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+                                    </svg>
                                 </div>
-                            ))}
+
+                                {visibleProducts.map((product) => (
+                                    <div key={product._id} className="flex border-gray-300 align-middle vp-4 mb-4 rounded-lg shadow-xl gap-5 p-[20px]">
+                                        <img className="w-full max-w-[100px] h-full min-h-[80px] rounded-md" src={`http://localhost:5000${product.gambarProduk[0]}`} alt={product.namaProduk} />
+                                        
+                                        <div className="flex flex-col align-middle justify-center w-full">
+                                            <h2 className="text-lg font-medium font-sans mb-1">{product.namaProduk}</h2>
+                                            <p className="text-sm text-gray-600 font-sans">{formatPrice(product.hargaProduk)}</p>
+                                        </div>
+                                        <div className="w-full mx-auto justify-end flex gap-5 align-middle max-h-[100%] m-auto">
+                                            <button 
+                                                className="rounded-md border-[#194719] bg-[#194719] h-10 px-8 text-white font-sans"
+                                                onClick={() => handleEdit(product._id)}
+                                            >
+                                                Edit Produk
+                                            </button>
+                                            <button
+                                                className="rounded-md border-[#ff3a3a] bg-[#ff3a3a] h-10 px-8 text-white font-sans"
+                                                onClick={() => handleDelete(product._id)}
+                                            >
+                                                Hapus Produk
+                                            </button>
+                                        </div>
+                                    </div>
+                                ))}
+
+                                {/* Pagination Controls */}
+                                <div className="flex mt-8">
+                                    <button 
+                                        className={`px-3 py-1 border rounded-md font-sans ${currentPage === 1 ? 'bg-gray-300' : 'bg-[#194719] text-white'}`} 
+                                        disabled={currentPage === 1}
+                                        onClick={() => setCurrentPage(currentPage - 1)}
+                                    >
+                                        Sebelumnya
+                                    </button>
+                                    <span className="px-3 py-1">
+                                        {currentPage} of {totalPages}
+                                    </span>
+                                    <button 
+                                        className={`px-3 py-1 border rounded-md font-sans ${currentPage === totalPages ? 'bg-gray-300' : 'bg-[#194719] text-white'}`} 
+                                        disabled={currentPage === totalPages}
+                                        onClick={() => setCurrentPage(currentPage + 1)}
+                                    >
+                                        Selanjutnya
+                                    </button>
+                                </div>
+                            </div>
                         </div>
                     )}
                 </div>
 
                 
                     {user && user.role === 'admin' && akun && (
-                        <div className="flex border-x-2 border-b-2 p-3">
+                        <div className="flex flex-col border-x-2 border-b-2 p-3">
+                            <div className='flex items-center mb-5 pl-5 pt-5'>
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-5 mr-2">
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.325.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 0 1 1.37.49l1.296 2.247a1.125 1.125 0 0 1-.26 1.431l-1.003.827c-.293.241-.438.613-.43.992a7.723 7.723 0 0 1 0 .255c-.008.378.137.75.43.991l1.004.827c.424.35.534.955.26 1.43l-1.298 2.247a1.125 1.125 0 0 1-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.47 6.47 0 0 1-.22.128c-.331.183-.581.495-.644.869l-.213 1.281c-.09.543-.56.94-1.11.94h-2.594c-.55 0-1.019-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 0 1-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 0 1-1.369-.49l-1.297-2.247a1.125 1.125 0 0 1 .26-1.431l1.004-.827c.292-.24.437-.613.43-.991a6.932 6.932 0 0 1 0-.255c.007-.38-.138-.751-.43-.992l-1.004-.827a1.125 1.125 0 0 1-.26-1.43l1.297-2.247a1.125 1.125 0 0 1 1.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.086.22-.128.332-.183.582-.495.644-.869l.214-1.28Z" />
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                                </svg>
+                                <h2 className='text-xl font-sans font-medium'>Admin Settings</h2>
+                            </div>
+                            <div className="p-5">
+                                <div className="flex flex-col">
+                                    <AdminList />
+                                </div>
+                            </div>
                             <div className="mt-4 w-full flex flex-col p-5 h-screen  min-h-[1500px]">
-                            <AccountSettings />
+                                <AccountSettings />
                             </div>
                         </div>
                     )}

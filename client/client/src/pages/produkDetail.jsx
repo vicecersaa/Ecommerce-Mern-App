@@ -6,10 +6,11 @@ import Footer from "../components/Footer";
 import STARS from "../assets/img/star.png";
 import { UserContext } from '../UserContext';
 import axios from 'axios';
+import SemuaProduk from "../components/SemuaProduk";
 
 const formatPrice = (num) => {
     if (!num) return '';
-    return `Rp${parseFloat(num).toLocaleString('id-ID', { minimumFractionDigits: 0 })}`;
+    return `Rp ${parseFloat(num).toLocaleString('id-ID', { minimumFractionDigits: 0 })}`;
 };
 
 export default function ProdukDetail() {
@@ -32,12 +33,13 @@ export default function ProdukDetail() {
 
     const PORT = 'http://localhost:5000';
 
+
     useEffect(() => {
         if (product && product.variants && product.variants.length > 0) {
             const firstVariant = product.variants[0];
             const firstSize = firstVariant.ukuranVarian && firstVariant.ukuranVarian.length > 0 
                 ? firstVariant.ukuranVarian[0]  
-                : { ukuran: '', harga: 0, _id: '' }; // Set _id kosong jika tidak ada ukuran
+                : { ukuran: '', harga: 0, _id: '' }; 
     
             setSelectedVariant({
                 namaVarian: firstVariant.namaVarian,
@@ -100,7 +102,13 @@ export default function ProdukDetail() {
             alert('Please log in to add items to the cart');
             return;
         }
-
+    
+        // Tambahkan validasi untuk memastikan ukuran dipilih
+        if (selectedVariant.ukuranVarian.length > 0 && !selectedSize.ukuran) {
+            alert('Please select a size first');
+            return;
+        }
+    
         try {
             const response = await axios.post(`${PORT}/add-to-cart`, {
                 userId: user._id,
@@ -110,11 +118,11 @@ export default function ProdukDetail() {
                 selectedVariant,
                 selectedSize
             });
-
+    
             if (response.status === 200) {
                 alert('Product added to cart');
-                console.log("Select Variant:", selectedVariant)
-                console.log("Select Size:", selectedSize)
+                console.log("Select Variant:", selectedVariant);
+                console.log("Select Size:", selectedSize);
             }
         } catch (error) {
             alert('Failed to add to cart');
@@ -127,49 +135,62 @@ export default function ProdukDetail() {
             alert('Please log in to proceed');
             return;
         }
-
+    
         if (product.variants.length > 0 && !selectedVariant) {
             alert('Please select a variant first');
             return;
         }
-
+    
         if (selectedVariant && selectedVariant.ukuranVarian.length > 0 && !selectedSize) {
             alert('Please select a size first');
             return;
         }
 
+        
+        if (selectedVariant.ukuranVarian.length > 0 && !selectedSize.ukuran) {
+            alert('Please select a size first');
+            return;
+        }
+    
         if (quantity <= 0) {
             alert('Quantity must be greater than zero');
             return;
         }
-
+    
         try {
+            const productName = `${product.namaProduk}${selectedVariant ? ` - ${selectedVariant.namaVarian}` : ''}${selectedSize ? ` - ${selectedSize.ukuran}` : ''}`;
+    
             const response = await axios.post(`${PORT}/checkout-direct`, {
                 userId: user._id,
                 productId: product._id,
                 quantity,
-                price
+                price,
+                productName, 
             });
-
+    
             if (response.status === 201) {
                 const { paymentToken } = response.data;
-
+    
                 if (!paymentToken) {
                     throw new Error('Failed to retrieve payment token');
                 }
-
+    
                 window.snap.pay(paymentToken, {
                     onSuccess: function(result) {
                         console.log('Payment success:', result);
+                       
                     },
                     onPending: function(result) {
                         console.log('Payment pending:', result);
+                        alert('Payment is pending. Please complete the payment.');
                     },
                     onError: function(result) {
                         console.error('Payment error:', result);
+                        alert('Payment failed. Please try again.');
                     },
                     onClose: function() {
                         console.log('Payment popup closed');
+                        alert('Payment popup closed. Please complete the payment.');
                     }
                 });
             } else {
@@ -180,6 +201,7 @@ export default function ProdukDetail() {
             alert('Failed to place the order. Please try again.');
         }
     };
+    
 
     useEffect(() => {
         if (!loading && products) {
@@ -206,7 +228,7 @@ export default function ProdukDetail() {
         <div>
             <Header />
 
-            <div className="container mx-auto w-full max-w-[1400px] mt-10 flex justify-center gap-5">
+            <div className="container mx-auto w-full max-w-[1100px] mt-10 flex justify-evenly gap-5">
                 <div className="w-full max-w-[400px]">
                     <img className="w-full max-w-[400px] bg-[#DEDEDE] p-[20px] rounded-lg" src={`http://localhost:5000${mainImage}`} alt={product.namaProduk} />
                     <div className="flex mt-2 gap-5">
@@ -223,32 +245,47 @@ export default function ProdukDetail() {
                 </div>
 
                 <div className="w-full max-w-[600px]">
-                    <h1 className="font-bold text-[20px]">{product.namaProduk}</h1>
+                    <h1 className="font-medium font-sans text-2xl">
+                        {product.namaProduk}
+                        {selectedVariant && selectedVariant.namaVarian 
+                            ? ` - ${selectedVariant.namaVarian}` 
+                            : ' - Tidak ada Varian'}
+                        {selectedSize && selectedSize.ukuran 
+                            ? ` - ${selectedSize.ukuran}` 
+                            : ' - Tidak ada Ukuran'}
+                    </h1>
 
                     <div className="flex items-center gap-1">
                         <img className="w-full max-w-[13px]" src={STARS} alt="Rating stars" />
                         <span>{product.ratings}</span>
                     </div>
 
-                    <p className="font-bold text-[30px] mb-5 mt-3">{formatPrice(price)}</p>
-
+                    <p className="text-[#194719] font-sans font-medium text-2xl mb-5 mt-3">{formatPrice(price)}</p>
+                    
                     <div>
+                    {product.variants && product.variants.length > 0 ? (
+                            <h2 className="text-base font-sans mb-2">Pilih Varian : </h2>
+                        ) : (
+                            <div></div>   
+                        )}
+
                         {product.variants && product.variants.length > 0 ? (
                             uniqueVariantNames.map((variantName) => (       
-                                <button
-                                    key={variantName}
-                                    onClick={() => handleVariantClick(product.variants.find(v => v.namaVarian === variantName))}
-                                    style={{
-                                        backgroundColor: selectedVariant && selectedVariant.namaVarian === variantName ? '#194719' : '#DEDEDE',
-                                        color: selectedVariant && selectedVariant.namaVarian === variantName ? 'white' : 'black',
-                                        padding: '8px 16px',
-                                        margin: '4px',
-                                        borderRadius: '4px',
-                                        border: 'none',
-                                    }}
-                                >
-                                    {variantName}
-                                </button>
+                                    <button
+                                        className="rounded-full"
+                                        key={variantName}
+                                        onClick={() => handleVariantClick(product.variants.find(v => v.namaVarian === variantName))}
+                                        style={{
+                                            backgroundColor: selectedVariant && selectedVariant.namaVarian === variantName ? '#194719' : '#f5f5f5',
+                                            color: selectedVariant && selectedVariant.namaVarian === variantName ? 'white' : 'black',
+                                            padding: '8px 18px',
+                                            margin: '4px',
+                                            border: 'none',
+                                        }}
+                                    >
+                                        {variantName}
+                                    </button>
+
                             ))
                         ) : (
                             <div></div>   
@@ -256,18 +293,24 @@ export default function ProdukDetail() {
                     </div>
 
                     <div className="mt-4 mb-4">
-                        {selectedVariant && <h4 className="text-xl font-bold mb-3">Pilih Ukuran:</h4>}
+
+                    {selectedVariant && selectedVariant.ukuranVarian && selectedVariant.ukuranVarian.length > 0 ? (
+                            <h2 className="text-base font-sans mb-2 mt-5">Pilih Tipe/Ukuran : </h2>
+                        ) : (
+                            <p></p>
+                        )}
+                        
                         {selectedVariant && selectedVariant.ukuranVarian && selectedVariant.ukuranVarian.length > 0 ? (
                             selectedVariant.ukuranVarian.map((size) => (
                                 <button
+                                    className="rounded-full"
                                     key={size._id}
                                     onClick={() => handleSizeClick(size)}
                                     style={{
-                                        backgroundColor: selectedSize._id === size._id ? '#194719' : '#DEDEDE',
+                                        backgroundColor: selectedSize._id === size._id ? '#194719' : '#f5f5f5',
                                         color: selectedSize._id === size._id ? 'white' : 'black',
-                                        padding: '8px 16px',
+                                        padding: '8px 18px',
                                         margin: '4px',
-                                        borderRadius: '4px',
                                         border: 'none',
                                     }}
                                 >
@@ -279,23 +322,23 @@ export default function ProdukDetail() {
                         )}
                     </div>
 
-                    <p className="text-slate-500 font-medium">
-                        Kondisi : <span className="text-black font-normal">{product.kondisi}</span>
+                    <p className="text-slate-500 font-medium font-sans">
+                        Kondisi : <span className="text-black font-normal font-sans">{product.kondisi}</span>
                     </p>
 
-                    <p className="text-slate-500 font-medium">
-                        Minimal Pesanan : <span className=" text-black font-normal">1 Buah</span>
+                    <p className="text-slate-500 font-medium font-sans">
+                        Minimal Pesanan : <span className=" text-black font-normal font-sans">1 Buah</span>
                     </p>
 
-                    <p className="mb-3 text-slate-500 font-medium">
-                        Toko : <span className="text-[#194719] font-semibold">{product.namaToko}</span>
+                    <p className="mb-3 text-slate-500 font-medium font-sans">
+                        Toko : <span className="text-[#194719] font-semibold font-sans">{product.namaToko}</span>
                     </p>
 
-                    <p className="mb-5 text-slate-500">
+                    <p className="mb-5 text-slate-500 font-sans">
                         {getDisplayText(product.deskripsi)}
                         {product.deskripsi.length > 243 && (
-                            <button className="text-blue-500 ml-2" onClick={toggleExpansion}>
-                                {isExpanded ? 'Show Less' : 'Show More'}
+                            <button className="text-[#194719] font-sans" onClick={toggleExpansion}>
+                                {isExpanded ? '..Lihat Lebih Sedikit' : '..Lihat Selengkapnya'}
                             </button>
                         )}
                     </p>
@@ -324,20 +367,20 @@ export default function ProdukDetail() {
                         </div>
                         <div className="flex items-center justify-center gap-3">
                                 <p className="text-gray-500 font-sans">Subtotal</p>
-                                <p className="text-[#212121] font-bold font-sanstext-[18px]">{formatPrice(price * quantity)}</p>
+                                <p className="text-[#212121] font-sans text-[18px]">{formatPrice(price * quantity)}</p>
                         </div>
                         
                     </div>
                   
                         <button
-                            className="w-[100%] max-w-[120px] h-[40px] bg-[#194719] text-white rounded-md mr-3 text-sm"
+                            className="w-[100%] max-w-[130px] h-[50px] bg-[#194719] text-white rounded-full mr-3 text-sm font-normal"
                             onClick={handleAddToCart}
                         >
                             + Keranjang
                         </button>
 
                         <button
-                            className="w-full max-w-[120px] h-[40px] bg-[#194719] text-white rounded-md mt-4 text-sm"
+                            className="w-full max-w-[130px] h-[50px] bg-yellow-500 text-black rounded-full mt-4 text-sm"
                             onClick={handleBuyNow}
                         >
                             Beli Sekarang
@@ -345,6 +388,8 @@ export default function ProdukDetail() {
 
                 </div>
             </div>
+
+            
 
             <Footer />
         </div>

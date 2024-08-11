@@ -30,7 +30,7 @@ const ProductEditForm = ({ productId }) => {
                         deskripsi: data.deskripsi || '',
                         stockProduk: data.stockProduk || '',
                         isActive: data.isActive !== undefined ? data.isActive : true,
-                        gambarProduk: data.gambarProduk || [] // Ensure default empty array
+                        gambarProduk: data.gambarProduk || []
                     });
 
                 } catch (error) {
