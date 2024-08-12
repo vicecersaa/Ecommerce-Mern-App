@@ -14,6 +14,7 @@ import { ProductContext} from '../ProductContext';
 import AdminList from "../components/AdminList";
 import LOGO from '../assets/img/LOGO1.jpg';
 import { Link } from "react-router-dom";
+import AdminOrderHistory from "../components/AdminOrderHistory";
 
 
 
@@ -31,6 +32,8 @@ export default function AccountPage() {
     const [tambahProduk, setTambahProduk] = useState(false);
     // set akun state
     const [akun, setAkun] = useState(false);
+    // transak pembelian state
+    const [transaksi, setTransaksi] = useState(false);
     // ubah produk state
     const [produkSaya, setProdukSaya] = useState(false);
      const [editingField, setEditingField] = useState(null);
@@ -122,6 +125,7 @@ export default function AccountPage() {
         setTambahProduk(false);
         setProdukSaya(false);
         setAkun(false);
+        setTransaksi(false)
         setBio(true);
     }
 
@@ -132,6 +136,7 @@ export default function AccountPage() {
         setTambahProduk(false);
         setProdukSaya(false);
         setAkun(false);
+        setTransaksi(false)
         setRiwayat(true);
     }
 
@@ -142,6 +147,7 @@ export default function AccountPage() {
         setTambahProduk(false);
         setProdukSaya(false);
         setAkun(false);
+        setTransaksi(false)
         setKeranjang(true);
     }
 
@@ -152,6 +158,7 @@ export default function AccountPage() {
         setKeranjang(false);
         setProdukSaya(false);
         setAkun(false);
+        setTransaksi(false)
         setTambahProduk(true);
     }
 
@@ -161,6 +168,7 @@ export default function AccountPage() {
         setKeranjang(false);
         setTambahProduk(false);
         setAkun(false);
+        setTransaksi(false)
         setProdukSaya(true);
     }
 
@@ -170,7 +178,18 @@ export default function AccountPage() {
         setKeranjang(false);
         setTambahProduk(false);
         setProdukSaya(false);
+        setTransaksi(false)
         setAkun(true);
+    }
+
+    function handleTransaksi() {
+        setBio(false)
+        setRiwayat(false);
+        setKeranjang(false);
+        setTambahProduk(false);
+        setProdukSaya(false);
+        setAkun(false);
+        setTransaksi(true);
     }
 
 
@@ -263,31 +282,36 @@ export default function AccountPage() {
                 
                     <div className="w-full flex items-center mt-3 border-t-2 border-x-2 border-b-2 rounded-t-xl">
 
-                        <button onClick={handleBio} className={`py-[10px] px-[24px] font-bold ${bio ? 'text-[#03AC0E] border-b-2 border-[#03AC0E]' : 'text-[#6D7588]'}`}>
+                        <button onClick={handleBio} className={`py-[10px] px-[24px] font-bold ${bio ? 'text-[#194719] border-b-2 border-[#194719]' : 'text-[#6D7588]'}`}>
                             <p>Biodata Diri</p>
                         </button>
 
-                        <button onClick={handleRiwayat} className={`py-[10px] px-[24px] font-bold ${riwayat ? 'text-[#03AC0E] border-b-2 border-[#03AC0E]' : 'text-[#6D7588]'}`}>
+                        <button onClick={handleRiwayat} className={`py-[10px] px-[24px] font-bold ${riwayat ? 'text-[#194719] border-b-2 border-[#194719]' : 'text-[#6D7588]'}`}>
                             <p>Riwayat Pesanan</p>
                         </button>
 
-                        <button onClick={handleKeranjang} className={`py-[10px] px-[24px] font-bold ${keranjang ? 'text-[#03AC0E] border-b-2 border-[#03AC0E]' : 'text-[#6D7588]'}`}>
+                        <button onClick={handleKeranjang} className={`py-[10px] px-[24px] font-bold ${keranjang ? 'text-[#194719] border-b-2 border-[#194719]' : 'text-[#6D7588]'}`}>
                             <p>Keranjang</p>
                         </button>
 
                         {user && user.role === 'admin' && (
-                            <button onClick={handleTambahProduk} className={`py-[10px] px-[24px] font-bold ${tambahProduk ? 'text-[#03AC0E] border-b-2 border-[#03AC0E]' : 'text-[#6D7588]'}`}>
+                            <button onClick={handleTambahProduk} className={`py-[10px] px-[24px] font-bold ${tambahProduk ? 'text-[#194719] border-b-2 border-[#194719]' : 'text-[#6D7588]'}`}>
                                 <p>Tambah Produk</p>
                             </button>
                         )}
                         {user && user.role === 'admin' && (
-                            <button onClick={handleUbahProduk} className={`py-[10px] px-[24px] font-bold ${produkSaya ? 'text-[#03AC0E] border-b-2 border-[#03AC0E]' : 'text-[#6D7588]'}`}>
+                            <button onClick={handleUbahProduk} className={`py-[10px] px-[24px] font-bold ${produkSaya ? 'text-[#194719] border-b-2 border-[#194719]' : 'text-[#6D7588]'}`}>
                             <p>Produk Saya</p>
                         </button>
                         )}
                         {user && user.role === 'admin' && (
-                            <button onClick={handleAkun} className={`py-[10px] px-[24px] font-bold ${akun ? 'text-[#03AC0E] border-b-2 border-[#03AC0E]' : 'text-[#6D7588]'}`}>
+                            <button onClick={handleAkun} className={`py-[10px] px-[24px] font-bold ${akun ? 'text-[#194719] border-b-2 border-[#194719]' : 'text-[#6D7588]'}`}>
                             <p>Pengaturan Akun</p>
+                        </button>
+                        )}
+                        {user && user.role === 'admin' && (
+                            <button onClick={handleTransaksi} className={`py-[10px] px-[24px] font-bold ${transaksi ? 'text-[#194719] border-b-2 border-[#194719]' : 'text-[#6D7588]'}`}>
+                            <p>Semua Transaksi</p>
                         </button>
                         )}
 
@@ -661,7 +685,11 @@ export default function AccountPage() {
                             </div>
                         </div>
                     )}
-                    
+
+
+                    {user && user.role === 'admin' && transaksi && (
+                        <AdminOrderHistory />
+                    )}
 
 
             </div>

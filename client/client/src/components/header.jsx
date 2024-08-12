@@ -49,21 +49,21 @@ export default function Header() {
 
     return (
         <div className="w-full">
-            <div className="flex items-center align-middle bg-gray-200 w-full py-1 px-4 justify-between">
+            <div className="flex items-center bg-[#194719] w-full py-3 px-4 justify-between">
                 <div className="flex items-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6 mr-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6 mr-2 text-white">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 18.75a60.07 60.07 0 0 1 15.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 0 1 3 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-.375m1.5-1.5H21a.75.75 0 0 0-.75.75v.75m0 0H3.75m0 0h-.375a1.125 1.125 0 0 1-1.125-1.125V15m1.5 1.5v-.75A.75.75 0 0 0 3 15h-.75M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm3 0h.008v.008H18V10.5Zm-12 0h.008v.008H6V10.5Z" />
                     </svg>
 
 
-                    <p className="text-base font-normal font-sans">Diskon Besar!</p>
+                    <p className="text-base font-sans text-white">Daftar sekarang dan dapatkan 25% diskon dalam pembelian pertama. <Link className=" text-yellow-400 font-sans underline" to={'/register'}>Daftar Sekarang</Link></p>
                 </div>
-                <div className="text-sm">
-                    <a className="mr-6 hover:text-[#03AC0E]" href="">Tentang Davidpedia</a>
-                    <a className="mr-6 hover:text-[#03AC0E]" href="">Mitra Davidpedia</a>
-                    <a className="mr-6 hover:text-[#03AC0E]" href="">Mulai Berjualan</a>
-                    <a className="mr-6 hover:text-[#03AC0E]" href="">Promo</a>
-                    <a className="mr-6 hover:text-[#03AC0E]" href="">Davidpedia Care</a>
+                <div className="text-sm text-white font-sans">
+                    <a className="mr-6 hover:text-yellow-400 font-sans" href="">Tentang Forland Living</a>
+                    <a className="mr-6 hover:text-yellow-400 font-sans" href="">Mitra Forland Living</a>
+                    <a className="mr-6 hover:text-yellow-400 font-sans" href="">Hubungi Kami</a>
+                    <a className="mr-6 hover:text-yellow-400 font-sans" href="">Promo</a>
+                    <a className="mr-6 hover:text-yellow-400 font-sans" href="">Forland Living Care</a>
                 </div>
             </div>
             <div className="flex items-center align-middle py-2 px-4 w-full gap-5 h-30 border-gray-200 border-b-2">
@@ -122,9 +122,9 @@ export default function Header() {
                 </div>
 
                 <div className="mr-5 ml-5 mt-3">
-                    <Link to={"/account"}>
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-7">
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007ZM8.625 10.5a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm7.5 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
+                    <Link to={`/account`}>
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 0 0-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 0 0-16.536-1.84M7.5 14.25 5.106 5.272M6 20.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Zm12.75 0a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z" />
                         </svg>
                     </Link>
                 </div>

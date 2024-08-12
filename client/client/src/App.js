@@ -16,6 +16,7 @@ import {useParams} from 'react-router-dom';
 import ForgotPassword from './components/ForgotPassword.jsx';
 import ResetPassword from './components/ResetPassword.jsx';
 import VerifyEmail from './components/VerifyEmail.jsx';
+import KeranjangCard from './components/KeranjangCard.jsx';
 
 axios.defaults.baseUrl = 'http://localhost:5000'
 axios.defaults.withCredentials = true;

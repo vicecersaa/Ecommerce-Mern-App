@@ -29,7 +29,7 @@ export default function AdminList() {
             <h2 className='text-lg font-base mb-7'>Admin Accounts : </h2>
             <div className='flex flex-wrap gap-5'>
                 {admins.map(admin => (
-                    <div className="rounded-md border-[1px] border-gray-300 shadow-xl p-3" key={admin._id}>
+                    <div className="rounded-md border-[1px] border-gray-300 shadow-md p-3" key={admin._id}>
                         <p className='font-sans'>Username : <span className='font-semibold font-sans'>{admin.name}</span></p>
                         <p className='font-sans'>Email : <span className='font-semibold font-sans'>{admin.email}</span></p>
                         <p className='font-sans'>Role : <span className='font-semibold font-sans'>{admin.role}</span></p>

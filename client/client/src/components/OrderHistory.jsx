@@ -12,7 +12,7 @@ export default function OrderHistory() {
     const [orders, setOrders] = useState([]);
     const [error, setError] = useState(null);
 
-    // FETCH ORDER HISTORY
+    
     const fetchOrderHistory = async () => {
         try {
             const response = await axios.get(`${PORT}/order-history`, {
@@ -20,7 +20,7 @@ export default function OrderHistory() {
             });
 
             console.log('Order history response:', response.data);
-            // Filter orders to include only those with status 'Berhasil'
+            
             const successfulOrders = response.data.filter(order => order.status === 'Berhasil');
             setOrders(successfulOrders);
         } catch (error) {
@@ -32,9 +32,9 @@ export default function OrderHistory() {
     
     useEffect(() => {
         if (user) {
-            fetchOrderHistory(); // Initial fetch
+            fetchOrderHistory(); 
             const intervalId = setInterval(fetchOrderHistory, 60000); 
-            return () => clearInterval(intervalId); // Clean up the interval on component unmount
+            return () => clearInterval(intervalId); 
         }
     }, [user]);
 

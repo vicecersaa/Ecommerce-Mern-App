@@ -435,6 +435,32 @@ app.get('/order-history', authenticateUser, async (req, res) => {
   }
 });
 
+app.get('/get-orders', authenticateUser, authenticateAdmin, async (req, res) => {
+  const { status } = req.query; 
+
+  try {
+    // Query orders based on the status
+    const query = status ? { status } : {}; 
+
+    // Find orders with populated fields
+    const orders = await orderModel.find(query)
+      .populate({
+        path: 'userId',
+        select: 'username fullname phone' // Adjust fields based on User schema
+      })
+      .populate({
+        path: 'items.productId',
+        select: 'name price' // Adjust fields based on Product schema
+      });
+
+    res.status(200).json(orders);
+  } catch (error) {
+    console.error('Failed to fetch orders:', error);
+    res.status(500).json({ error: 'Failed to fetch orders', details: error.message });
+  }
+});
+
+
 
 // GET ADMIN 
 
@@ -632,6 +658,8 @@ app.post('/checkout', authenticateUser, async (req, res) => {
         quantity: item.quantity,
         price: item.price,
         name: productName,
+        selectedVariant: item.selectedVariant,
+        selectedSize: item.selectedSize
       });
 
       totalAmount += item.price * item.quantity;
