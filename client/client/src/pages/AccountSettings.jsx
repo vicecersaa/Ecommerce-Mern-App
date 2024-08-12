@@ -18,7 +18,7 @@ const AccountSettings = () => {
     };
 
     return (
-        <div className="admin-section">
+        <div className="p-[20px] border-[1px] border-gray-300 rounded-lg z-10 shadow-xl">
             <h3 className='text-lg font-base mb-7'>Create New Admin :</h3>
             <form onSubmit={handleAdminRegister}>
                 <div className='flex align-middle mt-5'>

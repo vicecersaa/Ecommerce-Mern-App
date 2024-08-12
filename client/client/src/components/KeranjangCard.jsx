@@ -15,6 +15,11 @@ export default function KeranjangCard() {
         }
     }, [user]);
 
+    const formatPrice = (num) => {
+        if (!num) return '';
+        return `Rp ${parseFloat(num).toLocaleString('id-ID', { minimumFractionDigits: 0 })}`;
+    };
+
     const fetchCartItems = async () => {
         try {
             const response = await axios.get(`${PORT}/get-cart`, {
@@ -64,9 +69,10 @@ export default function KeranjangCard() {
         }
     };
 
-    // Calculate total price
+    // Calculate total price and format it
     const calculateTotalPrice = () => {
-        return cartItems.reduce((total, item) => total + (item.price * item.quantity), 0);
+        const total = cartItems.reduce((total, item) => total + (item.price * item.quantity), 0);
+        return formatPrice(total);
     };
 
     // Checkout
@@ -111,26 +117,33 @@ export default function KeranjangCard() {
 
     return (
         <div className="container mx-auto p-4">
-            <h2 className="text-4xl font-sans font-bold mb-4">Keranjang Belanja</h2>
+            <div className="flex items-center gap-2 mb-10">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-5">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 0 0-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 0 0-16.536-1.84M7.5 14.25 5.106 5.272M6 20.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Zm12.75 0a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z" />
+                </svg>
+
+                <h2 className="text-xl font-sans font-medium">Keranjang Belanja</h2>
+            </div>
+            
             {error && <p className="text-red-500">{error}</p>}
             {cartItems.length === 0 ? (
-                <p>Your cart is empty</p>
+                <div></div>
             ) : (
                 <div>
                     {cartItems.length === 0 ? (
-    <p>Your cart is empty</p>
-) : (
-    <div>
+                <div></div>
+            ) : (
+        <div>
             {cartItems.map(item => (
-                    <div key={item._id} className="flex align-middle border p-4 mb-4 rounded-lg shadow-lg">
+                    <div key={item._id} className="flex align-middle border-gray-500 p-4 mb-4 rounded-lg shadow-xl">
                         <div className="flex w-full items-center mb-4">
                                 <img
-                                    className="w-24 h-24 object-cover mr-4"
+                                    className="w-20 h-20 p-1 object-cover mr-4 bg-[#DEDEDE] rounded-lg"
                                     src={item.productId.gambarProduk ? `${PORT}${item.productId.gambarProduk[0]}` : 'default-image-url'}
                                     alt={item.productId.namaProduk || 'Product Image'}
                                 />
                                 <div className="w-full">
-                                    <h2 className="font-semibold w-full max-w-[500px] mb-3">
+                                    <h2 className="font-sans font-medium w-full max-w-[500px] mb-1">
                                         {item.productId.namaProduk}
                                         {item.selectedVariant && item.selectedVariant.namaVarian 
                                             ? ` - ${item.selectedVariant.namaVarian}` 
@@ -139,17 +152,17 @@ export default function KeranjangCard() {
                                             ? ` - ${item.selectedSize.ukuran}` 
                                             : ' - Tidak ada Ukuran'}
                                     </h2>
-                                    <p className="text-sm text-gray-600 mb-3">{item.productId.categoryProduk ? item.productId.categoryProduk.join(", ") : 'No Categories'}</p>
-                                    <p className="text-lg font-bold text-green-600">Rp {item.price}</p>
+                                    <p className=" text-gray-600 font-sans text-sm mb-1">{item.productId.categoryProduk ? item.productId.categoryProduk.join(", ") : 'No Categories'}</p>
+                                    <p className="text-lg font-semibold text-[#194719] mt-2">{formatPrice(item.price)}</p>
                                 </div>
                             </div>
                             <div className="flex flex-col items-center justify-center">
-                                <div className="flex justify-center align-middle mb-3">
-                                    <button className="bg-slate-500 text-white px-3 py-1 rounded mr-2" onClick={() => updateQuantity(item.productId._id, item.quantity - 1)}>-</button>
-                                    <p className="text-lg">{item.quantity}</p>
-                                    <button className="bg-slate-500 text-white px-3 py-1 rounded ml-2" onClick={() => updateQuantity(item.productId._id, item.quantity + 1)}>+</button>
+                                <div className="flex justify-center align-middle items-center mb-3">
+                                    <button className="bg-slate-100 border-slate-300 border-[1px] text-black font-semibold px-3 py-1 rounded mr-2" onClick={() => updateQuantity(item.productId._id, item.quantity - 1)}>-</button>
+                                    <p className="text-base font-sans">{item.quantity}</p>
+                                    <button className="bg-slate-100 border-slate-300 border-[1px] text-black font-semibold px-3 py-1 rounded ml-2" onClick={() => updateQuantity(item.productId._id, item.quantity + 1)}>+</button>
                                 </div>
-                                <button className="bg-red-500 text-white px-3 py-1 rounded ml-auto w-full" onClick={() => removeItem(item.productId._id)}>Remove</button>
+                                <button className="bg-slate-100 border-[1px] border-slate-300 text-black px-3 font-sans py-1 rounded ml-auto w-full" onClick={() => removeItem(item.productId._id)}>Hapus</button>
                             </div>
                         </div>
                 ))}
@@ -157,9 +170,9 @@ export default function KeranjangCard() {
             )}
 
 
-                    <div className="flex flex-col mt-4 items-end">
-                        <p className="text-xl font-bold">Total Price: <span className="text-green-600">Rp {calculateTotalPrice()}</span></p>
-                        <button className="bg-blue-500 text-white px-4 py-2 rounded mt-2" onClick={handleCheckout}>Checkout</button>
+                    <div className="flex flex-col mt-7 items-end ">
+                        <p className="text-xl font-sans font-medium">Total Price: <span className="text-[#194719] font-semiboldfont-sans ml-2">{calculateTotalPrice()}</span></p>
+                        <button className="bg-[#194719] text-white px-4 py-2 rounded mt-2" onClick={handleCheckout}>Checkout</button>
                     </div>
                 </div>
             )}

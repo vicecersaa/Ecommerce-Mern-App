@@ -12,6 +12,8 @@ import OrderHistory from '../components/OrderHistory';
 import AccountSettings from '../pages/AccountSettings';
 import { ProductContext} from '../ProductContext';
 import AdminList from "../components/AdminList";
+import LOGO from '../assets/img/LOGO1.jpg';
+import { Link } from "react-router-dom";
 
 
 
@@ -134,7 +136,7 @@ export default function AccountPage() {
     }
 
     //ubah ke section keranjang
-    function handleKeranjang() {
+    function  handleKeranjang() {
         setBio(false);
         setRiwayat(false);
         setTambahProduk(false);
@@ -259,7 +261,7 @@ export default function AccountPage() {
                     <span className="font-sans font-semibold text-lg">{user.name}</span>
                 </div>
                 
-                    <div className="w-full flex items-center mt-3 border-t-2 border-x-2 rounded-t-xl">
+                    <div className="w-full flex items-center mt-3 border-t-2 border-x-2 border-b-2 rounded-t-xl">
 
                         <button onClick={handleBio} className={`py-[10px] px-[24px] font-bold ${bio ? 'text-[#03AC0E] border-b-2 border-[#03AC0E]' : 'text-[#6D7588]'}`}>
                             <p>Biodata Diri</p>
@@ -272,6 +274,7 @@ export default function AccountPage() {
                         <button onClick={handleKeranjang} className={`py-[10px] px-[24px] font-bold ${keranjang ? 'text-[#03AC0E] border-b-2 border-[#03AC0E]' : 'text-[#6D7588]'}`}>
                             <p>Keranjang</p>
                         </button>
+
                         {user && user.role === 'admin' && (
                             <button onClick={handleTambahProduk} className={`py-[10px] px-[24px] font-bold ${tambahProduk ? 'text-[#03AC0E] border-b-2 border-[#03AC0E]' : 'text-[#6D7588]'}`}>
                                 <p>Tambah Produk</p>
@@ -295,13 +298,19 @@ export default function AccountPage() {
                             <div className="mt-4 w-full flex p-5 h-screen min-h-[340px]">
                                 <ProfilePictureUpload />
                                 <div className="mt-4 w-full flex flex-col p-5 h-full min-h-[340px] max-h-[300px]">
-                                    <p className="font-bold text-[#6D7588]">Ubah Biodata Diri</p>
+                                    <div className="flex items-center gap-2">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-5">
+                                            <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
+                                        </svg>
+                                        <p className="font-semibold font-sans text-[#6D7588]">Ubah Biodata Diri</p>
+                                    </div>
+                                    
 
-                                <p className="mt-2 text-base w-full font-semibold">
-                                    Username : {user.name} 
+                                <p className="mt-2 text-base w-full font-sans">
+                                    Username : <span className="font-semibold font-sans">{user.name}</span> 
                                     <span
                                         onClick={() => startEditing('name', user.name)}
-                                        className="text-xs ml-3 text-[#03AC0E] font-normal cursor-pointer"
+                                        className="text-xs ml-3 text-[#191719] font-normal cursor-pointer"
                                     >
                                         Ubah
                                     </span>
@@ -327,7 +336,7 @@ export default function AccountPage() {
                                             <div className="flex justify-end gap-2">
                                                 <button
                                                     onClick={handleSave}
-                                                    className="w-full bg-[#03AC0E] text-white px-4 py-2 rounded-md hover:bg-[#029c00]"
+                                                    className="w-full bg-[#194719] text-white px-4 py-2 rounded-md"
                                                 >
                                                     Simpan
                                                 </button>
@@ -336,11 +345,11 @@ export default function AccountPage() {
                                     </div>
                                 )}
 
-                                <p className="mt-2 text-base w-full font-semibold">
-                                    Nama Lengkap : {user.fullName} 
+                                <p className="mt-2 text-base w-full font-sans">
+                                    Nama Lengkap : <span className="font-sans font-semibold">{user.fullName}</span>
                                     <span 
                                         onClick={() => startEditing('fullName', user.fullName || "")}
-                                        className="text-xs ml-3 text-[#03AC0E] font-normal cursor-pointer">
+                                        className="text-xs ml-3 text-[#194719] font-normal cursor-pointer">
                                         Tambahkan / Ubah
                                     </span>
                                 </p>
@@ -364,7 +373,7 @@ export default function AccountPage() {
                                             <div className="flex justify-end gap-2">
                                                 <button
                                                     onClick={handleSave}
-                                                    className="w-full bg-[#03AC0E] text-white px-4 py-2 rounded-md hover:bg-[#029c00]"
+                                                    className="w-full bg-[#194719] text-white px-4 py-2 rounded-md"
                                                 >
                                                     Simpan
                                                 </button>
@@ -373,11 +382,11 @@ export default function AccountPage() {
                                     </div>
                                 )}
 
-                                <p className="mt-2 text-base w-full font-semibold">
-                                    Alamat Lengkap : {user.address} 
+                                <p className="mt-2 text-base w-full font-sans">
+                                    Alamat Lengkap : <span className="font-semibold font-sans">{user.address}</span> 
                                     <span 
                                         onClick={() => startEditing('address', user.address || "")}
-                                        className="text-xs ml-3 text-[#03AC0E] font-normal cursor-pointer">
+                                        className="text-xs ml-3 text-[#194719] font-normal cursor-pointer">
                                         Tambahkan / Ubah
                                     </span>
                                 </p>
@@ -401,7 +410,7 @@ export default function AccountPage() {
                                             <div className="flex justify-end gap-2">
                                                 <button
                                                     onClick={handleSave}
-                                                    className="w-full bg-[#03AC0E] text-white px-4 py-2 rounded-md hover:bg-[#029c00]"
+                                                    className="w-full bg-[#194719] text-white px-4 py-2 rounded-md"
                                                 >
                                                     Simpan
                                                 </button>
@@ -412,11 +421,11 @@ export default function AccountPage() {
 
 
 
-                                <p className="mt-2 text-base w-full font-semibold">
-                                    Nomor Telp : {user.phoneNumber} 
+                                <p className="mt-2 text-base w-full font-sans">
+                                    Nomor Telp : <span className="font-semibold font-sans">{user.phoneNumber}</span> 
                                     <span 
                                         onClick={() => startEditing('phoneNumber', user.phoneNumber || "")}
-                                        className="text-xs ml-3 text-[#03AC0E] font-normal cursor-pointer">
+                                        className="text-xs ml-3 text-[#194719] font-normal cursor-pointer">
                                         Tambahkan / Ubah
                                     </span>
                                 </p>
@@ -440,7 +449,7 @@ export default function AccountPage() {
                                             <div className="flex justify-end gap-2">
                                                 <button
                                                     onClick={handleSave}
-                                                    className="w-full bg-[#03AC0E] text-white px-4 py-2 rounded-md hover:bg-[#029c00]"
+                                                    className="w-full bg-[#194719] text-white px-4 py-2 rounded-md "
                                                 >
                                                     Simpan
                                                 </button>
@@ -449,11 +458,11 @@ export default function AccountPage() {
                                     </div>
                                 )}
 
-                                <p className="mt-2 text-base w-full font-semibold">
-                                    Email : {user?.email || "-"} 
+                                <p className="mt-2 text-base w-full font-sans">
+                                    Email : <span className="font-semibold font-sans">{user?.email || "-"}</span> 
                                     <span 
                                         onClick={() => startEditing('email', user.email || "")}
-                                        className="text-xs ml-3 text-[#03AC0E] font-normal cursor-pointer">
+                                        className="text-xs ml-3 text-[#194719] font-normal cursor-pointer">
                                         Tambahkan / Ubah
                                     </span>
                                 </p>
@@ -477,7 +486,7 @@ export default function AccountPage() {
                                             <div className="flex justify-end gap-2">
                                                 <button
                                                     onClick={handleSave}
-                                                    className="w-full bg-[#03AC0E] text-white px-4 py-2 rounded-md hover:bg-[#029c00]"
+                                                    className="w-full bg-[#194719] text-white px-4 py-2 rounded-md"
                                                 >
                                                     Simpan
                                                 </button>
@@ -487,11 +496,11 @@ export default function AccountPage() {
                                 )}
 
                                 <div>
-                                    <p className="mt-2 text-base w-full font-semibold">
-                                        Password : XXXXXX   
+                                    <p className="mt-2 text-base w-full font-sans">
+                                        Password : <span className="font-semibold font-sans">XXXXXX</span>   
                                         <span 
                                             onClick={() => startEditing('password', user.password || "")}
-                                            className="text-xs ml-3 text-[#03AC0E] font-normal cursor-pointer">
+                                            className="text-xs ml-3 text-[#194719] font-normal cursor-pointer">
                                             Ubah
                                         </span>
                                     </p>
@@ -506,7 +515,7 @@ export default function AccountPage() {
 
 
                                     <div className="mt-auto flex items-end">
-                                        <button className="bg-red-500  text-white font-sans font-semibold cursor-pointer text-sm py-2 px-4 border-2 rounded-md" onClick={logout}>Log Out</button>
+                                        <button className="bg-red-500  text-white font-sans cursor-pointer text-sm py-2 px-4 border-2 rounded-md" onClick={logout}>Log Out</button>
                                     </div>
                                 </div>
                             </div>
@@ -515,7 +524,7 @@ export default function AccountPage() {
 
                     {riwayat && (
                         <div className="flex border-x-2 border-b-2 p-3">
-                            <div className="mt-4 w-full flex flex-col p-5 h-screen min-h-[340px]">
+                            <div className="mt-4 w-full flex flex-col p-5 h-full min-h-[340px]">
                                 <OrderHistory />
                             </div>
                         </div>
@@ -526,7 +535,16 @@ export default function AccountPage() {
                         <div className="flex border-x-2 border-b-2 p-3">
                             <div className="mt-4 w-full flex flex-col p-5 h-screen min-h-[340px]">
                                 {cart.length === 0 ? (
-                                    <p>Your cart is empty</p>
+                                    <div className="flex flex-col justify-center items-center min-h-[500px]">
+                                        <img loading="lazy" className="w-full max-w-[250px]" src={LOGO} alt="Forland Living Logo" />
+                                        <h2 className="font-medium font-sans text-2xl">Keranjang Anda Kosong</h2>
+                                        <p className="font-sans">Silahkan Isi Keranjang Anda.</p>
+                                        <Link to={'/'}>
+                                            <button className="bg-[#194719] text-white font-sans px-5 py-2 rounded-full mt-4">
+                                                Belanja Sekarang!
+                                            </button>
+                                        </Link>
+                                    </div>
                                 ) : (
                                     
                                         
@@ -543,14 +561,14 @@ export default function AccountPage() {
                 <div>
                     {user && user.role === 'admin' && tambahProduk &&(
                         <div className="flex border-x-2 border-b-2 p-3">
-                        <div className="mt-4 w-full flex flex-col p-5 h-screen  min-h-[1500px]">
+                        <div className="mt-4 w-full flex flex-col p-5 h-full  min-h-[1500px]">
                             <TambahProduk />
                         </div>
                         </div>
                     )}
                 </div>
                     
-                <div className="flex flex-col h-full align-middle justify-center border-x-2 border-b-2">
+                <div className="flex flex-col h-full align-middle justify-center border-x-2">
                     {user && user.role === 'admin' && produkSaya && (
                         <div className="mt-4 w-full flex flex-col p-5 h-full">
                             <div className="flex items-center gap-2 mb-5 pt-5 pb-5">

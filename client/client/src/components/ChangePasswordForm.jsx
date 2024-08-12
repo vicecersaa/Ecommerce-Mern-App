@@ -51,12 +51,12 @@ const ChangePasswordForm = (props) => {
                 />
                 <button
                     onClick={handleChangePassword}
-                    className="w-full bg-[#03AC0E] text-white px-4 py-2 rounded-md hover:bg-[#029c00]"
+                    className="w-full bg-[#194719] text-white px-4 py-2 rounded-md "
                 >
                     Simpan
                 </button>
                 {error && <p className="text-red-500">{error}</p>}
-                {success && <p className="text-green-500">{success}</p>}
+                {success && <p className="text-[#194719]">{success}</p>}
             </div>
         </div>
     );
