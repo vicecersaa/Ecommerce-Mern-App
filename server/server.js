@@ -436,21 +436,16 @@ app.get('/order-history', authenticateUser, async (req, res) => {
 });
 
 app.get('/get-orders', authenticateUser, authenticateAdmin, async (req, res) => {
-  const { status } = req.query; 
-
   try {
-    // Query orders based on the status
-    const query = status ? { status } : {}; 
-
-    // Find orders with populated fields
-    const orders = await orderModel.find(query)
+    
+    const orders = await orderModel.find({ status: 'Berhasil' })
       .populate({
         path: 'userId',
-        select: 'username fullname phone' // Adjust fields based on User schema
+        select: 'name fullName phoneNumber address cart'
       })
       .populate({
         path: 'items.productId',
-        select: 'name price' // Adjust fields based on Product schema
+        select: 'name price selectedVariant selectedSize'
       });
 
     res.status(200).json(orders);
@@ -459,6 +454,7 @@ app.get('/get-orders', authenticateUser, authenticateAdmin, async (req, res) => 
     res.status(500).json({ error: 'Failed to fetch orders', details: error.message });
   }
 });
+
 
 
 
@@ -756,8 +752,9 @@ app.post('/midtrans-notification', async (req, res) => {
 
 
 // CHECKOUT DIRECT 
+// CHECKOUT DIRECT 
 app.post('/checkout-direct', async (req, res) => {
-  const { userId, productId, quantity, price } = req.body;
+  const { userId, productId, quantity, price, selectedSize, selectedVariant } = req.body;
 
   try {
     const user = await userModel.findById(userId);
@@ -766,12 +763,10 @@ app.post('/checkout-direct', async (req, res) => {
     const product = await productModel.findById(productId);
     if (!product) return res.status(404).json({ message: 'Product not found' });
 
-    // Ensure quantity does not exceed stock
     if (quantity > product.stockProduk) {
       return res.status(400).json({ message: 'Insufficient stock available' });
     }
 
-    // Calculate total amount
     const totalAmount = quantity * price;
 
     // Create a new order
@@ -782,6 +777,8 @@ app.post('/checkout-direct', async (req, res) => {
         quantity, 
         price, 
         name: product.namaProduk,
+        selectedSize: selectedSize,    // Add selectedSize here
+        selectedVariant: selectedVariant // Add selectedVariant here
       }],
       totalAmount,
     });
@@ -839,6 +836,7 @@ app.post('/checkout-direct', async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 });
+
 
 
 

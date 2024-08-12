@@ -141,13 +141,7 @@ export default function ProdukDetail() {
             return;
         }
     
-        if (selectedVariant && selectedVariant.ukuranVarian.length > 0 && !selectedSize) {
-            alert('Please select a size first');
-            return;
-        }
-
-        
-        if (selectedVariant.ukuranVarian.length > 0 && !selectedSize.ukuran) {
+        if (selectedVariant && selectedVariant.ukuranVarian.length > 0 && (!selectedSize || !selectedSize.ukuran)) {
             alert('Please select a size first');
             return;
         }
@@ -165,7 +159,9 @@ export default function ProdukDetail() {
                 productId: product._id,
                 quantity,
                 price,
-                productName, 
+                productName,
+                selectedSize: selectedSize || null, // Send selectedSize if it exists
+                selectedVariant: selectedVariant || null, // Send selectedVariant if it exists
             });
     
             if (response.status === 201) {
@@ -178,7 +174,6 @@ export default function ProdukDetail() {
                 window.snap.pay(paymentToken, {
                     onSuccess: function(result) {
                         console.log('Payment success:', result);
-                       
                     },
                     onPending: function(result) {
                         console.log('Payment pending:', result);
@@ -201,6 +196,9 @@ export default function ProdukDetail() {
             alert('Failed to place the order. Please try again.');
         }
     };
+
+    
+    
     
 
     useEffect(() => {

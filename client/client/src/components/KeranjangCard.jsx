@@ -78,9 +78,20 @@ export default function KeranjangCard() {
     // Checkout
     const handleCheckout = async () => {
         try {
+            console.log('Checkout items:', cartItems); // Log cartItems
+        
             const response = await axios.post(`${PORT}/checkout`, {
-                items: cartItems,
+                items: cartItems.map(item => ({
+                    productId: item.productId._id,
+                    quantity: item.quantity,
+                    price: item.price,
+                    name: item.productId.namaProduk,
+                    selectedSize: item.selectedSize, // Include selectedSize
+                    selectedVariant: item.selectedVariant, // Include selectedVariant
+                })),
             });
+    
+            console.log('Checkout response:', response.data); // Log response data
     
             if (response.data.paymentToken) {
                 window.snap.pay(response.data.paymentToken, {
@@ -110,6 +121,7 @@ export default function KeranjangCard() {
             setError('Checkout failed');
         }
     };
+    
 
     if (!user) {
         return <div>Please log in to view your cart</div>;
