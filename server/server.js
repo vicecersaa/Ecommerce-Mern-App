@@ -105,23 +105,50 @@ const transporter = nodemailer.createTransport({
 
 
 // REGISTER ACCOUNT 
-
 app.post('/register', async (req, res) => {
-  const {name, email, password} = req.body;
+  const { name, email, password } = req.body;
+
+  // Validasi input
+  if (!name || !email || !password) {
+      return res.status(400).json({ message: 'Semua field wajib diisi' });
+  }
+
+  // Validasi format email
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(email)) {
+      return res.status(400).json({ message: 'Format email tidak valid' });
+  }
+
+  // Validasi password harus mengandung huruf besar dan angka
+  const passwordRegex = /^(?=.*[A-Z])(?=.*\d)/;
+  if (!passwordRegex.test(password)) {
+      return res.status(400).json({ message: 'Password harus mengandung setidaknya satu huruf besar dan satu angka.' });
+  }
 
   try {
+      const existingUser = await userModel.findOne({ email });
+      if (existingUser) {
+          return res.status(409).json({ message: 'Email sudah terdaftar' });
+      }
+
+      const hashedPassword = bcrypt.hashSync(password, bcryptSalt);
+
       const userDoc = await userModel.create({
           name,
           email,
           role: 'user',
-          password: bcrypt.hashSync(password, bcryptSalt)
-      })
-      res.json(userDoc);
+          password: hashedPassword,
+      });
+
+      res.status(201).json({ message: 'Registrasi berhasil', user: userDoc });
   } catch (e) {
-      res.status(422).json(e);
+      console.error('Error saat registrasi:', e);
+      res.status(500).json({ message: 'Terjadi kesalahan pada server. Silakan coba lagi nanti.' });
   }
-  
-})
+});
+
+
+
 
 // REGISTER ADMIN ACCOUNT
 app.post('/register-admin', authenticateUser, async (req, res) => {
@@ -458,6 +485,7 @@ app.get('/get-orders', authenticateUser, authenticateAdmin, async (req, res) => 
 
 
 
+
 // GET ADMIN 
 
 app.get('/admin-users', async (req, res) => {
@@ -728,6 +756,11 @@ app.post('/midtrans-notification', async (req, res) => {
 
       if (transaction_status === 'capture' || transaction_status === 'settlement') {
           order.status = 'Berhasil';
+          
+          // Fetch invoice URL from Midtrans (if available)
+          const midtransTransaction = await midtrans.transaction.status(order_id);
+          order.invoiceUrl = midtransTransaction.invoice_url || midtransTransaction.redirect_url || null;
+          
           await order.save();
 
           // Optionally, clear cart or perform additional actions
@@ -751,7 +784,8 @@ app.post('/midtrans-notification', async (req, res) => {
 
 
 
-// CHECKOUT DIRECT 
+
+
 // CHECKOUT DIRECT 
 app.post('/checkout-direct', async (req, res) => {
   const { userId, productId, quantity, price, selectedSize, selectedVariant } = req.body;
