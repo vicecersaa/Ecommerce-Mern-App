@@ -18,6 +18,15 @@ export default function ProdukDetail() {
     const { products, loading } = useContext(ProductContext);
     const { user } = useContext(UserContext);
     const [product, setProduct] = useState(null);
+
+    // Error message untuk produk
+    const [errorMessage, setErrorMessage] = useState('');
+    const [successMessage, setSuccessMessage] = useState('');
+
+    // Error message untuk akun 
+    const [errorMessageAccount, setErrorMessageAccount] = useState('')
+    const [successMessageAccount, setSuccessMessageAccount] = useState('');
+
     const [selectedVariant, setSelectedVariant] = useState({
         namaVarian: '',
         ukuranVarian: []
@@ -99,13 +108,12 @@ export default function ProdukDetail() {
 
     const handleAddToCart = async () => {
         if (!user) {
-            alert('Please log in to add items to the cart');
+            setErrorMessageAccount('Silahkan login akun anda terlebih dahulu.');
             return;
         }
     
-        // Tambahkan validasi untuk memastikan ukuran dipilih
         if (selectedVariant.ukuranVarian.length > 0 && !selectedSize.ukuran) {
-            alert('Please select a size first');
+            setErrorMessage('Tolong pilih Tipe / Ukuran terlebih dahulu.');
             return;
         }
     
@@ -120,34 +128,52 @@ export default function ProdukDetail() {
             });
     
             if (response.status === 200) {
-                alert('Product added to cart');
-                console.log("Select Variant:", selectedVariant);
-                console.log("Select Size:", selectedSize);
+                setSuccessMessageAccount('Product added to cart');
+                setErrorMessage('');  
             }
         } catch (error) {
-            alert('Failed to add to cart');
+            setErrorMessage('Failed to add to cart');
             console.error('Error:', error);
         }
     };
+    
 
     const handleBuyNow = async () => {
+        setErrorMessageAccount(''); 
+        setSuccessMessageAccount(''); 
+    
         if (!user) {
-            alert('Please log in to proceed');
+            setErrorMessageAccount('Silahkan login akun anda terlebih dahulu.');
+            return;
+        }
+
+        if (!user.fullName) {
+            setErrorMessageAccount('Silahkan isi keterangan nama lengkap anda di profil.');
+            return;
+        }
+    
+        if (!user.address) {
+            setErrorMessageAccount('Silahkan isi keterangan alamat lengkap anda di profil.');
+            return;
+        }
+    
+        if (!user.phoneNumber) {
+            setErrorMessageAccount('Silahkan isi No Telp lengkap anda di profil.');
             return;
         }
     
         if (product.variants.length > 0 && !selectedVariant) {
-            alert('Please select a variant first');
+            setErrorMessageAccount('tolong pilih varian terlebih dahulu');
             return;
         }
     
         if (selectedVariant && selectedVariant.ukuranVarian.length > 0 && (!selectedSize || !selectedSize.ukuran)) {
-            alert('Please select a size first');
+            setErrorMessage('Pilih Tipe / Ukuran terlebih dahulu.');
             return;
         }
     
         if (quantity <= 0) {
-            alert('Quantity must be greater than zero');
+            setErrorMessageAccount('Jumlah barang tidak bisa kosong.');
             return;
         }
     
@@ -160,40 +186,41 @@ export default function ProdukDetail() {
                 quantity,
                 price,
                 productName,
-                selectedSize: selectedSize || null, // Send selectedSize if it exists
-                selectedVariant: selectedVariant || null, // Send selectedVariant if it exists
+                selectedSize: selectedSize || null, 
+                selectedVariant: selectedVariant || null, 
             });
     
             if (response.status === 201) {
                 const { paymentToken } = response.data;
     
                 if (!paymentToken) {
-                    throw new Error('Failed to retrieve payment token');
+                    throw new Error('Gagal menerima token pembayaran');
                 }
     
                 window.snap.pay(paymentToken, {
                     onSuccess: function(result) {
-                        console.log('Payment success:', result);
+                        console.log('Pembayaran Berhasil:', result);
+                        setSuccessMessageAccount('Pembayaran Berhasil! Cek riwayat pesanan anda.');
                     },
                     onPending: function(result) {
-                        console.log('Payment pending:', result);
-                        alert('Payment is pending. Please complete the payment.');
+                        console.log('Pembayaran ditangguhkan:', result);
+                        setErrorMessageAccount('Pembayaran ditunggu, harap selesaikan pembayaran anda.');
                     },
                     onError: function(result) {
-                        console.error('Payment error:', result);
-                        alert('Payment failed. Please try again.');
+                        console.error('Pembayaran Error:', result);
+                        setErrorMessageAccount('Pembayaran gagal, silahkan melakukan pembayaran ulang.');
                     },
                     onClose: function() {
-                        console.log('Payment popup closed');
-                        alert('Payment popup closed. Please complete the payment.');
+                        console.log('Pembayaran tutup pop-up');
+                        setErrorMessageAccount('Pembayaran dibatalkan, silahkan selesaikan pembayaran anda.');
                     }
                 });
             } else {
-                alert('Failed to place the order. Please try again.');
+                setErrorMessageAccount('Gagal melakukan transaksi, silahkan ulang lagi.');
             }
         } catch (error) {
-            console.error('Failed to process the order:', error);
-            alert('Failed to place the order. Please try again.');
+            console.error('Gagal proses pesanan:', error);
+            setErrorMessageAccount('Gagal proses pesanan, silahkan coba lagi.');
         }
     };
 
@@ -225,6 +252,18 @@ export default function ProdukDetail() {
     return (
         <div>
             <Header />
+        <div className="w-full max-w-[500px] mx-auto">
+            {errorMessageAccount && (
+                <div className="animate-popUp text-red-700 px-4 py-2 font-sans text-center mt-4 bg-red-100 rounded-full mb-2" role="alert">
+                    <span className="block sm:inline">{errorMessageAccount}</span>
+                </div>
+            )}
+            {successMessageAccount && (
+                <div className="animate-popUp text-green-700 px-4 py-2 font-sans text-center mt-4 bg-green-100 rounded-full mb-2" role="alert">
+                    <span className="block sm:inline">{successMessageAccount}</span>
+                </div>
+            )}
+        </div>
 
             <div className="container mx-auto w-full max-w-[1100px] mt-10 flex justify-evenly gap-5">
                 <div className="w-full max-w-[400px]">
@@ -247,10 +286,10 @@ export default function ProdukDetail() {
                         {product.namaProduk}
                         {selectedVariant && selectedVariant.namaVarian 
                             ? ` - ${selectedVariant.namaVarian}` 
-                            : ' - Tidak ada Varian'}
+                            : ''}
                         {selectedSize && selectedSize.ukuran 
                             ? ` - ${selectedSize.ukuran}` 
-                            : ' - Tidak ada Ukuran'}
+                            : ''}
                     </h1>
 
                     <div className="flex items-center gap-1">
@@ -297,6 +336,16 @@ export default function ProdukDetail() {
                         ) : (
                             <p></p>
                         )}
+
+                    {successMessage && (
+                        <div className="bg-green-100 border-green-400 text-green-700 text-center font-sans text-sm mt-4 w-full max-w-[370px] mx-auto px-4 py-3">{successMessage}</div>
+                    )}
+
+                        {errorMessage && (
+                            <div className="animate-popUp text-red-700 px-4 py-2 font-sans w-full max-w-[274px] bg-red-100 rounded-full mb-2" role="alert">
+                                <span className="block sm:inline">{errorMessage}</span>
+                            </div>
+                        )}
                         
                         {selectedVariant && selectedVariant.ukuranVarian && selectedVariant.ukuranVarian.length > 0 ? (
                             selectedVariant.ukuranVarian.map((size) => (
@@ -318,6 +367,9 @@ export default function ProdukDetail() {
                         ) : (
                             <p></p>
                         )}
+                        
+                        
+
                     </div>
 
                     <p className="text-slate-500 font-medium font-sans">

@@ -14,7 +14,7 @@ const ProductEditForm = ({ productId }) => {
         gambarProduk: [] // For managing selected files
     });
 
-    const [previewImages, setPreviewImages] = useState([]); // For image previews
+    const [previewImages, setPreviewImages] = useState([]); 
 
     useEffect(() => {
         if (productId) {

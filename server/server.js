@@ -184,13 +184,12 @@ app.post('/register-admin', authenticateUser, async (req, res) => {
 });
 
 
-// LOGIN USER 
 app.post('/login', async (req, res) => {
   const { email, password } = req.body;
 
   // Check if email and password are provided
   if (!email || !password) {
-    return res.status(400).json({ error: 'Email and password are required' });
+    return res.status(400).json({ message: 'Email and password are required' });
   }
 
   try {
@@ -202,14 +201,14 @@ app.post('/login', async (req, res) => {
           email: userDoc.email,
           id: userDoc._id
       }, jwtSecret, {}, (err, token) => {
-          if (err) return res.status(500).json({ error: 'Failed to generate token' });
+          if (err) return res.status(500).json({ message: 'Failed to generate token' });
           res.cookie('token', token, { httpOnly: true, path: '/' }).json(userDoc);
       });
     } else {
-      res.status(422).json({ error: 'Invalid credentials' });
+      res.status(422).json({ message: 'Invalid email or password' });
     }
   } catch (err) {
-    res.status(500).json({ error: 'Failed to login', details: err.message });
+    res.status(500).json({ message: 'Failed to login', details: err.message });
   }
 });
 
@@ -507,13 +506,13 @@ app.get('/admin-users', async (req, res) => {
 
 
   //konfigurasi multer 
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-      cb(null, 'uploads/');
-  },
-  filename: (req, file, cb) => {
-      cb(null, Date.now() + path.extname(file.originalname));
-  }
+  const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, 'uploads/');
+    },
+    filename: (req, file, cb) => {
+        cb(null, Date.now() + path.extname(file.originalname));
+    }
 });
 
 const upload = multer({ storage: storage }).array('image');

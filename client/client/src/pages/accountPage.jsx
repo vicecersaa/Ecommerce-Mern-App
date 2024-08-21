@@ -425,12 +425,11 @@ export default function AccountPage() {
                                                     <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
                                                 </svg>
                                             </div>
-                                            <input
-                                                type="text"
+                                            <textarea
                                                 value={editValue}
                                                 onChange={(e) => setEditValue(e.target.value)}
-                                                className="border-2 border-gray-300 rounded p-2 w-full mb-4"
-                                                placeholder="Enter full address"
+                                                className="border-2 border-gray-300 rounded p-2 w-full mb-4 resize-none h-32 text-sm"
+                                                placeholder="Silahkan isi alamat lengkap anda, Nama Jalan, No Rumah, Kode Pos, Kecamatan dan lain-lain."
                                             />
                                             <div className="flex justify-end gap-2">
                                                 <button
@@ -443,6 +442,7 @@ export default function AccountPage() {
                                         </div>
                                     </div>
                                 )}
+
 
 
 

@@ -8,9 +8,9 @@ export default function Footer() {
     return (
         <div className="w-full bg-[#194719] min-h-[350px] mt-20">
             <div className='p-[60px] flex min-h-[350px]'>
-                <div className="w-full max-w-[36%]">
+                <div className="w-full max-w-[36%] mr-10">
                     <img className="w-full max-w-[250px]" src={LOGO} alt="Forland Living Logo" />
-                    <p className='font-sans text-white text-sm mt-5 w-full max-w-[600px]'>Forland Living berdiri sejak 2020, Forland Living adalah perusahaan springbed terbaik yang memiliki visi & misi untuk memberikan kenyamanan pada setiap pelanggan</p>
+                    <p className='font-sans text-white text-sm mt-5 w-full '>Forland Living berdiri sejak 2020, Forland Living adalah perusahaan springbed terbaik yang memiliki visi & misi untuk memberikan kenyamanan pada setiap pelanggan</p>
                     <div className='flex items-center gap-3 mt-5'>
                         <div className='rounded-full bg-white/50 w-[28px] h-[28px] items-center flex justify-center'>
                             <img className="w-full max-w-[20px]" src={INSTAGRAM} alt="Forland Living Instagram" />

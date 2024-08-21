@@ -5,16 +5,12 @@ import { UserContext } from '../UserContext';
 import LoadingSpinner from '../components/LoadingSpinner';
 
 export default function LoginPage() {
-  // Port
   const PORT = 'http://localhost:5000';
-  // Email Input
   const [email, setEmail] = useState('');
-  // Password Input
   const [password, setPassword] = useState('');
-  // Redirect State
   const [redirect, setRedirect] = useState(false);
-  // Loading State
   const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');  // State untuk pesan error
   const { setUser } = useContext(UserContext);
 
   // Login Account
@@ -23,11 +19,12 @@ export default function LoginPage() {
 
     // Validate input
     if (!email || !password) {
-      alert('Please enter both email and password');
+      setErrorMessage('Please enter both email and password');
       return;
     }
 
     setLoading(true);
+    setErrorMessage('');  // Reset pesan error
 
     setTimeout(async () => {
       try {
@@ -35,8 +32,11 @@ export default function LoginPage() {
         setUser(data);
         setRedirect(true);
       } catch (e) {
-        console.error('Login Failed', e);
-        alert('Login Failed');
+        if (e.response && e.response.data && e.response.data.message) {
+          setErrorMessage(e.response.data.message);
+        } else {
+          setErrorMessage('Login failed, please try again.');
+        }
       } finally {
         setLoading(false);
       }
@@ -58,14 +58,14 @@ export default function LoginPage() {
         <div className='flex flex-col'>
           <form className="flex flex-col p-5" onSubmit={handleLoginSubmit}>
             <input
-              className="py-2 px-4 mb-5 rounded-md border-[1px] border-slate-500 font-sans text-[16px] focus:outline-none"
+              className="py-2 px-4 mb-5 rounded-md border-[1px] border-slate-500 font-sans text-[16px] focus:outline-none text-sm"
               type="email"
               placeholder='Email'
               value={email}
               onChange={e => setEmail(e.target.value)}
             />
             <input
-              className="py-2 px-4 mb-5 rounded-md border-[1px] border-slate-500 font-sans text-[16px] focus:outline-none"
+              className="py-2 px-4 mb-5 rounded-md border-[1px] border-slate-500 font-sans text-[16px] focus:outline-none text-sm"
               type="password"
               placeholder='Password'
               value={password}
@@ -73,15 +73,16 @@ export default function LoginPage() {
             />
             <button className='w-full bg-[#194719] rounded-md py-3 px-4 text-white font-sans font-bold text-[16px] hover:cursor-pointer'>Login</button>
           </form>
+
           <p className='text-center font-sans text-[14px]'>
             <Link to={'/forgot-password'} className="">Lupa Password?</Link>
           </p>
           <p className='text-center font-sans text-[14px]'>
             Tidak mempunyai akun? <Link to={'/register'} className="text-[#194719]">Daftar</Link>
           </p>
-        </div>
-        <div className='absolute bottom-0 w-full max-w-[357px] m-auto mb-4'>
-          <p className='font-sans text-sm text-gray-500 text-center'>Forland Living Since 2020</p>
+          {errorMessage && (
+            <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 text-center mt-3">{errorMessage}</div>
+          )}
         </div>
       </div>
     </div>

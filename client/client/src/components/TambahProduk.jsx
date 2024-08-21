@@ -42,9 +42,9 @@ export default function TambahProduk() {
         }
     
         const formData = new FormData();
-        for (const file of files) {
-            formData.append('image', file); // Ensure 'image' matches the server-side field name
-        }
+        files.forEach((file) => {
+            formData.append('image', file); // Nama field harus sesuai dengan yang diharapkan oleh server
+        });
     
         try {
             const response = await axios.post('http://localhost:5000/upload-image', formData, {
@@ -52,14 +52,17 @@ export default function TambahProduk() {
                     'Content-Type': 'multipart/form-data',
                 },
             });
-            return response.data.imageUrls; 
+            return response.data.imageUrls; // Pastikan ini sesuai dengan respons server
         } catch (error) {
-            console.error('Error uploading images:', error);
+            console.error('Error uploading images:', error.message);
+            if (error.response) {
+                console.error('Server Response:', error.response.data);
+            }
             throw error;
         }
     };
 
-    // pengaturan perubahan harga
+  
 
     const formatNumber = (num) => {
         return num.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
@@ -85,18 +88,15 @@ export default function TambahProduk() {
     
     const handleFileChange = (e) => {
         const files = Array.from(e.target.files); 
-    
-        // Create an array of objects containing the file and its preview URL
+        console.log('Files Selected:', files);
         const filePreviews = files.map((file) => ({
             file,
             preview: URL.createObjectURL(file),
         }));
     
-        // Optional: Log the files for debugging
-        console.log(filePreviews);
+        console.log('File Previews:', filePreviews); // Pastikan ini menampilkan file dan pratinjau dengan benar
     
-        // Set the files with their previews in the state
-        setGambarProduk(filePreviews);
+        setGambarProduk(filePreviews.map(({ file }) => file)); // Simpan hanya file dalam state
     };
 
       // Handle variant changes
@@ -163,13 +163,11 @@ export default function TambahProduk() {
         e.preventDefault();
     
         let imageUrls = [];
-
-        
     
         if (gambarProduk && gambarProduk.length > 0) {
             try {
                 imageUrls = await uploadImage(gambarProduk);
-                console.log(imageUrls); // Verifikasi URL gambar yang diterima
+                console.log(`image url: ${imageUrls}`); 
             } catch (error) {
                 alert('Gagal meng-upload gambar. Silakan coba lagi.');
                 return;
@@ -191,10 +189,10 @@ export default function TambahProduk() {
             ratings,
             beratProduk,
         };
-
+    
         // Mengirim data produk ke server
         try {
-            const response = await axios.post('http://localhost:5000/products', productData,);
+            const response = await axios.post('http://localhost:5000/products', productData);
             alert('Produk berhasil ditambahkan!');
             console.log(response.data); 
         } catch (error) {
