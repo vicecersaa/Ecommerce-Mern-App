@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState, useRef} from "react";
 import { useParams } from "react-router-dom";
 import { ProductContext } from "../ProductContext";
 import Header from "../components/header";
@@ -68,6 +68,20 @@ export default function ProdukDetail() {
             });
         }
     }, [product]);
+
+    const modalRef = useRef(null);
+
+    const handleClickOutside = (e) => {
+        if (modalRef.current && !modalRef.current.contains(e.target)) {
+            setErrorMessageAccount('');
+            setSuccessMessageAccount('');
+        }
+    };
+
+    useEffect(() => {
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => document.removeEventListener('mousedown', handleClickOutside);
+    }, []);
     
 
     const toggleExpansion = () => {
@@ -128,7 +142,7 @@ export default function ProdukDetail() {
             });
     
             if (response.status === 200) {
-                setSuccessMessageAccount('Product added to cart');
+                setSuccessMessageAccount('Produk berhasil ditambahkan ke keranjang!');
                 setErrorMessage('');  
             }
         } catch (error) {
@@ -249,20 +263,41 @@ export default function ProdukDetail() {
 
     const uniqueVariantNames = getUniqueVariantNames();
 
+   
+
     return (
         <div>
             <Header />
         <div className="w-full max-w-[500px] mx-auto">
+
+           
+        
             {errorMessageAccount && (
-                <div className="animate-popUp text-red-700 px-4 py-2 font-sans text-center mt-4 bg-red-100 rounded-full mb-2" role="alert">
-                    <span className="block sm:inline">{errorMessageAccount}</span>
+                <div className="fixed inset-0 flex items-center justify-center z-50">
+                    <div className="bg-black opacity-50 absolute inset-0"></div>
+                    <div
+                        ref={modalRef}
+                        className="animate-popUp text-red-700 px-4 py-2 font-sans text-center mt-4 bg-red-100 rounded-full mb-2 relative max-w-md mx-auto z-10"
+                        role="alert"
+                    >
+                        <span className="block sm:inline text-center text-sm">{errorMessageAccount}</span>
+                    </div>
                 </div>
             )}
+
             {successMessageAccount && (
-                <div className="animate-popUp text-green-700 px-4 py-2 font-sans text-center mt-4 bg-green-100 rounded-full mb-2" role="alert">
-                    <span className="block sm:inline">{successMessageAccount}</span>
+                <div className="fixed inset-0 flex items-center justify-center z-50">
+                    <div className="bg-black opacity-50 absolute inset-0"></div>
+                    <div
+                        ref={modalRef}
+                        className="animate-popUp text-green-700 px-4 py-2 font-sans text-center mt-4 bg-green-100 rounded-full mb-2 relative max-w-md mx-auto z-10"
+                        role="alert"
+                    >
+                        <span className="block sm:inline text-center text-sm">{successMessageAccount}</span>
+                    </div>
                 </div>
             )}
+
         </div>
 
             <div className="container mx-auto w-full max-w-[1100px] mt-10 flex justify-evenly gap-5">
@@ -337,13 +372,13 @@ export default function ProdukDetail() {
                             <p></p>
                         )}
 
-                    {successMessage && (
-                        <div className="bg-green-100 border-green-400 text-green-700 text-center font-sans text-sm mt-4 w-full max-w-[370px] mx-auto px-4 py-3">{successMessage}</div>
-                    )}
+                        {successMessage && (
+                            <div className="bg-green-100 border-green-400 text-green-700 text-center font-sans text-sm mt-4 w-full max-w-[370px] mx-auto px-4 py-3 text-center">{successMessage}</div>
+                        )}
 
                         {errorMessage && (
-                            <div className="animate-popUp text-red-700 px-4 py-2 font-sans w-full max-w-[274px] bg-red-100 rounded-full mb-2" role="alert">
-                                <span className="block sm:inline">{errorMessage}</span>
+                            <div className="animate-popUp text-red-700 px-4 py-2 font-sans max-w-[323px] bg-red-100 rounded-full mb-2" role="alert">
+                                <span className="block sm:inline text-center">{errorMessage}</span>
                             </div>
                         )}
                         

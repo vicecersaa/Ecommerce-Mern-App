@@ -18,10 +18,14 @@ export default function OrderHistory() {
             const response = await axios.get(`${PORT}/order-history`, {
                 params: { userId: user._id }
             });
-
+    
             console.log('Order history response:', response.data);
             
-            const successfulOrders = response.data.filter(order => order.status === 'Berhasil');
+            // Filter dan urutkan data pesanan berdasarkan tanggal secara menurun (terbaru di atas)
+            const successfulOrders = response.data
+                .filter(order => order.status === 'Berhasil')
+                .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)); // Sortir berdasarkan tanggal
+            
             setOrders(successfulOrders);
         } catch (error) {
             setError('Failed to fetch order history');

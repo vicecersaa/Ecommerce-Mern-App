@@ -19,6 +19,8 @@ export default function TambahProduk() {
     const [reviews, setReviews] = useState([]);
     const [availableCategories, setAvailableCategories] = useState([]);
     const [filteredCategories, setFilteredCategories] = useState([]);
+    const [errorMessage, setErrorMessage] = useState('');
+    const [successMessage, setSuccessMessage] = useState('');
     const [previewImages, setPreviewImages] = useState([]);
 
     useEffect(() => {
@@ -87,16 +89,14 @@ export default function TambahProduk() {
     };
     
     const handleFileChange = (e) => {
-        const files = Array.from(e.target.files); 
-        console.log('Files Selected:', files);
+        const files = Array.from(e.target.files);
         const filePreviews = files.map((file) => ({
             file,
             preview: URL.createObjectURL(file),
         }));
     
-        console.log('File Previews:', filePreviews); // Pastikan ini menampilkan file dan pratinjau dengan benar
-    
-        setGambarProduk(filePreviews.map(({ file }) => file)); // Simpan hanya file dalam state
+        // Simpan file dan preview dalam state
+        setGambarProduk(filePreviews);
     };
 
       // Handle variant changes
@@ -158,49 +158,106 @@ export default function TambahProduk() {
     };
 
 
-     // Fungsi untuk mengirim data produk ke server
-     const createProduct = async (e) => {
-        e.preventDefault();
-    
-        let imageUrls = [];
-    
-        if (gambarProduk && gambarProduk.length > 0) {
-            try {
-                imageUrls = await uploadImage(gambarProduk);
-                console.log(`image url: ${imageUrls}`); 
-            } catch (error) {
-                alert('Gagal meng-upload gambar. Silakan coba lagi.');
-                return;
-            }
-        }
-    
-        // Membuat objek data produk
-        const productData = {
-            namaProduk,
-            hargaProduk,
-            namaToko,
-            categoryProduk,
-            kondisi,
-            deskripsi,
-            stockProduk,
-            gambarProduk: imageUrls, 
-            variants,
-            reviews,
-            ratings,
-            beratProduk,
-        };
-    
-        // Mengirim data produk ke server
-        try {
-            const response = await axios.post('http://localhost:5000/products', productData);
-            alert('Produk berhasil ditambahkan!');
-            console.log(response.data); 
-        } catch (error) {
-            alert('Gagal menambahkan produk. Silakan coba lagi.');
-            console.error('Error creating product:', error);
-        }
+    // Fungsi untuk mengirim data produk ke server
+const createProduct = async (e) => {
+    e.preventDefault();
+
+    setErrorMessage('');
+    setSuccessMessage('');
+
+    let imageUrls = [];
+
+    // Validasi input gambar produk
+    if (!gambarProduk || gambarProduk.length === 0) {
+        setErrorMessage('Harap masukkan gambar produk.');
+        return;
+    }
+
+    // Validasi input nama produk
+    if (!namaProduk) {
+        setErrorMessage('Harap masukkan nama produk.');
+        return;
+    }
+
+    if (!categoryProduk || categoryProduk.length === 0) {
+        setErrorMessage('Harap masukkan kategori produk.');
+        return;
+    }
+
+    if (!hargaProduk) {
+        setErrorMessage('Harap masukkan harga produk.');
+        return;
+    }
+
+    if (!namaToko) {
+        setErrorMessage('Harap masukkan nama toko produk.');
+        return;
+    }
+
+    if (!kondisi) {
+        setErrorMessage('Harap masukkan kondisi produk.');
+        return;
+    }
+
+    if (!deskripsi) {
+        setErrorMessage('Harap masukkan deskripsi produk.');
+        return;
+    }
+
+    if (!stockProduk) {
+        setErrorMessage('Harap masukkan jumlah stock produk.');
+        return;
+    }
+
+
+
+
+    try {
+        imageUrls = await uploadImage(gambarProduk);
+    } catch (error) {
+        setErrorMessage('Gagal meng-upload gambar. Silakan coba lagi.');
+        return;
+    }
+
+    const productData = {
+        namaProduk,
+        hargaProduk,
+        namaToko,
+        categoryProduk,
+        kondisi,
+        deskripsi,
+        stockProduk,
+        gambarProduk: imageUrls,
+        variants,
+        reviews,
+        ratings,
+        beratProduk,
     };
 
+    try {
+        const response = await axios.post('http://localhost:5000/products', productData);
+        setSuccessMessage('Produk berhasil ditambahkan!');
+    } catch (error) {
+        // Menangani error yang lebih spesifik berdasarkan respon dari server
+        if (error.response) {
+            // Server merespon dengan status di luar jangkauan 2xx
+            if (error.response.status === 400) {
+                setErrorMessage('Data produk tidak valid. Silakan periksa input Anda.');
+            } else if (error.response.status === 500) {
+                setErrorMessage('Terjadi kesalahan pada server. Silakan coba lagi nanti.');
+            } else {
+                setErrorMessage(`Terjadi kesalahan: ${error.response.statusText}`);
+            }
+        } else if (error.request) {
+            // Permintaan dibuat tetapi tidak ada respons dari server
+            setErrorMessage('Tidak ada respons dari server. Silakan coba lagi.');
+        } else {
+            // Kesalahan lain saat mengatur permintaan
+            setErrorMessage(`Error: ${error.message}`);
+        }
+        console.error('Error creating product:', error);
+    }
+};
 
     return (
         <div>
@@ -211,9 +268,36 @@ export default function TambahProduk() {
                 <h2 className="text-xl font-sans font-medium">Tambah Produk</h2>
             </div>
 
+            {errorMessage && (
+                <div className="fixed inset-0 flex items-center justify-center z-50" onClick={() => setErrorMessage('')}>
+                    <div className="bg-black opacity-50 absolute inset-0"></div>
+                    <div
+                        className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative max-w-md mx-auto z-10"
+                        onClick={(e) => e.stopPropagation()}
+                    >
+                        <strong className="font-bold">Error: </strong>
+                        <span className="block sm:inline">{errorMessage}</span>
+                    </div>
+                </div>
+            )}
+
+
+            {successMessage && (
+                <div className="fixed inset-0 flex items-center justify-center z-50" onClick={() => setSuccessMessage('')}>
+                    <div className="bg-black opacity-50 absolute inset-0"></div>
+                    <div
+                        className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative max-w-md mx-auto z-10"
+                        onClick={(e) => e.stopPropagation()}
+                    >
+                        <strong className="font-bold">Sukses: </strong>
+                        <span className="block sm:inline">{successMessage}</span>
+                    </div>
+                </div>
+            )}
+
             <form className="flex flex-col" onSubmit={createProduct}>
                 <div className="flex w-full gap-5">
-                    <div className="flex items-start w-full max-w-[350px]">
+                    <div className="flex items-start w-full max-w-[320px]">
                         <p className="w-full max-w-[150px] font-sans">Gambar Produk: </p>
                         <label className="flex flex-col items-center px-4 py-6 border-[1px] border-slate-500 bg-white text-blue rounded-lg shadow-lg tracking-wide uppercase cursor-pointer hover:bg-[#194719] hover:text-white">
                             <svg className="w-8 h-8" fill="currentColor" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
@@ -224,14 +308,14 @@ export default function TambahProduk() {
                         </label>
                     </div>
 
-                    <div className="flex gap-5 justify-center items-center">
+                    <div className="flex gap-5 justify-center items-center rounded-md">
                         {gambarProduk && gambarProduk.length > 0 ? (
                             gambarProduk.map((item, index) => (
                                 <img
                                     key={index}
                                     src={item.preview}
                                     alt={`Preview ${index}`}
-                                    className="w-24 h-24 object-cover"
+                                    className="w-24 h-24 object-cover rounded-md"
                                 />
                             ))
                         ) : (

@@ -617,7 +617,7 @@ export default function AccountPage() {
                                 </div>
 
                                 {visibleProducts.map((product) => (
-                                    <div key={product._id} className="flex border-gray-300 align-middle vp-4 mb-4 rounded-lg shadow-xl gap-5 p-[20px]">
+                                    <div key={product._id} className="flex border-gray-500 border-[1px] align-middle vp-4 mb-4 rounded-lg gap-5 p-[20px] mt-10">
                                         <img className="w-full max-w-[100px] h-full min-h-[80px] rounded-md" src={`http://localhost:5000${product.gambarProduk[0]}`} alt={product.namaProduk} />
                                         
                                         <div className="flex flex-col align-middle justify-center w-full">

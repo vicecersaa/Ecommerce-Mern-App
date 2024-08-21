@@ -27,8 +27,11 @@ export default function KeranjangCard() {
             });
     
             const validItems = response.data.cart.filter(item => item.productId);
-            console.log('Fetched cart items:', validItems); 
-            setCartItems(validItems);
+            console.log('Fetched cart items:', validItems);
+
+            // Sort items by createdAt date in descending order (most recent first)
+            const sortedItems = validItems.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+            setCartItems(sortedItems);
         } catch (error) {
             setError('Failed to fetch cart items');
             console.error(error);
