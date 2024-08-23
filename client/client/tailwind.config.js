@@ -6,6 +6,9 @@ module.exports = {
   ],
   theme: {
     extend: {
+      screens: {
+        'custom-lg': "1290px"
+      },
       fontFamily: {
         sans: ['Lato', 'sans-serif']
       },

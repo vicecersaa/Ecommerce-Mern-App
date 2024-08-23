@@ -16,7 +16,7 @@ import BANNER3 from '../assets/img/banner3.PNG'
 import BANNER4 from '../assets/img/banner4.PNG'
 import ProdukUnggulan from "./ProdukUnggulan";
 
-export default function  Main() {
+export default function Main() {
 
   const { products } = useContext(ProductContext);
 
@@ -147,53 +147,77 @@ export default function  Main() {
               />
         
 
-            <div className="flex flex-col flex-wrap w-full mt-20 mb-20 mx-auto">
-              <div className="flex flex-col justify-center">
-                <p className="text-center text-xl">- Produk Terlaris</p>
-                <h2 className="text-4xl font-sans font-medium text-center mt-2 mb-14"><span className="text-[#194719]">Produk Unggulan</span> Forland Living</h2>
+              <div className="flex flex-col items-center w-full mt-20 mb-20">
+                  <div className="flex flex-col items-center mb-14">
+                      <p className="text-center text-xl">- Produk Terlaris</p>
+                      <h2 className="text-4xl font-sans font-medium text-center mt-2 mb-14">
+                          <span className="text-[#194719]">Produk Unggulan</span> Forland Living
+                      </h2>
+                  </div>
+                  <div className="w-full max-w-screen-lg">
+                      <ProdukUnggulan />
+                  </div>
               </div>
-              <div>
-                <ProdukUnggulan />
-              </div>
-            </div>
 
             <div className="flex flex-col items-center gap-8 mt-5 mb-10 justify-center align-middle w-4/5 m-auto">
-                <div className="flex justify-center items-center gap-4">
-                    <button onClick={() => handleCategoryClick('Semua')} className={`${selectedCategory === 'Semua' ? 'bg-gradient-to-r from-emerald-900 to-emerald-600 text-white' : 'bg-slate-100 border border-slate-200'}} flex w-full max-w-[150px] justify-center items-center py-4 px-4 border-[1px] rounded-md`}>
-                        <img className="w-full max-w-[22px] mr-2" src={PRODUCT} alt="" />
-                        Semua
-                    </button>
+              <div className="flex flex-wrap justify-center gap-4">
+                <button
+                  onClick={() => handleCategoryClick('Semua')}
+                  className={`${selectedCategory === 'Semua' ? 'bg-gradient-to-r from-emerald-900 to-emerald-600 text-white' : 'bg-slate-100 border border-slate-200'} flex items-center justify-center py-2 px-4 md:py-3 md:px-6 border rounded-md transition-transform transform hover:scale-105`}
+                >
+                  <img className="w-6 h-6 mr-2" src={PRODUCT} alt="" />
+                  <span className="hidden sm:inline">Semua</span>
+                </button>
 
-                    <button onClick={() => handleCategoryClick('Sofa')} className={`${selectedCategory === 'Sofa' ? 'bg-gradient-to-r from-emerald-900 to-emerald-600 text-white' : 'bg-slate-100 border border-slate-200'}} flex w-full max-w-[150px] justify-center items-center py-4 px-4 border-[1px] rounded-md`}>
-                        <img className="w-full max-w-[22px] mr-2" src={SOFA} alt="" />
-                        Furniture
-                    </button>
+                <button
+                  onClick={() => handleCategoryClick('Sofa')}
+                  className={`${selectedCategory === 'Sofa' ? 'bg-gradient-to-r from-emerald-900 to-emerald-600 text-white' : 'bg-slate-100 border border-slate-200'} flex items-center justify-center py-2 px-4 md:py-3 md:px-6 border rounded-md transition-transform transform hover:scale-105`}
+                >
+                  <img className="w-6 h-6 mr-2" src={SOFA} alt="" />
+                  <span className="hidden sm:inline">Furniture</span>
+                </button>
 
-                    <button onClick={() => handleCategoryClick('Springbed')} className={`${selectedCategory === 'Springbed' ? 'bg-gradient-to-r from-emerald-900 to-emerald-600 text-white' : 'bg-slate-100 border border-slate-200'}} flex w-full max-w-[150px] justify-center items-center py-4 px-4 border-[1px] rounded-md`}>
-                        <img className="w-full max-w-[22px] mr-2" src={BED} alt="" />
-                        Springbed
-                    </button>
+                <button
+                  onClick={() => handleCategoryClick('Springbed')}
+                  className={`${selectedCategory === 'Springbed' ? 'bg-gradient-to-r from-emerald-900 to-emerald-600 text-white' : 'bg-slate-100 border border-slate-200'} flex items-center justify-center py-2 px-4 md:py-3 md:px-6 border rounded-md transition-transform transform hover:scale-105`}
+                >
+                  <img className="w-6 h-6 mr-2" src={BED} alt="" />
+                  <span className="hidden sm:inline">Springbed</span>
+                </button>
 
-                    <button onClick={() => handleCategoryClick('Multibed')} className={`${selectedCategory === 'Multibed' ? 'bg-gradient-to-r from-emerald-900 to-emerald-600 text-white' : 'bg-slate-100 border border-slate-200'}} flex w-full max-w-[150px] justify-center items-center py-4 px-4 border-[1px] rounded-md`}>
-                        <img className="w-full max-w-[22px] mr-2" src={MULTIBED} alt="" />
-                        Multibed
-                    </button>
+                <button
+                  onClick={() => handleCategoryClick('Multibed')}
+                  className={`${selectedCategory === 'Multibed' ? 'bg-gradient-to-r from-emerald-900 to-emerald-600 text-white' : 'bg-slate-100 border border-slate-200'} flex items-center justify-center py-2 px-4 md:py-3 md:px-6 border rounded-md transition-transform transform hover:scale-105`}
+                >
+                  <img className="w-6 h-6 mr-2" src={MULTIBED} alt="" />
+                  <span className="hidden sm:inline">Multibed</span>
+                </button>
 
-                    <button onClick={() => handleCategoryClick('Matras')} className={`${selectedCategory === 'Matras' ? 'bg-gradient-to-r from-emerald-900 to-emerald-600 text-white' : 'bg-slate-100 border border-slate-200'}} flex w-full max-w-[150px] justify-center items-center py-4 px-4 border-[1px] rounded-md`}>
-                        <img className="w-full max-w-[22px] mr-2" src={MATRAS} alt="" />
-                        Matras
-                    </button>
+                <button
+                  onClick={() => handleCategoryClick('Matras')}
+                  className={`${selectedCategory === 'Matras' ? 'bg-gradient-to-r from-emerald-900 to-emerald-600 text-white' : 'bg-slate-100 border border-slate-200'} flex items-center justify-center py-2 px-4 md:py-3 md:px-6 border rounded-md transition-transform transform hover:scale-105`}
+                >
+                  <img className="w-6 h-6 mr-2" src={MATRAS} alt="" />
+                  <span className="hidden sm:inline">Matras</span>
+                </button>
 
-                    <button onClick={() => handleCategoryClick('Box')} className={`${selectedCategory === 'Box' ? 'bg-gradient-to-r from-emerald-900 to-emerald-600 text-white' : 'bg-slate-100 border border-slate-200'}} flex w-full max-w-[150px] justify-center items-center py-4 px-4 border-[1px] rounded-md`}>
-                        <img className="w-full max-w-[22px] mr-2" src={BOX} alt="" />
-                        In A Box
-                    </button>
+                <button
+                  onClick={() => handleCategoryClick('Box')}
+                  className={`${selectedCategory === 'Box' ? 'bg-gradient-to-r from-emerald-900 to-emerald-600 text-white' : 'bg-slate-100 border border-slate-200'} flex items-center justify-center py-2 px-4 md:py-3 md:px-6 border rounded-md transition-transform transform hover:scale-105`}
+                >
+                  <img className="w-6 h-6 mr-2" src={BOX} alt="" />
+                  <span className="hidden sm:inline">In A Box</span>
+                </button>
 
-                    <button onClick={() => handleCategoryClick('Aksesoris')} className={`${selectedCategory === 'Aksesoris' ? 'bg-gradient-to-r from-emerald-900 to-emerald-600 text-white' : 'bg-slate-100 border border-slate-200'}} flex w-full max-w-[150px] justify-center items-center py-4 px-4 border-[1px] rounded-md`}>
-                        <img className="w-full max-w-[22px] mr-2" src={AKSESORIS} alt="" />
-                        Aksesoris
-                    </button>
-            </div>
+                <button
+                  onClick={() => handleCategoryClick('Aksesoris')}
+                  className={`${selectedCategory === 'Aksesoris' ? 'bg-gradient-to-r from-emerald-900 to-emerald-600 text-white' : 'bg-slate-100 border border-slate-200'} flex items-center justify-center py-2 px-4 md:py-3 md:px-6 border rounded-md transition-transform transform hover:scale-105`}
+                >
+                  <img className="w-6 h-6 mr-2" src={AKSESORIS} alt="" />
+                  <span className="hidden sm:inline">Aksesoris</span>
+                </button>
+              </div>
+
                   
                   <div className="flex justify-center items-center">
                     <SemuaProduk products={filteredProducts} />
@@ -215,7 +239,7 @@ export default function  Main() {
                       <img className="w-full max-w-[250px] rounded-md" src="https://instagram.fcgk31-1.fna.fbcdn.net/v/t39.30808-6/440367003_18027144809059396_5118538823498032477_n.jpg?stp=dst-jpg_e35&amp;efg=eyJ2ZW5jb2RlX3RhZyI6ImltYWdlX3VybGdlbi4xMDgweDEwODAuc2RyLmYzMDgwOCJ9&amp;_nc_ht=instagram.fcgk31-1.fna.fbcdn.net&amp;_nc_cat=104&amp;_nc_ohc=016zh_OQTWEQ7kNvgEVUn0v&amp;edm=APs17CUAAAAA&amp;ccb=7-5&amp;ig_cache_key=MzM1MzAxNjM0NzkwMTQzODE0NA%3D%3D.2-ccb7-5&amp;oh=00_AYD9Dlo0DqcxafxBtDCSsRnuVoQcXfy9Nqas0Br4TFmlkw&amp;oe=66B7C88C&amp;_nc_sid=10d13b"></img>
                       <img className="w-full max-w-[250px] rounded-md"src="https://instagram.fcgk31-1.fna.fbcdn.net/v/t39.30808-6/436270607_18026293181059396_9164350759498850734_n.jpg?stp=dst-jpg_e35&amp;efg=eyJ2ZW5jb2RlX3RhZyI6ImltYWdlX3VybGdlbi4xMDgweDEwODAuc2RyLmYzMDgwOCJ9&amp;_nc_ht=instagram.fcgk31-1.fna.fbcdn.net&amp;_nc_cat=104&amp;_nc_ohc=0r9F8C4zcTsQ7kNvgFfreYo&amp;edm=APs17CUAAAAA&amp;ccb=7-5&amp;ig_cache_key=MzM0Nzg4OTM5NTY3MDY0ODIxOA%3D%3D.2-ccb7-5&amp;oh=00_AYDnDOmKEQ6ljHeseGxrMuVrAP7wPkgBgrz6G77PQQYByg&amp;oe=66B7C9A0&amp;_nc_sid=10d13b"></img>
                     </div>
-                  </div>
+                </div>
                
             
 

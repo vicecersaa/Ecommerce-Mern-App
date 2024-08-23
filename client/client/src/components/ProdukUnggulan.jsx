@@ -24,41 +24,42 @@ export default function ProdukUnggulan() {
         })
         .slice(0, 8);
 
-        const truncateText = (text, length) => {
-            if (text.length > length) {
-                return `${text.slice(0, length)}...`;
-            }
-            return text;
-        };
+    const truncateText = (text, length) => {
+        if (text.length > length) {
+            return `${text.slice(0, length)}...`;
+        }
+        return text;
+    };
 
     return (
-        <div className="w-full max-w-[1200px] mx-auto overflow-hidden">
+        <div className="w-full max-w-screen-lg mx-auto overflow-hidden">
             <Swiper
-                spaceBetween={20}
-                slidesPerView={4}   
+                spaceBetween={10} 
+                slidesPerView={1}
                 navigation
                 breakpoints={{
-                    640: { slidesPerView: 1 },
-                    768: { slidesPerView: 2 },
-                    1024: { slidesPerView: 3.5 },
+                    640: { slidesPerView: 2, spaceBetween: 5 },
+                    768: { slidesPerView: 3, spaceBetween: 10 },
+                    1024: { slidesPerView: 3, spaceBetween: 15 },
+                    1200: { slidesPerView: 4, spaceBetween: 20 },
                 }}
-                modules={[Navigation, Pagination]} 
+                modules={[Navigation, Pagination]}
             >
                 {featuredProducts.map((product) => (
                     <SwiperSlide key={product._id}>
                         <Link to={`/products/${product._id}`}>
-                            <div className="flex flex-col items-start justify-center w-full max-w-[300px] h-[430px] p-[20px] border-[1px] border-gray-300 bg-white rounded-lg shadow-xl mb-10">
+                            <div className="flex flex-col items-start justify-center w-full h-auto p-4 border border-gray-300 bg-white rounded-lg mb-4">
                                 <img
                                     src={`http://localhost:5000${product.gambarProduk[0]}`}
                                     alt={product.namaProduk}
-                                    className="w-full max-w-[270px] h-64 rounded-md mx-auto"
+                                    className="w-full max-w-[200px] h-auto rounded-md mx-auto"
                                 />
-                                <span className='text-sm text-[#194719] mb-1'>{product.categoryProduk}</span>
-                                <h3 className="font-medium font-sans text-base mb-1">
-                                    {truncateText(product.namaProduk, 50)}
+                                <span className='text-xs sm:text-sm text-[#194719] mb-1'>{product.categoryProduk}</span>
+                                <h3 className="font-medium font-sans text-sm sm:text-base mb-1">
+                                    {truncateText(product.namaProduk, 30)}
                                 </h3>
-                                <p className='text-sm font-sans mb-1'>{product.kondisi}</p>
-                                <p className="text-base text-[#194719]-600">{formatPrice(product.hargaProduk)}</p>
+                                <p className='text-xs sm:text-sm font-sans mb-1'>{product.kondisi}</p>
+                                <p className="text-sm sm:text-base text-[#194719]-600">{formatPrice(product.hargaProduk)}</p>
                             </div>
                         </Link>
                     </SwiperSlide>

@@ -49,26 +49,25 @@ export default function Header() {
 
     return (
         <div className="w-full">
-            <div className="flex items-center bg-[#194719] w-full py-3 px-4 justify-between">
-                <div className="flex items-center">
+            <div className="hidden items-center bg-[#194719] w-full py-3 px-4 justify-between custom-lg:flex">
+                <div className="flex items-center justify-center text-base font-sans text-white mt-2 lg:mt-0">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6 mr-2 text-white">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 18.75a60.07 60.07 0 0 1 15.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 0 1 3 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-.375m1.5-1.5H21a.75.75 0 0 0-.75.75v.75m0 0H3.75m0 0h-.375a1.125 1.125 0 0 1-1.125-1.125V15m1.5 1.5v-.75A.75.75 0 0 0 3 15h-.75M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm3 0h.008v.008H18V10.5Zm-12 0h.008v.008H6V10.5Z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 18.75a60.07 60.07 0 0 1 15.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 0 1 3 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-.375m1.5-1.5H21a.75.75 0 0 0-.75.75v.75m0 0H3.75m0 0h-.375a1.125 1.125 0 0 1-1.125-1.125V15m1.5 1.5v-.75A.75.75 0 0 0 3 15h-.75M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm3 0h.008v.008H18V10.5Zm-12 0h.008v.008H6V10.5Z" />
                     </svg>
 
-
-                    <p className="text-base font-sans text-white">Daftar sekarang dan dapatkan 25% diskon dalam pembelian pertama. <Link className=" text-yellow-400 font-sans underline" to={'/register'}>Daftar Sekarang</Link></p>
+                    <p className="text-base font-sans text-white">Daftar sekarang dan dapatkan 25% diskon dalam pembelian pertama. <Link className="text-yellow-400 font-sans underline" to={'/register'}>Daftar Sekarang</Link></p>
                 </div>
-                <div className="text-sm text-white font-sans">
-                    <a className="mr-6 hover:text-yellow-400 font-sans" href="">Tentang Forland Living</a>
-                    <a className="mr-6 hover:text-yellow-400 font-sans" href="">Mitra Forland Living</a>
-                    <a className="mr-6 hover:text-yellow-400 font-sans" href="">Hubungi Kami</a>
-                    <a className="mr-6 hover:text-yellow-400 font-sans" href="">Promo</a>
-                    <a className="mr-6 hover:text-yellow-400 font-sans" href="">Forland Living Care</a>
+                <div className="custom-lg:flex text-xs lg:text-sm text-white font-sans flex-col lg:flex-row items-center mt-2 lg:mt-0">
+                    <a className="lg:mr-6 hover:text-yellow-400 font-sans mt-2 lg:mt-0" href="">Tentang Forland Living</a>
+                    <a className="lg:mr-6 hover:text-yellow-400 font-sans mt-2 lg:mt-0" href="">Mitra Forland Living</a>
+                    <a className="lg:mr-6 hover:text-yellow-400 font-sans mt-2 lg:mt-0" href="">Hubungi Kami</a>
+                    <a className="lg:mr-6 hover:text-yellow-400 font-sans mt-2 lg:mt-0" href="">Promo</a>
+                    <a className="lg:mr-6 hover:text-yellow-400 font-sans mt-2 lg:mt-0" href="">Forland Living Care</a>
                 </div>
             </div>
             <div className="flex items-center align-middle py-2 px-4 w-full gap-5 h-30 border-gray-200 border-b-2">
                 
-                <div className="flex items-center align-middle gap-10 mr-6">
+                <div className="hidden items-center align-middle gap-10 mr-6 custom-lg:flex">
                     <Link to={'/'} className="ml-8">
                         <img src={LOGO} alt="Forland Living" className="w-full max-w-[270px]" />
                     </Link>
