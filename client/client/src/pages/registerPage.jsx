@@ -11,17 +11,17 @@ export default function RegisterPage() {
     const [successMessage, setSuccessMessage] = useState('');
 
 
-    // username state
+   
     const [name, setName] = useState('')
-    // email state
+    
     const [email, setEmail] = useState('')
-    // password state
+    
     const [password, setPassword] = useState('')
-    // loading state
+    
     const [loading, setLoading] = useState(false);
 
     
-    // Register Account
+    
     async function registerUser(e) {
         e.preventDefault();
         setLoading(true);

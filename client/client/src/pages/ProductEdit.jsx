@@ -11,7 +11,7 @@ const ProductEditForm = ({ productId }) => {
         deskripsi: '',
         stockProduk: '',
         isActive: true,
-        gambarProduk: [] // For managing selected files
+        gambarProduk: [] 
     });
 
     const [previewImages, setPreviewImages] = useState([]); 
@@ -57,7 +57,7 @@ const ProductEditForm = ({ productId }) => {
             gambarProduk: files
         }));
 
-        // Generate image previews
+        
         const previews = files.map(file => URL.createObjectURL(file));
         setPreviewImages(previews);
     };

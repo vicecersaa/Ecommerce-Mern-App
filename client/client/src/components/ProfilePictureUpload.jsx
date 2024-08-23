@@ -4,12 +4,12 @@ import BLANKPROFILE from '../assets/img/blank.png';
 import { UserContext } from "../UserContext";
 
 const ProfilePictureUpload = () => {
-  const [selectedFile, setSelectedFile] = useState(null); // Hanya satu file
+  const [selectedFile, setSelectedFile] = useState(null); 
   const { user, setUser } = useContext(UserContext);
 
   const handleFileChange = (e) => {
-    const file = e.target.files[0]; // Ambil hanya satu file
-    console.log(file);
+    const file = e.target.files[0]; 
+    
     setSelectedFile(file);
   };
 
@@ -30,11 +30,11 @@ const ProfilePictureUpload = () => {
         withCredentials: true, 
       });
   
-      console.log('Upload success:', response.data);
+      
   
       setUser(prev => ({ ...prev, profilePicture: response.data.profilePicture }));
   
-      console.log('Updated Profile Picture:', response.data.profilePicture);
+      
     } catch (error) {
       console.error('Error uploading file:', error);
     }

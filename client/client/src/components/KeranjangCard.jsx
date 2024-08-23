@@ -27,9 +27,9 @@ export default function KeranjangCard() {
             });
     
             const validItems = response.data.cart.filter(item => item.productId);
-            console.log('Fetched cart items:', validItems);
+            
 
-            // Sort items by createdAt date in descending order (most recent first)
+            
             const sortedItems = validItems.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
             setCartItems(sortedItems);
         } catch (error) {
@@ -38,7 +38,7 @@ export default function KeranjangCard() {
         }
     };
 
-    // Update item quantity
+    
     const updateQuantity = async (productId, newQuantity) => {
         if (newQuantity <= 0) return;
 
@@ -49,13 +49,13 @@ export default function KeranjangCard() {
                 quantity: newQuantity
             });
             setCartItems(response.data.cart);
-            console.log('Updated cart items:', response.data.cart);
+            
         } catch (error) {
             console.error('Failed to update quantity:', error);
         }
     };
 
-    // Remove Item from Cart
+   
     const removeItem = async (productId) => {
         try {
             const response = await axios.post(`${PORT}/remove-from-cart`, {
@@ -63,7 +63,7 @@ export default function KeranjangCard() {
                 productId
             });
             setCartItems(response.data.cart);
-            console.log('Removed cart item:', response.data.cart);
+            
     
             
             window.location.reload();
@@ -72,16 +72,16 @@ export default function KeranjangCard() {
         }
     };
 
-    // Calculate total price and format it
+   
     const calculateTotalPrice = () => {
         const total = cartItems.reduce((total, item) => total + (item.price * item.quantity), 0);
         return formatPrice(total);
     };
 
-    // Checkout
+    
     const handleCheckout = async () => {
         try {
-            console.log('Checkout items:', cartItems); // Log cartItems
+            
         
             const response = await axios.post(`${PORT}/checkout`, {
                 items: cartItems.map(item => ({
@@ -89,21 +89,20 @@ export default function KeranjangCard() {
                     quantity: item.quantity,
                     price: item.price,
                     name: item.productId.namaProduk,
-                    selectedSize: item.selectedSize, // Include selectedSize
-                    selectedVariant: item.selectedVariant, // Include selectedVariant
+                    selectedSize: item.selectedSize, 
+                    selectedVariant: item.selectedVariant, 
                 })),
             });
     
-            console.log('Checkout response:', response.data); // Log response data
+             
     
             if (response.data.paymentToken) {
                 window.snap.pay(response.data.paymentToken, {
                     onSuccess: async function(result) {
-                        console.log('Payment success:', result);
-                        // Handle post-payment actions here (e.g., update order status)
+                        
+                        
                     },
                     onPending: function(result) {
-                        console.log('Payment pending:', result);
                         alert('Payment is pending. Please complete the payment.');
                     },
                     onError: function(result) {
@@ -111,7 +110,7 @@ export default function KeranjangCard() {
                         alert('Payment failed. Please try again.');
                     },
                     onClose: function() {
-                        console.log('Payment popup closed without completing payment.');
+                        
                         alert('Payment popup closed. Please complete the payment.');
                     }
                 });

@@ -8,13 +8,12 @@ export default function AdminOrderHistory() {
     const [orders, setOrders] = useState([]);
     const [error, setError] = useState(null);
 
-    // Fungsi untuk mengambil data pesanan dari server
-   // Mengambil data pesanan saat komponen pertama kali dimuat
+    
 useEffect(() => {
     const fetchOrders = async () => {
         try {
             const response = await axios.get(`${PORT}/get-orders`);
-            setOrders(response.data.reverse());  // Membalik urutan array agar pesanan terbaru muncul di atas
+            setOrders(response.data.reverse());  
         } catch (error) {
             console.error('Error fetching orders:', error);
             setError('Failed to fetch orders. Please try again later.');
@@ -24,7 +23,7 @@ useEffect(() => {
     fetchOrders();
 }, []);
 
-    // Format harga untuk ditampilkan
+    
     const formatPrice = (num) => {
         if (!num) return '';
         return `Rp ${parseFloat(num).toLocaleString('id-ID', { minimumFractionDigits: 0 })}`;

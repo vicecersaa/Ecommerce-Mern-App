@@ -20,21 +20,21 @@ import AdminOrderHistory from "../components/AdminOrderHistory";
 
 export default function AccountPage() {
 
-    // data profile
+    
     const {user, setUser} = useContext(UserContext);
-    // bio state 
+     
     const [bio, setBio] = useState(true);
-    // riwayat state
+    
     const [riwayat, setRiwayat] = useState(false);
-    // keranjang state
+    
     const [keranjang, setKeranjang] = useState(false);
-    // tambah produk state
+    
     const [tambahProduk, setTambahProduk] = useState(false);
-    // set akun state
+    
     const [akun, setAkun] = useState(false);
-    // transak pembelian state
+    
     const [transaksi, setTransaksi] = useState(false);
-    // ubah produk state
+    
     const [produkSaya, setProdukSaya] = useState(false);
      const [editingField, setEditingField] = useState(null);
      const [editValue, setEditValue] = useState('');
@@ -66,10 +66,10 @@ export default function AccountPage() {
     const PORT = 'http://localhost:5000'
 
         
-        // ADD TO CART
+        
         useEffect(() => {
             const fetchCart = async () => {
-              // Cek apakah user ada dan user._id tersedia
+              
               if (!user || !user._id) {
                 console.error('User ID is not available');
                 return;
@@ -93,7 +93,7 @@ export default function AccountPage() {
               }
             };
           
-            // Hanya panggil fetchCart jika user dan user._id tersedia
+            
             if (user && user._id) {
               fetchCart();
             }
@@ -104,11 +104,11 @@ export default function AccountPage() {
         return <div>Loading...</div>;
     }
 
-    // logout
+   
     async function logout() {
         try {
             const response = await axios.post(`${PORT}/logout`, null, { withCredentials: true });
-            console.log('Logout response:', response);
+            
             
             setUser(null);
             navigate('/');
@@ -118,7 +118,7 @@ export default function AccountPage() {
         }
     }
 
-    // ubah ke section bio
+    
     function handleBio() {
         setRiwayat(false);
         setKeranjang(false);
@@ -129,7 +129,7 @@ export default function AccountPage() {
         setBio(true);
     }
 
-    //ubah ke section riwayat pesanan
+    
     function handleRiwayat() {
         setBio(false);
         setKeranjang(false);
@@ -140,7 +140,7 @@ export default function AccountPage() {
         setRiwayat(true);
     }
 
-    //ubah ke section keranjang
+    
     function  handleKeranjang() {
         setBio(false);
         setRiwayat(false);
@@ -151,7 +151,7 @@ export default function AccountPage() {
         setKeranjang(true);
     }
 
-    //ubah ke section tambah produk
+    
     function handleTambahProduk() {
         setBio(false)
         setRiwayat(false);
@@ -194,24 +194,24 @@ export default function AccountPage() {
 
 
     const startEditing = (field, currentValue) => {
-        setEditValue(currentValue); // Set initial value for the field
-        setEditingField(field); // Set field to be edited
+        setEditValue(currentValue); 
+        setEditingField(field); 
     };
 
     const handleSave = async () => {
         if (editingField) {
             try {
-                console.log("Saving", editingField, editValue);
+                
                 await handleEditProfile(editingField, editValue);
-                setEditingField(null); // Close the form after saving
-                setEditValue(''); // Clear the edit value
+                setEditingField(null); 
+                setEditValue(''); 
             } catch (err) {
                 console.error(`Failed to update ${editingField}:`, err);
             }
         }
     };
 
-      // delete product
+      
       const handleDelete = async (productId) => {
         if (window.confirm('Are you sure you want to delete this product?')) {
             try {
@@ -223,7 +223,7 @@ export default function AccountPage() {
                 });
     
                 if (response.ok) {
-                    // Successfully deleted, update the context
+                    
                     setProducts(products.filter(product => product._id !== productId));
                     alert('Product deleted successfully');
                 } else {
@@ -239,13 +239,13 @@ export default function AccountPage() {
     
 
 
-     // Edit profile handler
+     
      const handleEditProfile = async (field, value) => {
         try {
             const response = await axios.patch(`${PORT}/profile/update-profile/${user._id}`, { [field]: value }, { withCredentials: true });
             if (response.status === 200) {
                 setUser(prevUser => ({ ...prevUser, [field]: value }));
-                console.log(`${field} updated successfully`);
+                
             } else {
                 throw new Error(`Failed to update ${field}`);
             }

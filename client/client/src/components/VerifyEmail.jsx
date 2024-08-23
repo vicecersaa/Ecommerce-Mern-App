@@ -12,7 +12,7 @@ const VerifyEmail = () => {
     const verifyToken = async () => {
       try {
         const { data } = await axios.get('http://localhost:5000/verify-email', { params: { token } });
-        console.log('Response Data:', data);
+        
         setMessage(data.message);
       } catch (error) {
         setMessage('Verification failed');

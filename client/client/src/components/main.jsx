@@ -65,7 +65,7 @@ export default function  Main() {
       };
 
 
-        // kategori pilihan slider 
+        
 
         const kategoriPilihanImages = [
           'https://images.tokopedia.net/img/cache/200-square/LBbbUK/2022/7/20/636845a5-cb9a-4ef6-8d46-d79cb85b5ace.jpg',
@@ -99,7 +99,7 @@ export default function  Main() {
       };
 
 
-      // Produk Unggulan Slider 
+      
 
       const ProdukUnggulanImages = [
         'https://images.tokopedia.net/img/cache/300-square/VqbcmM/2024/3/14/ea0ea028-38d1-45b6-90dc-2402716b6c5d.jpg',

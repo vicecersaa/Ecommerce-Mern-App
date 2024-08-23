@@ -10,21 +10,21 @@ export default function LoginPage() {
   const [password, setPassword] = useState('');
   const [redirect, setRedirect] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [errorMessage, setErrorMessage] = useState('');  // State untuk pesan error
+  const [errorMessage, setErrorMessage] = useState('');  
   const { setUser } = useContext(UserContext);
 
-  // Login Account
+  
   async function handleLoginSubmit(e) {
     e.preventDefault();
 
-    // Validate input
+    
     if (!email || !password) {
       setErrorMessage('Please enter both email and password');
       return;
     }
 
     setLoading(true);
-    setErrorMessage('');  // Reset pesan error
+    setErrorMessage('');  
 
     setTimeout(async () => {
       try {

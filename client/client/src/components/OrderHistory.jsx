@@ -19,12 +19,12 @@ export default function OrderHistory() {
                 params: { userId: user._id }
             });
     
-            console.log('Order history response:', response.data);
             
-            // Filter dan urutkan data pesanan berdasarkan tanggal secara menurun (terbaru di atas)
+            
+            
             const successfulOrders = response.data
                 .filter(order => order.status === 'Berhasil')
-                .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)); // Sortir berdasarkan tanggal
+                .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)); 
             
             setOrders(successfulOrders);
         } catch (error) {
@@ -102,7 +102,7 @@ export default function OrderHistory() {
     );
 }
 
-// Formatting function to add thousand separators
+
 const formatPrice = (num) => {
     if (!num) return '';
     return `Rp${parseFloat(num).toLocaleString('id-ID', { minimumFractionDigits: 0 })}`;

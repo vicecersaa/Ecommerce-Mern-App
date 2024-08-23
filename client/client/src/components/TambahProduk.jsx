@@ -4,7 +4,7 @@ import axios from "axios";
 
 export default function TambahProduk() {
 
-     // State untuk data produk
+     
     const [namaProduk, setNamaProduk] = useState('');
     const [categoryProduk, setCategoryProduk] = useState([]);
     const [hargaProduk, setHargaProduk] = useState('');
@@ -24,7 +24,7 @@ export default function TambahProduk() {
     const [previewImages, setPreviewImages] = useState([]);
 
     useEffect(() => {
-        // Fetch categories from the server
+        
         const fetchCategories = async () => {
             try {
                 const response = await axios.get('http://localhost:5000/categories');
@@ -45,7 +45,7 @@ export default function TambahProduk() {
     
         const formData = new FormData();
         files.forEach((file) => {
-            formData.append('image', file); // Nama field harus sesuai dengan yang diharapkan oleh server
+            formData.append('image', file);  
         });
     
         try {
@@ -54,7 +54,7 @@ export default function TambahProduk() {
                     'Content-Type': 'multipart/form-data',
                 },
             });
-            return response.data.imageUrls; // Pastikan ini sesuai dengan respons server
+            return response.data.imageUrls; 
         } catch (error) {
             console.error('Error uploading images:', error.message);
             if (error.response) {
@@ -84,7 +84,7 @@ export default function TambahProduk() {
         if (!isNaN(rawValue)) {
             const formattedValue = formatNumber(rawValue);
             setHargaProduk(rawValue);
-            e.target.value = formattedValue; // Update the input field with the formatted value
+            e.target.value = formattedValue; 
         }
     };
     
@@ -95,18 +95,18 @@ export default function TambahProduk() {
             preview: URL.createObjectURL(file),
         }));
     
-        // Simpan file dan preview dalam state
+        
         setGambarProduk(filePreviews);
     };
 
-      // Handle variant changes
+      
         const handleVariantChange = (index, field, value) => {
         const newVariants = [...variants];
         newVariants[index] = { ...newVariants[index], [field]: value };
         setVariants(newVariants);
     };
 
-    // Handle ukuranVarian changes
+    
 
     const handleUkuranVarianChange = (variantIndex, ukuranIndex, field, value) => {
         const newVariants = [...variants];
@@ -124,7 +124,7 @@ export default function TambahProduk() {
         setVariants(variants.filter((_, i) => i !== index));
     };
 
-    // sizes setting
+    
 
     const addUkuranVarian = (variantIndex) => {
         const newVariants = [...variants];
@@ -141,7 +141,7 @@ export default function TambahProduk() {
     const handleCategoryChange = (e) => {
         const input = e.target.value;
         if (input === '') {
-            // Kosongkan filteredCategories jika input kosong
+            
             setFilteredCategories([]);
         } else {
             const filtered = availableCategories.filter(category => 
@@ -158,7 +158,7 @@ export default function TambahProduk() {
     };
 
 
-    // Fungsi untuk mengirim data produk ke server
+    
 const createProduct = async (e) => {
     e.preventDefault();
 
@@ -167,13 +167,13 @@ const createProduct = async (e) => {
 
     let imageUrls = [];
 
-    // Validasi input gambar produk
+    
     if (!gambarProduk || gambarProduk.length === 0) {
         setErrorMessage('Harap masukkan gambar produk.');
         return;
     }
 
-    // Validasi input nama produk
+    
     if (!namaProduk) {
         setErrorMessage('Harap masukkan nama produk.');
         return;
@@ -238,9 +238,9 @@ const createProduct = async (e) => {
         const response = await axios.post('http://localhost:5000/products', productData);
         setSuccessMessage('Produk berhasil ditambahkan!');
     } catch (error) {
-        // Menangani error yang lebih spesifik berdasarkan respon dari server
+        
         if (error.response) {
-            // Server merespon dengan status di luar jangkauan 2xx
+            
             if (error.response.status === 400) {
                 setErrorMessage('Data produk tidak valid. Silakan periksa input Anda.');
             } else if (error.response.status === 500) {
@@ -249,10 +249,10 @@ const createProduct = async (e) => {
                 setErrorMessage(`Terjadi kesalahan: ${error.response.statusText}`);
             }
         } else if (error.request) {
-            // Permintaan dibuat tetapi tidak ada respons dari server
+            
             setErrorMessage('Tidak ada respons dari server. Silakan coba lagi.');
         } else {
-            // Kesalahan lain saat mengatur permintaan
+            
             setErrorMessage(`Error: ${error.message}`);
         }
         console.error('Error creating product:', error);

@@ -19,11 +19,11 @@ export default function ProdukDetail() {
     const { user } = useContext(UserContext);
     const [product, setProduct] = useState(null);
 
-    // Error message untuk produk
+    
     const [errorMessage, setErrorMessage] = useState('');
     const [successMessage, setSuccessMessage] = useState('');
 
-    // Error message untuk akun 
+    
     const [errorMessageAccount, setErrorMessageAccount] = useState('')
     const [successMessageAccount, setSuccessMessageAccount] = useState('');
 
@@ -58,14 +58,10 @@ export default function ProdukDetail() {
             setSelectedSize({
                 ukuran: firstSize.ukuran,
                 harga: firstSize.harga,
-                _id: firstSize._id  // Tambahkan _id ke selectedSize
+                _id: firstSize._id  
             });
     
-            console.log('Updated selectedSize:', {
-                ukuran: firstSize.ukuran,
-                harga: firstSize.harga,
-                _id: firstSize._id
-            });
+           
         }
     }, [product]);
 
@@ -213,11 +209,11 @@ export default function ProdukDetail() {
     
                 window.snap.pay(paymentToken, {
                     onSuccess: function(result) {
-                        console.log('Pembayaran Berhasil:', result);
+                        
                         setSuccessMessageAccount('Pembayaran Berhasil! Cek riwayat pesanan anda.');
                     },
                     onPending: function(result) {
-                        console.log('Pembayaran ditangguhkan:', result);
+                        
                         setErrorMessageAccount('Pembayaran ditunggu, harap selesaikan pembayaran anda.');
                     },
                     onError: function(result) {
@@ -225,7 +221,7 @@ export default function ProdukDetail() {
                         setErrorMessageAccount('Pembayaran gagal, silahkan melakukan pembayaran ulang.');
                     },
                     onClose: function() {
-                        console.log('Pembayaran tutup pop-up');
+                        
                         setErrorMessageAccount('Pembayaran dibatalkan, silahkan selesaikan pembayaran anda.');
                     }
                 });
@@ -373,7 +369,7 @@ export default function ProdukDetail() {
                         )}
 
                         {successMessage && (
-                            <div className="bg-green-100 border-green-400 text-green-700 text-center font-sans text-sm mt-4 w-full max-w-[370px] mx-auto px-4 py-3 text-center">{successMessage}</div>
+                            <div className="bg-green-100 border-green-400 text-green-700 text-center font-sans text-sm mt-4 w-full max-w-[370px] mx-auto px-4 py-3">{successMessage}</div>
                         )}
 
                         {errorMessage && (

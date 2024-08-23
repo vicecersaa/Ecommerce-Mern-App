@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import ProdukCard from "../properties/produkCard";
 
 export default function SemuaProduk({ products }) {
-    // Shuffle function
+    
     const shuffleProduct = (array) => {
         let shuffleProduct = [...array];
         for (let i = shuffleProduct.length - 1; i > 0; i--) {
@@ -12,14 +12,14 @@ export default function SemuaProduk({ products }) {
         return shuffleProduct;
     };
 
-    // Shuffle products when the component mounts
+    
     const [shuffledProducts, setShuffledProducts] = useState([]);
 
     useEffect(() => {
         setShuffledProducts(shuffleProduct(products));
     }, [products]);
 
-    // Formatting function to add thousand separators
+    
     const formatPrice = (num) => {
         if (!num) return '';
         return `Rp${parseFloat(num).toLocaleString('id-ID', { minimumFractionDigits: 0 })}`;

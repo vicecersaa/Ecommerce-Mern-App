@@ -72,13 +72,8 @@ app.use(bodyParser.urlencoded({ extended: true }));
 const validateUpdate = [
   body('phoneNumber').optional().isString(),
   body('address').optional().isString(),
-  // Add more validations as needed
-
-  
 ];
 
-console.log('EMAIL:', process.env.EMAIL); 
-console.log('APPLICATION_SPECIFIC_PASSWORD:', process.env.APPLICATION_SPECIFIC_PASSWORD);
 
 
 
@@ -108,18 +103,18 @@ const transporter = nodemailer.createTransport({
 app.post('/register', async (req, res) => {
   const { name, email, password } = req.body;
 
-  // Validasi input
+  
   if (!name || !email || !password) {
       return res.status(400).json({ message: 'Semua field wajib diisi' });
   }
 
-  // Validasi format email
+  
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   if (!emailRegex.test(email)) {
       return res.status(400).json({ message: 'Format email tidak valid' });
   }
 
-  // Validasi password harus mengandung huruf besar dan angka
+  
   const passwordRegex = /^(?=.*[A-Z])(?=.*\d)/;
   if (!passwordRegex.test(password)) {
       return res.status(400).json({ message: 'Password harus mengandung setidaknya satu huruf besar dan satu angka.' });
@@ -164,10 +159,10 @@ app.post('/register-admin', authenticateUser, async (req, res) => {
       return res.status(400).json({ error: 'Admin already exists' });
   }
 
-  // Hash password
+  
   const hashedPassword = await bcrypt.hash(password, 10);
 
-  // Create new admin
+  
   const newAdmin = new userModel({
       name,
       email,
@@ -187,7 +182,7 @@ app.post('/register-admin', authenticateUser, async (req, res) => {
 app.post('/login', async (req, res) => {
   const { email, password } = req.body;
 
-  // Check if email and password are provided
+  
   if (!email || !password) {
     return res.status(400).json({ message: 'Email and password are required' });
   }
@@ -195,7 +190,7 @@ app.post('/login', async (req, res) => {
   try {
     const userDoc = await userModel.findOne({ email });
 
-    // Check if user exists and password matches
+   
     if (userDoc && bcrypt.compareSync(password, userDoc.password)) {
       jwt.sign({
           email: userDoc.email,
@@ -228,11 +223,10 @@ app.post('/forgot-password', async (req, res) => {
     const resetPasswordUrl = `http://localhost:3000/reset-password?token=${resetToken}`;
 
     user.resetPasswordToken = resetToken;
-    user.resetPasswordExpires = Date.now() + 3600000; // 1 hour from now
+    user.resetPasswordExpires = Date.now() + 3600000; 
     await user.save();
 
-    console.log(`Sending reset email to: ${user.email}`);
-    console.log(`From: ${process.env.EMAIL}`);
+    
 
     const info = await transporter.sendMail({
       from: process.env.EMAIL,
@@ -241,11 +235,11 @@ app.post('/forgot-password', async (req, res) => {
       html: `<p>To reset your password, please click the link below:</p><p><a href="${resetPasswordUrl}">${resetPasswordUrl}</a></p>`,
     });
 
-    console.log('Email sent:', info.response); // Log email sending status
+    
 
     res.json({ message: 'Reset password email sent' });
   } catch (error) {
-    console.error('Error sending email:', error.message); // Log detailed error
+    console.error('Error sending email:', error.message); 
     res.status(500).json({ error: 'Failed to send reset password email' });
   }
 });
@@ -347,7 +341,7 @@ app.post('/change-password', authenticateUser, async (req, res) => {
 
 //UPLOAD PROFILE PICTURE
 app.post('/upload-profilePicture', authenticateUser, (req, res) => {
-  const upload = multer({ storage: storage }).single('image'); // Hanya mengizinkan satu file
+  const upload = multer({ storage: storage }).single('image'); 
   upload(req, res, async function (err) {
     if (err) {
       console.error('Multer error:', err);
@@ -358,13 +352,13 @@ app.post('/upload-profilePicture', authenticateUser, (req, res) => {
     }
 
     const imageUrl = `/uploads/${req.file.filename}`;
-    console.log('Uploaded image URL:', imageUrl);
+    
 
     try {
       const userId = req.user._id;
       const updatedUser = await userModel.findByIdAndUpdate(
         userId,
-        { profilePicture: imageUrl }, // Simpan satu URL gambar
+        { profilePicture: imageUrl }, 
         { new: true }
       );
       if (!updatedUser) {
@@ -518,7 +512,7 @@ app.get('/admin-users', async (req, res) => {
 const upload = multer({ storage: storage }).array('image');
 
 
-  // get product id v
+  // get product id 
   app.get('/products/:id', async (req, res) => {
     try {
         const { id } = req.params;
@@ -563,11 +557,11 @@ const upload = multer({ storage: storage }).array('image');
         if (!req.files || req.files.length === 0) {
             return res.status(400).json({ error: 'No files uploaded' });
         }
-        // Map the uploaded files to their URLs
+        
         const imageUrls = req.files.map(file => `/uploads/${file.filename}`);
         
         res.json({ imageUrls });
-        console.log(`Error : ${imageUrls}`);
+        
     });
 }); 
   
@@ -576,7 +570,7 @@ const upload = multer({ storage: storage }).array('image');
 
 app.post('/products', authenticateUser, authenticateAdmin, async (req, res) => {
   const { namaProduk, namaToko, kondisi, deskripsi, hargaProduk, stockProduk, gambarProduk, variants, beratProduk, categoryProduk } = req.body;
-  console.log('Received data:', req.body);
+  
   try {
     const productDoc = new productModel({
       namaProduk,
@@ -594,7 +588,7 @@ app.post('/products', authenticateUser, authenticateAdmin, async (req, res) => {
     });
 
     const savedProduct = await productDoc.save();
-    console.log(savedProduct);
+    
     res.status(201).json(savedProduct);
   } catch (error) {
     res.status(422).json({ error: 'Gagal menyimpan produk', details: error.message });
@@ -608,7 +602,7 @@ app.post('/products', authenticateUser, authenticateAdmin, async (req, res) => {
     try {
         const products = await productModel.find();
         res.json(products);
-        console.log(products)
+        
     } catch (err) {
         res.status(500).json({ message: err.message });
     }
@@ -743,7 +737,7 @@ app.post('/checkout', authenticateUser, async (req, res) => {
 app.post('/midtrans-notification', async (req, res) => {
   const { order_id, transaction_status } = req.body;
 
-  console.log('Midtrans notification received:', req.body);
+  
 
   try {
       const order = await orderModel.findById(order_id);
@@ -756,13 +750,13 @@ app.post('/midtrans-notification', async (req, res) => {
       if (transaction_status === 'capture' || transaction_status === 'settlement') {
           order.status = 'Berhasil';
           
-          // Fetch invoice URL from Midtrans (if available)
+          
           const midtransTransaction = await midtrans.transaction.status(order_id);
           order.invoiceUrl = midtransTransaction.invoice_url || midtransTransaction.redirect_url || null;
           
           await order.save();
 
-          // Optionally, clear cart or perform additional actions
+          
           await userModel.findByIdAndUpdate(order.userId, { $set: { cart: [] } });
       } else if (transaction_status === 'deny' || transaction_status === 'cancel' || transaction_status === 'expire') {
           order.status = 'Tidak Berhasil';
@@ -772,7 +766,7 @@ app.post('/midtrans-notification', async (req, res) => {
           await order.save();
       }
 
-      console.log('Order updated:', order);
+      
 
       res.status(200).send('OK');
   } catch (error) {
@@ -802,7 +796,7 @@ app.post('/checkout-direct', async (req, res) => {
 
     const totalAmount = quantity * price;
 
-    // Create a new order
+    
     const newOrder = new orderModel({
       userId,
       items: [{ 
@@ -810,16 +804,16 @@ app.post('/checkout-direct', async (req, res) => {
         quantity, 
         price, 
         name: product.namaProduk,
-        selectedSize: selectedSize,    // Add selectedSize here
-        selectedVariant: selectedVariant // Add selectedVariant here
+        selectedSize: selectedSize,    
+        selectedVariant: selectedVariant 
       }],
       totalAmount,
     });
 
-    // Save the order
+    
     const savedOrder = await newOrder.save();
 
-    // Prepare Midtrans transaction
+    
     const transactionDetails = {
       order_id: savedOrder._id.toString(),
       gross_amount: totalAmount,
@@ -854,7 +848,7 @@ app.post('/checkout-direct', async (req, res) => {
       }
     });
 
-    // Save transaction token in order document
+    
     savedOrder.midtransToken = midtransTransaction.token;
     await savedOrder.save();
 
@@ -915,11 +909,11 @@ app.patch('/update-product/:id', authenticateUser, authenticateAdmin, (req, res)
 
 //PORT SETTINGS :
 
-
+const PORT = process.env.PORT || 5000;
 
 
 // PORT SETTING
 
-app.listen(5000, () => {
+app.listen(PORT, () => {
     console.log(`Server is running on port 5000`);
 });
