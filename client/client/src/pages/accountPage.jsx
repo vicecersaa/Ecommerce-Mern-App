@@ -15,7 +15,7 @@ import AdminList from "../components/AdminList";
 import LOGO from '../assets/img/LOGO1.jpg';
 import { Link } from "react-router-dom";
 import AdminOrderHistory from "../components/AdminOrderHistory";
-
+import MobileTab from "../components/MobileTab";
 
 
 export default function AccountPage() {
@@ -699,6 +699,7 @@ export default function AccountPage() {
 
             </div>
             </div>
+            <MobileTab />
         </div>
         
     )

@@ -6,6 +6,16 @@ module.exports = {
   ],
   theme: {
     extend: {
+      scrollbar: {
+        hide: 'hidden',
+        
+      },
+      scrollSnapType: {
+        mandatory: 'x mandatory', 
+      },
+      touchAction: {
+        panX: 'pan-x', 
+      },
       screens: {
         'custom-lg': "1290px"
       },

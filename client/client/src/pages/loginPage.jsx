@@ -46,7 +46,7 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 sm:p-8 bg-gray-50">
+    <div className="min-h-screen flex items-center justify-center sm:p-8 bg-gray-50 p-[16px]">
       <div className="bg-gray-50 rounded-lg p-6 sm:p-10 max-w-md w-full">
         {loading && <LoadingSpinner />}
         <div className="flex flex-col mb-3">

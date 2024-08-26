@@ -6,7 +6,7 @@ import INSTAGRAM from '../assets/img/instagram.png';
 
 export default function Footer() {
     return (
-        <div className="w-full bg-[#194719] min-h-[350px] mt-20">
+        <div className="hidden w-full bg-[#194719] min-h-[350px] mt-20 md:flex flex-col">
             <div className='p-[60px] flex min-h-[350px]'>
                 <div className="w-full max-w-[36%] mr-10">
                     <img className="w-full max-w-[250px]" src={LOGO} alt="Forland Living Logo" />

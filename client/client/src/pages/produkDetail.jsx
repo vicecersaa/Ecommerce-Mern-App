@@ -262,12 +262,9 @@ export default function ProdukDetail() {
    
 
     return (
-        <div>
+        <div className="bg-gray-50 pb-[100px] md:pb-0">
             <Header />
-        <div className="w-full max-w-[500px] mx-auto">
-
-           
-        
+        <div className="hidden w-full max-w-[350px] mx-auto md:pt-[180px] md:flex bg-white ">
             {errorMessageAccount && (
                 <div className="fixed inset-0 flex items-center justify-center z-50">
                     <div className="bg-black opacity-50 absolute inset-0"></div>
@@ -296,10 +293,39 @@ export default function ProdukDetail() {
 
         </div>
 
-            <div className="container mx-auto w-full max-w-[1100px] mt-10 flex justify-evenly gap-5">
+        <div className="flex w-full max-w-[350px] mx-auto md:hidden ">
+            {errorMessageAccount && (
+                <div className="fixed inset-0 flex items-center justify-center z-50">
+                    <div className="bg-black opacity-50 absolute inset-0"></div>
+                    <div
+                        ref={modalRef}
+                        className="animate-popUp text-red-700 px-4 py-2 font-sans text-center mt-4 bg-red-100 rounded-full mb-2 relative max-w-md mx-auto z-10"
+                        role="alert"
+                    >
+                        <span className="block sm:inline text-center text-sm">{errorMessageAccount}</span>
+                    </div>
+                </div>
+            )}
+
+            {successMessageAccount && (
+                <div className="fixed inset-0 flex items-center justify-center z-50">
+                    <div className="bg-black opacity-50 absolute inset-0"></div>
+                    <div
+                        ref={modalRef}
+                        className="animate-popUp text-green-700 px-4 py-2 font-sans text-center mt-4 bg-green-100 rounded-full mb-2 relative max-w-md mx-auto z-10"
+                        role="alert"
+                    >
+                        <span className="block sm:inline text-center text-sm">{successMessageAccount}</span>
+                    </div>
+                </div>
+            )}
+
+        </div>
+
+            <div className="hidden container mx-auto w-full max-w-[1100px] mt-10 justify-evenly gap-5 md:flex bg-white">
                 <div className="w-full max-w-[400px]">
                     <img className="w-full max-w-[400px] bg-[#DEDEDE] p-[20px] rounded-lg" src={`http://localhost:5000${mainImage}`} alt={product.namaProduk} />
-                    <div className="flex mt-2 gap-5">
+                    <div className="flex justify-center mt-2 gap-5">
                         {product.gambarProduk.map((image, index) => (
                             <img
                                 key={index}
@@ -467,6 +493,197 @@ export default function ProdukDetail() {
                             Beli Sekarang
                         </button>
 
+                </div>
+            </div>
+
+
+            <div className="flex flex-col container mx-auto w-full mt-10 justify-center md:hidden ">
+                <div className="w-full max-w-full bg-white">
+                    <img className="w-full max-w-full bg-[#DEDEDE] max-h-[380px]" src={`http://localhost:5000${mainImage}`} alt={product.namaProduk} />
+                    <div className="flex justify-center mt-2 gap-3">
+                        {product.gambarProduk.map((image, index) => (
+                            <img
+                                key={index}
+                                className="w-full max-w-[80px] bg-[#DEDEDE] p-[10px] rounded-lg cursor-pointer"
+                                src={`http://localhost:5000${image}`}
+                                alt={product.namaProduk}
+                                onClick={() => handleThumbnailClick(image)}
+                            />
+                        ))}
+                    </div>
+                </div>
+
+                <div className="w-full max-w-[360px] bg-gray-100">
+                    <div className="bg-white p-[10px]">
+                        <p className="text-[#194719] font-sans text-2xl font-bold">{formatPrice(price)}</p>
+                        <h1 className="font-sans text-base mt-2 font-semibold text-gray-500">
+                            {product.namaProduk}
+                            {selectedVariant && selectedVariant.namaVarian 
+                                ? ` - ${selectedVariant.namaVarian}` 
+                                : ''}
+                            {selectedSize && selectedSize.ukuran 
+                                ? ` - ${selectedSize.ukuran}` 
+                                : ''}
+                        </h1>
+
+                        <div className="flex items-center gap-1 ">
+                            <img className="w-full max-w-[15px]" src={STARS} alt="Rating stars" />
+                            <span className="font-sans text-base">{product.ratings}</span>
+                        </div>
+                    </div>
+
+                    <div className="bg-white p-[10px] mt-2">
+                    
+                        <div className="">
+                            {product.variants && product.variants.length > 0 ? (
+                                <>
+                                    <h2 className="text-base font-sans mb-2 mt-3 font-bold">Pilih Varian : </h2>
+                                    <div className="overflow-x-auto flex space-x-2 scrollbar-hide">
+                                        {uniqueVariantNames.map((variantName) => (
+                                            <button
+                                                className="rounded-full whitespace-nowrap"
+                                                key={variantName}
+                                                onClick={() => handleVariantClick(product.variants.find(v => v.namaVarian === variantName))}
+                                                style={{
+                                                    backgroundColor: selectedVariant && selectedVariant.namaVarian === variantName ? '#194719' : '#f5f5f5',
+                                                    color: selectedVariant && selectedVariant.namaVarian === variantName ? 'white' : 'black',
+                                                    padding: '8px 18px',
+                                                    margin: '4px',
+                                                    border: 'none',
+                                                    flexShrink: 0,
+                                                }}
+                                            >
+                                                {variantName}
+                                            </button>
+                                        ))}
+                                    </div>
+                                </>
+                            ) : (
+                                <div></div>
+                            )}
+                        </div>
+
+
+                        <div className="mt-4 mb-4">
+                            {selectedVariant && selectedVariant.ukuranVarian && selectedVariant.ukuranVarian.length > 0 ? (
+                                <h2 className="text-base font-sans mb-2 mt-5 font-bold">Pilih Tipe/Ukuran : </h2>
+                            ) : (
+                                <p></p>
+                            )}
+
+                            {successMessage && (
+                                <div className="bg-green-100 border-green-400 text-green-700 text-center font-sans text-sm mt-4 w-full max-w-[370px] mx-auto px-4 py-3">{successMessage}</div>
+                            )}
+
+                            {errorMessage && (
+                                <div className="animate-popUp text-red-700 px-4 py-2 font-sans max-w-[323px] bg-red-100 rounded-full mb-2" role="alert">
+                                    <span className="block sm:inline text-center">{errorMessage}</span>
+                                </div>
+                            )}
+                            
+                            {selectedVariant && selectedVariant.ukuranVarian && selectedVariant.ukuranVarian.length > 0 ? (
+                                <div className="flex overflow-x-auto whitespace-nowrap no-scrollbar">
+                                    {selectedVariant.ukuranVarian.map((size) => (
+                                        <button
+                                            className="rounded-full flex-shrink-0"
+                                            key={size._id}
+                                            onClick={() => handleSizeClick(size)}
+                                            style={{
+                                                backgroundColor: selectedSize._id === size._id ? '#194719' : '#f5f5f5',
+                                                color: selectedSize._id === size._id ? 'white' : 'black',
+                                                padding: '8px 18px',
+                                                margin: '4px',
+                                                border: 'none',
+                                            }}
+                                        >
+                                            {size.ukuran}
+                                        </button>
+                                    ))}
+                                </div>
+                            ) : (
+                                <p></p>
+                            )}
+                        </div>
+
+                    </div>
+
+                    <div className="mt-2 mb-2 bg-white p-[10px]">
+                        
+                        <h2 className="font-bold font-sans text-lg mb-2">Detail Produk</h2>
+
+                        <p className="text-slate-500 font-medium font-sans">
+                            Kondisi : <span className="text-black font-normal font-sans">{product.kondisi}</span>
+                        </p>
+
+                        <p className="text-slate-500 font-medium font-sans">
+                            Minimal Pesanan : <span className=" text-black font-normal font-sans">1 Buah</span>
+                        </p>
+
+                        <p className="mb-3 text-slate-500 font-medium font-sans">
+                            Toko : <span className="text-[#194719] font-semibold font-sans">{product.namaToko}</span>
+                        </p>
+
+                        <h2 className="font-bold font-sans text-lg mb-2">Deskripsi Produk</h2>
+
+                        <p className="text-slate-500 font-sans">
+                            {getDisplayText(product.deskripsi)}
+                            {product.deskripsi.length > 243 && (
+                                <button className="text-[#194719] font-sans" onClick={toggleExpansion}>
+                                    {isExpanded ? '..Lihat Lebih Sedikit' : '..Lihat Selengkapnya'}
+                                </button>
+                            )}
+                        </p>
+                    </div>
+                    <div className="fixed bottom-0 left-0 right-0 w-full bg-white border-t-[1px] shadow-sm md:hidden z-50">
+                        
+                        <div className="flex justify-between p-[8px]">
+                            
+                            <div className="w-full max-w-[100px] flex justify-center border border-[#194719] rounded-md p-1">
+                                <button
+                                    className="w-[25px] h-[25px] flex items-center justify-center text-[18px] font-bold"
+                                    onClick={() => handleQuantityChange(-1)}
+                                >
+                                    -
+                                </button>
+                                <input
+                                    className="w-[35px] h-[23px] text-center border-none outline-none"
+                                    type="text"
+                                    value={quantity}
+                                    readOnly
+                                />
+                                <button
+                                    className="w-[25px] h-[26px] flex items-center justify-center text-[18px] font-bold"
+                                    onClick={() => handleQuantityChange(1)}
+                                >
+                                    +
+                                </button>
+                            </div>
+
+                            <div className="flex items-end justify-center gap-3 bg-white px-2">
+                                <p className="text-gray-500 font-sans">Subtotal : </p>
+                                <p className="text-[#212121] font-sans font-bold text-[18px]">{formatPrice(price * quantity)}</p>
+                            </div>
+                        </div>
+
+                        <div className="bg-white flex justify-center gap-2 p-2">
+                            
+                            <div className="flex w-full items-center justify-center gap-2">
+                                <button
+                                    className="w-full h-[35px] bg-[#FFFFFF] text-[#194719] border-[1px] border-[#194719] rounded-md text-sm font-normal px-2"
+                                    onClick={handleAddToCart}
+                                >
+                                    + Keranjang
+                                </button>
+
+                                <button
+                                    className="w-full h-[35px] bg-[#194719] border-[1px] border-[#194719] text-white rounded-md text-sm font-normal px-2"
+                                    onClick={handleBuyNow}
+                                >
+                                    Beli Sekarang
+                                </button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
 

@@ -26,9 +26,9 @@ export default function SemuaProduk({ products }) {
     };
 
     return (
-        <div className="mb-20 flex w-full justify-center m-auto">
-            <div className="flex w-full justify-center mx-auto">
-                <div className="flex flex-wrap w-full max-w-[1200px] mx-auto gap-4">
+        <div className="flex w-full justify-center m-auto">
+            <div className="flex w-full max-w-[1200px] justify-center mx-auto">
+                <div className="flex flex-wrap justify-start md:justify-center md:gap-5 w-full max-w-[1200px] mx-auto gap-1">
                     {shuffledProducts.map((product) => (
                         <ProdukCard
                             key={product._id.toString()}

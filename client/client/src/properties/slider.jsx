@@ -38,7 +38,7 @@ const SliderComponent = ({
     }, [currentIndex, isTransitioning, images, prevSlide, nextSlide]);
 
     return (
-        <div className="relative w-full m-auto overflow-hidden rounded-2xl">
+        <div className="relative w-full m-auto overflow-hidden rounded-2xl md:pt-[150px]">
             <div
                 ref={sliderRef}
                 className={`slider flex transition-transform duration-700 ease-in-out  ${isTransitioning ? '' : 'no-transition'}`}

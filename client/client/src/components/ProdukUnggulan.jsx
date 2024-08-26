@@ -32,39 +32,79 @@ export default function ProdukUnggulan() {
     };
 
     return (
-        <div className="w-full max-w-screen-lg mx-auto overflow-hidden">
-            <Swiper
-                spaceBetween={10} 
-                slidesPerView={1}
-                navigation
-                breakpoints={{
-                    640: { slidesPerView: 2, spaceBetween: 5 },
-                    768: { slidesPerView: 3, spaceBetween: 10 },
-                    1024: { slidesPerView: 3, spaceBetween: 15 },
-                    1200: { slidesPerView: 4, spaceBetween: 20 },
-                }}
-                modules={[Navigation, Pagination]}
-            >
-                {featuredProducts.map((product) => (
-                    <SwiperSlide key={product._id}>
-                        <Link to={`/products/${product._id}`}>
-                            <div className="flex flex-col items-start justify-center w-full h-auto p-4 border border-gray-300 bg-white rounded-lg mb-4">
-                                <img
-                                    src={`http://localhost:5000${product.gambarProduk[0]}`}
-                                    alt={product.namaProduk}
-                                    className="w-full max-w-[200px] h-auto rounded-md mx-auto"
-                                />
-                                <span className='text-xs sm:text-sm text-[#194719] mb-1'>{product.categoryProduk}</span>
-                                <h3 className="font-medium font-sans text-sm sm:text-base mb-1">
-                                    {truncateText(product.namaProduk, 30)}
-                                </h3>
-                                <p className='text-xs sm:text-sm font-sans mb-1'>{product.kondisi}</p>
-                                <p className="text-sm sm:text-base text-[#194719]-600">{formatPrice(product.hargaProduk)}</p>
-                            </div>
-                        </Link>
-                    </SwiperSlide>
-                ))}
-            </Swiper>
+        <div>
+            <div className="hidden w-full max-w-screen-lg mx-auto overflow-hidden md:flex">
+                <Swiper
+                    spaceBetween={10} 
+                    slidesPerView={1}
+                    navigation
+                    breakpoints={{
+                        640: { slidesPerView: 2, spaceBetween: 5 },
+                        768: { slidesPerView: 3, spaceBetween: 10 },
+                        1024: { slidesPerView: 3, spaceBetween: 15 },
+                        1200: { slidesPerView: 4, spaceBetween: 20 },
+                    }}
+                    modules={[Navigation, Pagination]}
+                >
+                    {featuredProducts.map((product) => (
+                        <SwiperSlide key={product._id}>
+                            <Link to={`/products/${product._id}`}>
+                                <div className="flex flex-col items-start justify-center w-full h-auto p-4 border border-gray-300 bg-white rounded-lg mb-4">
+                                    <img
+                                        src={`http://localhost:5000${product.gambarProduk[0]}`}
+                                        alt={product.namaProduk}
+                                        className="w-full max-w-[200px] h-auto rounded-md mx-auto"
+                                    />
+                                    <span className='text-xs sm:text-sm text-[#194719] mb-1'>{product.categoryProduk}</span>
+                                    <h3 className="font-medium font-sans text-sm sm:text-base mb-1">
+                                        {truncateText(product.namaProduk, 30)}
+                                    </h3>
+                                    <p className='text-xs sm:text-sm font-sans mb-1'>{product.kondisi}</p>
+                                    <p className="text-sm sm:text-base text-[#194719]-600">{formatPrice(product.hargaProduk)}</p>
+                                </div>
+                            </Link>
+                        </SwiperSlide>
+                    ))}
+                </Swiper>
+            </div>
+
+            <div className="flex w-full max-w-screen-lg mx-auto h-full max-h-[225px] overflow-hidden md:hidden p-2 mb-3">
+                
+                <Swiper
+                    spaceBetween={10} 
+                    slidesPerView={1}
+                    navigation
+                    breakpoints={{
+                        370: { slidesPerView: 2, spaceBetween: 5 },
+                        480: { slidesPerView: 2, spaceBetween: 10 },
+                        640: { slidesPerView: 2, spaceBetween: 10 },
+                        768: { slidesPerView: 3, spaceBetween: 15 },
+                        1024: { slidesPerView: 3, spaceBetween: 15 },
+                        1200: { slidesPerView: 4, spaceBetween: 20 },
+                    }}
+                    modules={[Navigation, Pagination]}
+                >
+
+                    
+                    {featuredProducts.map((product) => (
+                        <SwiperSlide key={product._id}>
+                            <Link to={`/products/${product._id}`}>
+                                <div className="flex flex-col items-start justify-center w-full max-w-[180px] max-h-[200px] p-4 border border-gray-300 bg-white rounded-lg">
+                                    <img
+                                        src={`http://localhost:5000${product.gambarProduk[0]}`}
+                                        alt={product.namaProduk}
+                                        className="w-full max-w-[130px] h-auto rounded-md mx-auto"
+                                    />
+                                    <h3 className="font-medium font-sans text-sm sm:text-base mb-1">
+                                        {truncateText(product.namaProduk, 20)}
+                                    </h3>
+                                    <p className="text-sm sm:text-base text-[#194719]-600">{formatPrice(product.hargaProduk)}</p>
+                                </div>
+                            </Link>
+                        </SwiperSlide>
+                    ))}
+                </Swiper>
+            </div>
         </div>
     );
 }

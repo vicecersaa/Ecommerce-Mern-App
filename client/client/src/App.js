@@ -25,17 +25,19 @@ function App() {
 
 
   return (
-          <Routes>
-            <Route index element={<Home />} />
-            <Route path='/login' element={<LoginPage />} />
-            <Route path='/register' element={<RegisterPage />} />
-            <Route path='/account' element={<AccountPage />} />
-            <Route path='/account/product-edit/:id' element={<ProductEditWrapper />} />
-            <Route path='/products/:id' element={<ProdukDetail />}/>
-            <Route path="/forgot-password" element={<ForgotPassword />} />
-            <Route path="/reset-password" element={<ResetPassword />} />
-            <Route path="/verify-email" component={<VerifyEmail />} />
-          </Routes>
+          <div className='scroll-smooth'>
+            <Routes>
+              <Route index element={<Home />} />
+              <Route path='/login' element={<LoginPage />} />
+              <Route path='/register' element={<RegisterPage />} />
+              <Route path='/account' element={<AccountPage />} />
+              <Route path='/account/product-edit/:id' element={<ProductEditWrapper />} />
+              <Route path='/products/:id' element={<ProdukDetail />}/>
+              <Route path="/forgot-password" element={<ForgotPassword />} />
+              <Route path="/reset-password" element={<ResetPassword />} />
+              <Route path="/verify-email" component={<VerifyEmail />} />
+            </Routes>
+          </div>
   );
 }
 
