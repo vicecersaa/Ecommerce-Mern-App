@@ -497,9 +497,9 @@ export default function ProdukDetail() {
             </div>
 
 
-            <div className="flex flex-col container mx-auto w-full mt-10 justify-center md:hidden ">
+            <div className="flex flex-col container mx-auto w-full mt-[70px] justify-center md:hidden">
                 <div className="w-full max-w-full bg-white">
-                    <img className="w-full max-w-full bg-[#DEDEDE] max-h-[380px]" src={`http://localhost:5000${mainImage}`} alt={product.namaProduk} />
+                    <img className="w-full max-w-screen mx-auto bg-[#DEDEDE] max-h-[380px] px-6"  src={`http://localhost:5000${mainImage}`} alt={product.namaProduk} />
                     <div className="flex justify-center mt-2 gap-3">
                         {product.gambarProduk.map((image, index) => (
                             <img
@@ -513,10 +513,10 @@ export default function ProdukDetail() {
                     </div>
                 </div>
 
-                <div className="w-full max-w-[360px] bg-gray-100">
+                <div className="w-full mt-2 bg-gray-100">
                     <div className="bg-white p-[10px]">
                         <p className="text-[#194719] font-sans text-2xl font-bold">{formatPrice(price)}</p>
-                        <h1 className="font-sans text-base mt-2 font-semibold text-gray-500">
+                        <h1 className="font-sans text-lg mt-2 font-semibold text-gray-500">
                             {product.namaProduk}
                             {selectedVariant && selectedVariant.namaVarian 
                                 ? ` - ${selectedVariant.namaVarian}` 
@@ -538,7 +538,7 @@ export default function ProdukDetail() {
                             {product.variants && product.variants.length > 0 ? (
                                 <>
                                     <h2 className="text-base font-sans mb-2 mt-3 font-bold">Pilih Varian : </h2>
-                                    <div className="overflow-x-auto flex space-x-2 scrollbar-hide">
+                                    <div className="overflow-x-auto flex space-x-2 scrollbar-hide pb-2">
                                         {uniqueVariantNames.map((variantName) => (
                                             <button
                                                 className="rounded-full whitespace-nowrap"
@@ -582,7 +582,7 @@ export default function ProdukDetail() {
                             )}
                             
                             {selectedVariant && selectedVariant.ukuranVarian && selectedVariant.ukuranVarian.length > 0 ? (
-                                <div className="flex overflow-x-auto whitespace-nowrap no-scrollbar">
+                                <div className="flex overflow-x-auto whitespace-nowrap no-scrollbar pb-2">
                                     {selectedVariant.ukuranVarian.map((size) => (
                                         <button
                                             className="rounded-full flex-shrink-0"
@@ -652,7 +652,7 @@ export default function ProdukDetail() {
                                     readOnly
                                 />
                                 <button
-                                    className="w-[25px] h-[26px] flex items-center justify-center text-[18px] font-bold"
+                                    className="w-[25px] h-[25px] flex items-center justify-center text-[18px] font-bold"
                                     onClick={() => handleQuantityChange(1)}
                                 >
                                     +

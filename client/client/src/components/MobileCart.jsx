@@ -57,12 +57,12 @@ if (!user) {
         <div className="flex pt-[80px]">
             <div className="w-full flex flex-col">
                 {cart.length === 0 ? (
-                    <div className="flex flex-col justify-center items-center">
-                        <img loading="lazy" className="w-full max-w-[250px]" src={LOGO} alt="Forland Living Logo" />
+                    <div className="flex flex-col justify-center items-center h-screen max-h-[500px]">
+                        <img loading="lazy" className="w-full max-w-[150px]" src={LOGO} alt="Forland Living Logo" />
                         <h2 className="font-medium font-sans text-2xl">Keranjang Anda Kosong</h2>
                         <p className="font-sans">Silahkan Isi Keranjang Anda.</p>
                         <Link to={'/'}>
-                            <button className="bg-[#194719] text-white font-sans  rounded-full ">
+                            <button className="bg-[#194719] text-white font-sans  rounded-full px-3 py-2 mt-1">
                                 Belanja Sekarang!
                             </button>
                         </Link>

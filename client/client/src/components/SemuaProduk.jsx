@@ -26,7 +26,8 @@ export default function SemuaProduk({ products }) {
     };
 
     return (
-        <div className="flex w-full justify-center m-auto">
+        <>
+        <div className="hidden w-full justify-center m-auto md:flex">
             <div className="flex w-full max-w-[1200px] justify-center mx-auto">
                 <div className="flex flex-wrap justify-start md:justify-center md:gap-5 w-full max-w-[1200px] mx-auto gap-1">
                     {shuffledProducts.map((product) => (
@@ -44,5 +45,22 @@ export default function SemuaProduk({ products }) {
                 </div>
             </div>
         </div>
+        <div className="grid grid-cols-2 gap-2 w-full mt-4 pb-[30px] md:hidden">
+            {shuffledProducts.map((product) => (
+                <div key={product._id.toString()} className="rounded-xl">
+                    <ProdukCard
+                        id={product._id.toString()}
+                        img={`http://localhost:5000${product.gambarProduk[0]}`}
+                        namaProduk={product.namaProduk}
+                        hargaProduk={formatPrice(product.hargaProduk)}
+                        kondisiProduk={product.kondisi}
+                        namaToko={product.namaToko}
+                        stockProduk={product.stockProduk}
+                    />
+                </div>
+            ))}
+        </div>
+        </>
+
     )
 }

@@ -132,7 +132,7 @@ export default function KeranjangCard() {
     }
 
     return (
-        <div className="h-full">
+        <div className="h-full pb-[110px] md:pb-0">
         <div className="hidden container mx-auto p-4 md:flex">
             <div className="hidden items-center gap-2 mb-10 md:flex">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-5">
@@ -257,11 +257,15 @@ export default function KeranjangCard() {
                         )}
 
 
-                                <div className="flex flex-col mt-7 items-end ">
-                                    <p className="text-xl font-sans font-medium">Total Price: <span className="text-[#194719] font-semiboldfont-sans ml-2">{calculateTotalPrice()}</span></p>
-                                    <button className="bg-[#194719] text-white px-4 py-2 rounded mt-2" onClick={handleCheckout}>Checkout</button>
-                                </div>
-                            </div>
+                        <div className="fixed bottom-[50px] left-0 w-full flex justify-between items-end p-4 bg-white gap-2 border-t-[1px] shadow-sm">
+                            <p className="text-base font-sans font-medium w-full max-w-[190px]">
+                                Subtotal: <span className="text-[#194719] font-semibold ml-2">{calculateTotalPrice()}</span>
+                            </p>
+                            <button className="bg-[#194719] text-white px-2 py-1 rounded w-full max-w-[110px] " onClick={handleCheckout}>
+                                Checkout
+                            </button>      
+                        </div>
+                    </div>
                         )}
         </div>
     );

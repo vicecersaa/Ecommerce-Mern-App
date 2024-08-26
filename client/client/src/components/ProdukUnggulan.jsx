@@ -40,9 +40,9 @@ export default function ProdukUnggulan() {
                     navigation
                     breakpoints={{
                         640: { slidesPerView: 2, spaceBetween: 5 },
-                        768: { slidesPerView: 3, spaceBetween: 10 },
-                        1024: { slidesPerView: 3, spaceBetween: 15 },
-                        1200: { slidesPerView: 4, spaceBetween: 20 },
+                        768: { slidesPerView: 3, spaceBetween: 5 },
+                        1024: { slidesPerView: 3, spaceBetween: 10 },
+                        1200: { slidesPerView: 4, spaceBetween: 15 },
                     }}
                     modules={[Navigation, Pagination]}
                 >
@@ -69,37 +69,31 @@ export default function ProdukUnggulan() {
             </div>
 
             <div className="flex w-full max-w-screen-lg mx-auto h-full max-h-[225px] overflow-hidden md:hidden p-2 mb-3">
-                
                 <Swiper
-                    spaceBetween={10} 
+                    spaceBetween={10}
                     slidesPerView={1}
                     navigation
                     breakpoints={{
-                        370: { slidesPerView: 2, spaceBetween: 5 },
+                        370: { slidesPerView: 2, spaceBetween: 10 },
                         480: { slidesPerView: 2, spaceBetween: 10 },
-                        640: { slidesPerView: 2, spaceBetween: 10 },
-                        768: { slidesPerView: 3, spaceBetween: 15 },
-                        1024: { slidesPerView: 3, spaceBetween: 15 },
-                        1200: { slidesPerView: 4, spaceBetween: 20 },
+                       
+                        
                     }}
                     modules={[Navigation, Pagination]}
+                    className="swiper-container"
                 >
-
-                    
                     {featuredProducts.map((product) => (
-                        <SwiperSlide key={product._id}>
-                            <Link to={`/products/${product._id}`}>
-                                <div className="flex flex-col items-start justify-center w-full max-w-[180px] max-h-[200px] p-4 border border-gray-300 bg-white rounded-lg">
-                                    <img
-                                        src={`http://localhost:5000${product.gambarProduk[0]}`}
-                                        alt={product.namaProduk}
-                                        className="w-full max-w-[130px] h-auto rounded-md mx-auto"
-                                    />
-                                    <h3 className="font-medium font-sans text-sm sm:text-base mb-1">
-                                        {truncateText(product.namaProduk, 20)}
-                                    </h3>
-                                    <p className="text-sm sm:text-base text-[#194719]-600">{formatPrice(product.hargaProduk)}</p>
-                                </div>
+                        <SwiperSlide key={product._id} className="flex items-center justify-center">
+                            <Link to={`/products/${product._id}`} className="flex flex-col items-start justify-center w-full max-w-[180px] max-h-[200px] p-4 border border-gray-300 bg-white rounded-lg">
+                                <img
+                                    src={`http://localhost:5000${product.gambarProduk[0]}`}
+                                    alt={product.namaProduk}
+                                    className="w-full max-w-[130px] h-auto rounded-md mx-auto"
+                                />
+                                <h3 className="font-medium font-sans text-sm sm:text-base mb-1">
+                                    {truncateText(product.namaProduk, 15)}
+                                </h3>
+                                <p className="text-sm sm:text-base text-[#194719]-600">{formatPrice(product.hargaProduk)}</p>
                             </Link>
                         </SwiperSlide>
                     ))}

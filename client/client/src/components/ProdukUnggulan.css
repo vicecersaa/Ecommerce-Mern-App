@@ -1,27 +1,24 @@
 .swiper-button-next,
 .swiper-button-prev {
-    display: none;
-    
+    display: none; 
 }
 
 .swiper-slide {
     width: 100%;
-    max-width: 250px;
+    max-width: 180px; 
     margin-inline: auto;
 }
-
 
 @media (max-width: 639px) {
     .swiper-slide {
         margin-right: 10px; 
-    }   
+    }
 }
 
 @media (min-width: 640px) and (max-width: 767px) {
     .swiper-slide {
         margin-right: 10px; 
     }
-    
 }
 
 @media (min-width: 768px) {

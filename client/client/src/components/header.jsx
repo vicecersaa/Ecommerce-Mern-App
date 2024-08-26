@@ -65,7 +65,7 @@ export default function Header() {
                     <a className="lg:mr-6 hover:text-yellow-400 font-sans mt-2 lg:mt-0" href="">Forland Living Care</a>
                 </div>
             </div>
-            <div className="flex items-center align-middle justify-center p-2 py-1 w-full gap-5 h-30 border-gray-200 border-b-2 bg-white shadow-md">
+            <div className="flex items-center align-middle justify-center p-2 py-1 w-full md:gap-5 h-30 border-gray-200 border-b-2 bg-white">
                 <div className="hidden items-center align-middle gap-10 mr-6 custom-lg:flex">
                     <Link to={'/'} className="ml-8">
                         <img src={LOGO} alt="Forland Living" className="w-full max-w-[270px]" />
@@ -73,7 +73,7 @@ export default function Header() {
                 </div>
                 
                
-                <div className="mt-3 w-full relative" ref={searchBoxRef}>
+                <div className="mt-3 w-full flex relative items-center gap-3" ref={searchBoxRef}>
                     <input
                         className="text-black border-2 border-[#BFC9D9] text-sm rounded-md py-2 px-3 focus:outline-none w-full"
                         type="text"
@@ -86,7 +86,7 @@ export default function Header() {
                         <path strokeLinecap="round" strokeLinejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
                     </svg>
                     {showRecommendations && (
-                        <div className="absolute z-10 bg-white border border-gray-300 w-full mt-1 rounded-md shadow-lg">
+                        <div className="absolute z-10 bg-white border border-gray-300 w-full mt-1 rounded-md ">
                             {Array.isArray(searchResults) && searchResults.length > 0 ? (
                                 <ul>
                                     {searchResults.map(product => (
@@ -132,25 +132,7 @@ export default function Header() {
                             <Link to={'/login'} className="bg-white border-[2px] border-[#194719] py-2 px-5 rounded-md text-[#194719] font-medium font-sans text-base">Masuk</Link>
                             <Link to={'/register'} className="bg-[#194719] border-[#194719] py-2 px-5 mr-5 border-4 rounded-md text-white font-medium font-sans text-base">Daftar</Link>
                         </div>
-                        <div className="flex items-center align-middle gap-3 mt-3 md:hidden">
-                                <Link to={'/login'}>
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
-                                        <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 0 0-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 0 0-16.536-1.84M7.5 14.25 5.106 5.272M6 20.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Zm12.75 0a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z" />
-                                    </svg>
-                                </Link>
-                                <Link to={'/login'}>
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
-                                        <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
-                                    </svg>
-                                </Link>
-                                <Link to={'/'}>
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
-                                        <path strokeLinecap="round" strokeLinejoin="round" d="m2.25 12 8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
-                                    </svg>
-                                </Link>
-
-                            
-                        </div>
+                        
                     </div>
                 )}
                 {!!user && (
@@ -167,24 +149,7 @@ export default function Header() {
                         </Link>
 
                         
-                        <div className="w-full flex items-center justify-center mx-auto mt-3 gap-3 md:hidden ">
-                            <Link to={'/account'}>
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
-                                    <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 0 0-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 0 0-16.536-1.84M7.5 14.25 5.106 5.272M6 20.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Zm12.75 0a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z" />
-                                </svg>
-                            </Link>
-                            <Link to={'/'}>
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
-                                    <path strokeLinecap="round" strokeLinejoin="round" d="m2.25 12 8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
-                                </svg>
-                            </Link>
-                            <Link to={'/account'}>
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-7">
-                                    <path strokeLinecap="round" strokeLinejoin="round" d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
-                                </svg>
-                            </Link>
-                            
-                        </div>
+                        
                         
                     </div>
                 )}

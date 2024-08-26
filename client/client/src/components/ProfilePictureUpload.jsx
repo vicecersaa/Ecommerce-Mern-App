@@ -41,39 +41,75 @@ const ProfilePictureUpload = () => {
   };
 
   return (
-    <div className="w-full max-w-[250px] h-full max-h-[300px] flex flex-col justify-center items-center mt-4 mb-4 border-[#E4EBF5] border-2 p-5 rounded-xl shadow-xl">
-  {user.profilePicture ? (
-    <img
-      className="w-full max-w-[250px] my-2"
-      src={`http://localhost:5000${user.profilePicture}`}
-      alt="Profile"
-      id="profileImage"
-    />
-  ) : (
-    <img className="w-full max-w-[250px]" src={BLANKPROFILE} alt="Profile" id="profileImage" />
-  )}
-  <label
-    htmlFor="uploadPhoto"
-    className="w-full max-w-[250px] mt-3 border-[#E4EBF5] border-2 py-2 px-3 rounded-lg text-sm font-bold text-center cursor-pointer"
-  >
-    {user.profilePicture ? "Ubah Foto" : "Pilih Foto"}
-  </label>
-  <input
-    id="uploadPhoto"
-    type="file"
-    accept="image/*"
-    onChange={handleFileChange}
-    className="hidden"
-  />
-  {selectedFile &&  (
-    <button
-      onClick={handleUpload}
-      className="w-full max-w-[250px] mt-3 border-[#E4EBF5] border-2 py-2 px-3 rounded-lg text-sm font-bold text-center cursor-pointer"
-    >
-      Upload Foto
-    </button>
-  )}
-</div>
+    <div className=''>
+      <div className="w-full max-w-[250px] h-full max-h-[300px] hidden md:flex flex-col justify-center items-center mt-4 mb-4 border-[#E4EBF5] border-2 p-5 rounded-xl shadow-xl">
+        {user.profilePicture ? (
+          <img
+            className="w-full max-w-[250px] my-2"
+            src={`http://localhost:5000${user.profilePicture}`}
+            alt="Profile"
+            id="profileImage"
+          />
+        ) : (
+          <img className="w-full max-w-[250px]" src={BLANKPROFILE} alt="Profile" id="profileImage" />
+        )}
+        <label
+          htmlFor="uploadPhoto"
+          className="w-full max-w-[250px] mt-3 border-[#E4EBF5] border-2 py-2 px-3 rounded-lg text-sm font-bold text-center cursor-pointer"
+        >
+          {user.profilePicture ? "Ubah Foto" : "Pilih Foto"}
+        </label>
+        <input
+          id="uploadPhoto"
+          type="file"
+          accept="image/*"
+          onChange={handleFileChange}
+          className="hidden"
+        />
+        {selectedFile &&  (
+          <button
+            onClick={handleUpload}
+            className="w-full max-w-[250px] mt-3 border-[#E4EBF5] border-2 py-2 px-3 rounded-lg text-sm font-bold text-center cursor-pointer"
+          >
+            Upload Foto
+          </button>
+        )}
+      </div>
+      
+      <div className="w-full max-w-[150px] flex md:hidden flex-col justify-center items-center">
+        {user.profilePicture ? (
+          <img
+            className="w-[80px] h-[80px] rounded-full object-cover"
+            src={`http://localhost:5000${user.profilePicture}`}
+            alt="Profile"
+            id="profileImage"
+          />
+        ) : (
+          <img className="w-full max-w-[80px] h-[80px] rounded-full object-fill" src={BLANKPROFILE} alt="Profile" id="profileImage" />
+        )}
+        <label
+          htmlFor="uploadPhoto"
+          className="w-full max-w-[150px] mt-3 border-[#E4EBF5] border-2 py-2 px-3 rounded-lg text-sm font-bold text-center cursor-pointer"
+        >
+          {user.profilePicture ? "Ubah" : "Tambah Foto"}
+        </label>
+        <input
+          id="uploadPhoto"
+          type="file"
+          accept="image/*"
+          onChange={handleFileChange}
+          className="hidden"
+        />
+        {selectedFile &&  (
+          <button
+            onClick={handleUpload}
+            className="w-full max-w-[250px] mt-3 border-[#E4EBF5] border-2 py-2 px-3 rounded-lg text-sm font-bold text-center cursor-pointer"
+          >
+            Upload Foto
+          </button>
+        )}
+      </div>
+    </div>
 
   );
 };
