@@ -1,10 +1,4 @@
 ---
-deployment:
-  tasks: 
-   - export DEPLOYPATH=/home/user/public_html/
-   - /bin/cp index.html $DEPLOYPATH
-   - /bin/cp styl
-
 application:
   name: ecommerce-app
   type: nodejs
