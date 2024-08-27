@@ -1,24 +1,24 @@
 ---
 application:
-  name: ecommerce-app
+  name: ecommerce-mern-app
   type: nodejs
   root: public_html  
   node_version: '14'
 
 build:
   commands:
-    - cd backend
+    - cd server
     - npm install
     - npm run build
-    - cd ../frontend
+    - cd ./client/client
     - npm install
     - npm run build
 
 deploy:
   commands:
-    - cd backend
-    - npm start
-    - cd ../frontend
+    - cd server
+    - npm run dev
+    - cd ./client/client
     - npm start
 
 env:
