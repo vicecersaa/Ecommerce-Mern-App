@@ -1,15 +1,12 @@
 ---
 application:
-  name: ecommerce-mern-app
+  name: Ecommerce-Mern-App
   type: nodejs
-  root: public_html  
+  root: server
   node_version: '14'
 
 build:
   commands:
-    - cd server
-    - npm install
-    - npm run build
     - cd ./client/client
     - npm install
     - npm run build
@@ -17,10 +14,9 @@ build:
 deploy:
   commands:
     - cd server
+    - npm install
     - npm run dev
-    - cd ./client/client
-    - npm start
-
+    
 env:
   NODE_ENV: production
   API_URL: https://api.forlandliving.com
