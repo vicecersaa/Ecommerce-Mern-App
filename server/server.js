@@ -63,7 +63,7 @@ app.use(helmet());
 
 
 const corsOptions = {
-    origin: 'https://forlandliving.com', 
+    origin: process.env.NODE_ENV === 'development' ? 'http://localhost:3000' : 'https://forlandliving.com',
     credentials: true, 
     optionsSuccessStatus: 200 
 };
@@ -912,7 +912,7 @@ app.patch('/update-product/:id', authenticateUser, authenticateAdmin, (req, res)
 
 //PORT SETTINGS :
 
-const PORT = process.env.PORT_PROD || 443;
+const PORT = process.env.PORT_PROD || 5000;
 
 
 // PORT SETTING

@@ -72,7 +72,7 @@ export default function MobileAccount() {
     return (
     <>
         {bio && (
-            <div className="flex pt-[75px]">
+            <div className="flex pt-[50px]">
                 <div className="w-full flex flex-col items-center p-5 justify-center md:hidden">
                     <div className="w-full flex justify-center">
                         <ProfilePictureUpload />

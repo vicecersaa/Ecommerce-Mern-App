@@ -27,7 +27,7 @@ export default function SemuaProduk({ products }) {
         return `Rp${parseFloat(num).toLocaleString('id-ID', { minimumFractionDigits: 0 })}`;
     };
 
-    console.log('API_URL:', API_URL);
+    
 
 
     return (
