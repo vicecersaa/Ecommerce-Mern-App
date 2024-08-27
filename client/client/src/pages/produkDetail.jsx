@@ -7,6 +7,7 @@ import STARS from "../assets/img/star.png";
 import { UserContext } from '../UserContext';
 import axios from 'axios';
 import SemuaProduk from "../components/SemuaProduk";
+import { API_URL } from "../config";
 
 const formatPrice = (num) => {
     if (!num) return '';
@@ -40,7 +41,6 @@ export default function ProdukDetail() {
     const [mainImage, setMainImage] = useState("");
     const [quantity, setQuantity] = useState(1); 
 
-    const PORT = 'http://localhost:5000';
 
 
     useEffect(() => {
@@ -128,7 +128,7 @@ export default function ProdukDetail() {
         }
     
         try {
-            const response = await axios.post(`${PORT}/add-to-cart`, {
+            const response = await axios.post(`${API_URL}/add-to-cart`, {
                 userId: user._id,
                 productId: product._id,
                 quantity,
@@ -190,7 +190,7 @@ export default function ProdukDetail() {
         try {
             const productName = `${product.namaProduk}${selectedVariant ? ` - ${selectedVariant.namaVarian}` : ''}${selectedSize ? ` - ${selectedSize.ukuran}` : ''}`;
     
-            const response = await axios.post(`${PORT}/checkout-direct`, {
+            const response = await axios.post(`${API_URL}/checkout-direct`, {
                 userId: user._id,
                 productId: product._id,
                 quantity,
@@ -324,13 +324,13 @@ export default function ProdukDetail() {
 
             <div className="hidden container mx-auto w-full max-w-[1100px] mt-10 justify-evenly gap-5 md:flex bg-white">
                 <div className="w-full max-w-[400px]">
-                    <img className="w-full max-w-[400px] bg-[#DEDEDE] p-[20px] rounded-lg" src={`http://localhost:5000${mainImage}`} alt={product.namaProduk} />
+                    <img className="w-full max-w-[400px] bg-[#DEDEDE] p-[20px] rounded-lg" src={`${API_URL}${mainImage}`} alt={product.namaProduk} />
                     <div className="flex justify-center mt-2 gap-5">
                         {product.gambarProduk.map((image, index) => (
                             <img
                                 key={index}
                                 className="w-full max-w-[80px] bg-[#DEDEDE] p-[10px] rounded-lg cursor-pointer"
-                                src={`http://localhost:5000${image}`}
+                                src={`${API_URL}${image}`}
                                 alt={product.namaProduk}
                                 onClick={() => handleThumbnailClick(image)}
                             />
@@ -499,13 +499,13 @@ export default function ProdukDetail() {
 
             <div className="flex flex-col container mx-auto w-full mt-[70px] justify-center md:hidden">
                 <div className="w-full max-w-full bg-white">
-                    <img className="w-full max-w-screen mx-auto bg-[#DEDEDE] max-h-[380px] px-6"  src={`http://localhost:5000${mainImage}`} alt={product.namaProduk} />
+                    <img className="w-full max-w-screen mx-auto bg-[#DEDEDE] max-h-[380px] px-6"  src={`${API_URL}${mainImage}`} alt={product.namaProduk} />
                     <div className="flex justify-center mt-2 gap-3">
                         {product.gambarProduk.map((image, index) => (
                             <img
                                 key={index}
                                 className="w-full max-w-[80px] bg-[#DEDEDE] p-[10px] rounded-lg cursor-pointer"
-                                src={`http://localhost:5000${image}`}
+                                src={`${API_URL}${image}`}
                                 alt={product.namaProduk}
                                 onClick={() => handleThumbnailClick(image)}
                             />

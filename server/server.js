@@ -15,6 +15,8 @@ const orderModel = require('./models/order');
 const midtrans = require('./config/midtransConfig');
 const nodemailer = require('nodemailer');
 const crypto = require('crypto');
+const helmet = require('helmet');
+
 
 // MIDDLEWARE
 const saltRounds = 10;
@@ -51,16 +53,17 @@ const authenticateAdmin = (req, res, next) => {
 };
 
 const bcryptSalt = bcrypt.genSaltSync(10);
-const jwtSecret = 'asdsadasdasda';
+const jwtSecret = process.env.JWT_SECRET;
 
 const app = express() 
 app.use(express.json());
 app.use(cookieParser());
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+app.use(helmet());
 
 
 const corsOptions = {
-    origin: 'http://localhost:3000', 
+    origin: 'https://forlandliving.com', 
     credentials: true, 
     optionsSuccessStatus: 200 
 };
@@ -909,11 +912,11 @@ app.patch('/update-product/:id', authenticateUser, authenticateAdmin, (req, res)
 
 //PORT SETTINGS :
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT_PROD || 443;
 
 
 // PORT SETTING
 
 app.listen(PORT, () => {
-    console.log(`Server is running on port 5000`);
+    console.log(`Server is running on port ${PORT}`);
 });

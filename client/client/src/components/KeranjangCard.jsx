@@ -1,8 +1,9 @@
 import React, { useContext, useEffect, useState } from "react";
 import axios from 'axios';
 import { UserContext } from '../UserContext';
+import { API_URL } from "../config";
 
-const PORT = 'http://localhost:5000';
+
 
 export default function KeranjangCard() {
     const { user } = useContext(UserContext);
@@ -22,7 +23,7 @@ export default function KeranjangCard() {
 
     const fetchCartItems = async () => {
         try {
-            const response = await axios.get(`${PORT}/get-cart`, {
+            const response = await axios.get(`${API_URL}/get-cart`, {
                 params: { userId: user._id }
             });
     
@@ -43,7 +44,7 @@ export default function KeranjangCard() {
         if (newQuantity <= 0) return;
 
         try {
-            const response = await axios.patch(`${PORT}/update-cart`, {
+            const response = await axios.patch(`${API_URL}/update-cart`, {
                 userId: user._id,
                 productId,
                 quantity: newQuantity
@@ -58,7 +59,7 @@ export default function KeranjangCard() {
    
     const removeItem = async (productId) => {
         try {
-            const response = await axios.post(`${PORT}/remove-from-cart`, {
+            const response = await axios.post(`${API_URL}/remove-from-cart`, {
                 userId: user._id,
                 productId
             });
@@ -83,7 +84,7 @@ export default function KeranjangCard() {
         try {
             
         
-            const response = await axios.post(`${PORT}/checkout`, {
+            const response = await axios.post(`${API_URL}/checkout`, {
                 items: cartItems.map(item => ({
                     productId: item.productId._id,
                     quantity: item.quantity,
@@ -133,7 +134,7 @@ export default function KeranjangCard() {
 
     return (
         <div className="h-full pb-[110px] md:pb-0">
-        <div className="hidden container mx-auto p-4 md:flex">
+        <div className="hidden container mx-auto p-4 md:flex md:flex-col ">
             <div className="hidden items-center gap-2 mb-10 md:flex">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-5">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 0 0-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 0 0-16.536-1.84M7.5 14.25 5.106 5.272M6 20.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Zm12.75 0a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z" />
@@ -150,13 +151,13 @@ export default function KeranjangCard() {
                     {cartItems.length === 0 ? (
                 <div></div>
             ) : (
-            <div className="hidden md:flex">
+            <div className="hidden md:flex md:flex-col">
                 {cartItems.map(item => (
                     <div key={item._id} className="flex align-middle border-gray-500 p-4 mb-4 rounded-lg shadow-xl">
                         <div className="flex w-full items-center mb-4">
                                 <img
                                     className="w-20 h-20 p-1 object-cover mr-4 bg-[#DEDEDE] rounded-lg"
-                                    src={item.productId.gambarProduk ? `${PORT}${item.productId.gambarProduk[0]}` : 'default-image-url'}
+                                    src={item.productId.gambarProduk ? `${API_URL}${item.productId.gambarProduk[0]}` : 'default-image-url'}
                                     alt={item.productId.namaProduk || 'Product Image'}
                                 />
                                 <div className="w-full">
@@ -210,13 +211,13 @@ export default function KeranjangCard() {
                                 {cartItems.length === 0 ? (
                             <div></div>
                         ) : (
-                        <div className="p-[10px]">
+                        <div className="p-[10px] md:hidden">
                             {cartItems.map(item => (
                                 <div key={item._id} className="flex flex-col justify-center items-start border-gray-200 border-[1px] rounded-lg mt-3 p-3">
                                     <div className="flex w-full items-start mb-2">
                                             <img
                                                 className="w-20 h-20 p-1 object-cover mr-4 bg-[#DEDEDE] rounded-lg"
-                                                src={item.productId.gambarProduk ? `${PORT}${item.productId.gambarProduk[0]}` : 'default-image-url'}
+                                                src={item.productId.gambarProduk ? `${API_URL}${item.productId.gambarProduk[0]}` : 'default-image-url'}
                                                 alt={item.productId.namaProduk || 'Product Image'}
                                             />
                                             <div className="w-full">
@@ -257,7 +258,7 @@ export default function KeranjangCard() {
                         )}
 
 
-                        <div className="fixed bottom-[50px] left-0 w-full flex justify-between items-end p-4 bg-white gap-2 border-t-[1px] shadow-sm">
+                        <div className="fixed bottom-[50px] left-0 w-full flex justify-between items-end p-4 bg-white gap-2 border-t-[1px] shadow-sm md:hidden">
                             <p className="text-base font-sans font-medium w-full max-w-[190px]">
                                 Subtotal: <span className="text-[#194719] font-semibold ml-2">{calculateTotalPrice()}</span>
                             </p>

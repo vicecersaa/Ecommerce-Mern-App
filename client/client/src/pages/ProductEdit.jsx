@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Header from '../components/header';
+import { API_URL } from '../config';
 
 
 const ProductEditForm = ({ productId }) => {
@@ -20,7 +21,7 @@ const ProductEditForm = ({ productId }) => {
         if (productId) {
             const fetchProduct = async () => {
                 try {
-                    const response = await axios.get(`http://localhost:5000/products/${productId}`);
+                    const response = await axios.get(`${API_URL}/products/${productId}`);
                     const data = response.data;
 
                     setProduct({
@@ -78,7 +79,7 @@ const ProductEditForm = ({ productId }) => {
         });
 
         try {
-            await axios.patch(`http://localhost:5000/update-product/${productId}`, formData, {
+            await axios.patch(`${API_URL}/update-product/${productId}`, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data'
                 }

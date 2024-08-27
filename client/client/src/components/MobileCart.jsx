@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import LOGO from '../assets/img/LOGO1.jpg'
 import axios from "axios";
 import { UserContext } from "../UserContext";
+import { API_URL } from "../config";
 
 
 
@@ -12,7 +13,6 @@ export default function MobileCart() {
     const [cart, setCart] = useState([]);
     const [error, setError] = useState('');
     const [loading, setLoading] = useState('');
-    const PORT = 'http://localhost:5000';
     const {user, setUser} = useContext(UserContext);
 
 
@@ -25,7 +25,7 @@ export default function MobileCart() {
           }
       
           try {
-            const response = await axios.get(`${PORT}/get-cart`, {
+            const response = await axios.get(`${API_URL}/get-cart`, {
               params: { userId: user._id }
             });
       

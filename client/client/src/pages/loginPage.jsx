@@ -3,9 +3,9 @@ import axios from 'axios';
 import { Link, Navigate } from 'react-router-dom';
 import { UserContext } from '../UserContext';
 import LoadingSpinner from '../components/LoadingSpinner';
+import { API_URL } from '../config';
 
 export default function LoginPage() {
-  const PORT = 'http://localhost:5000';
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [redirect, setRedirect] = useState(false);
@@ -26,7 +26,7 @@ export default function LoginPage() {
 
     setTimeout(async () => {
       try {
-        const { data } = await axios.post(`${PORT}/login`, { email, password });
+        const { data } = await axios.post(`${API_URL}/login`, { email, password });
         setUser(data);
         setRedirect(true);
       } catch (e) {

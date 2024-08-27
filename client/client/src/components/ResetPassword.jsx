@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useLocation } from 'react-router-dom';
+import { API_URL } from '../config';
 
 const ResetPassword = () => {
   const [newPassword, setNewPassword] = useState('');
@@ -14,7 +15,7 @@ const ResetPassword = () => {
     const token = queryParams.get('token');
 
     try {
-      const { data } = await axios.post('http://localhost:5000/reset-password', { token, newPassword });
+      const { data } = await axios.post(`${API_URL}/reset-password`, { token, newPassword });
       setMessage(data.message);
       setError('');
     } catch (err) {

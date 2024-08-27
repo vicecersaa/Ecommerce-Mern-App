@@ -1,5 +1,6 @@
 import { useContext, useState, useEffect } from "react";
 import axios from "axios";
+import { API_URL } from "../config";
 
 
 export default function TambahProduk() {
@@ -27,7 +28,7 @@ export default function TambahProduk() {
         
         const fetchCategories = async () => {
             try {
-                const response = await axios.get('http://localhost:5000/categories');
+                const response = await axios.get(`${API_URL}/categories`);
                 setAvailableCategories(response.data);
             } catch (error) {
                 console.error('Error fetching categories:', error);
@@ -49,7 +50,7 @@ export default function TambahProduk() {
         });
     
         try {
-            const response = await axios.post('http://localhost:5000/upload-image', formData, {
+            const response = await axios.post(`${API_URL}/upload-image`, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                 },
@@ -235,7 +236,7 @@ const createProduct = async (e) => {
     };
 
     try {
-        const response = await axios.post('http://localhost:5000/products', productData);
+        const response = await axios.post(`${API_URL}/products`, productData);
         setSuccessMessage('Produk berhasil ditambahkan!');
     } catch (error) {
         

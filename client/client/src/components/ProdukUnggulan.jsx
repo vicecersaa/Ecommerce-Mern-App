@@ -7,6 +7,7 @@ import { Navigation, Pagination } from 'swiper/modules';
 import { ProductContext } from '../ProductContext';
 import { Link } from 'react-router-dom';
 import './ProdukUnggulan.css';
+import { API_URL } from '../config';
 
 export default function ProdukUnggulan() {
     const { products } = useContext(ProductContext);
@@ -41,8 +42,8 @@ export default function ProdukUnggulan() {
                     breakpoints={{
                         640: { slidesPerView: 2, spaceBetween: 5 },
                         768: { slidesPerView: 3, spaceBetween: 5 },
-                        1024: { slidesPerView: 3, spaceBetween: 10 },
-                        1200: { slidesPerView: 4, spaceBetween: 15 },
+                        1024: { slidesPerView: 4, spaceBetween: 10 },
+                        
                     }}
                     modules={[Navigation, Pagination]}
                 >
@@ -51,7 +52,7 @@ export default function ProdukUnggulan() {
                             <Link to={`/products/${product._id}`}>
                                 <div className="flex flex-col items-start justify-center w-full h-auto p-4 border border-gray-300 bg-white rounded-lg mb-4">
                                     <img
-                                        src={`http://localhost:5000${product.gambarProduk[0]}`}
+                                        src={`${API_URL}${product.gambarProduk[0]}`}
                                         alt={product.namaProduk}
                                         className="w-full max-w-[200px] h-auto rounded-md mx-auto"
                                     />
@@ -86,7 +87,7 @@ export default function ProdukUnggulan() {
                         <SwiperSlide key={product._id} className="flex items-center justify-center">
                             <Link to={`/products/${product._id}`} className="flex flex-col items-start justify-center w-full max-w-[180px] max-h-[200px] p-4 border border-gray-300 bg-white rounded-lg">
                                 <img
-                                    src={`http://localhost:5000${product.gambarProduk[0]}`}
+                                    src={`${API_URL}${product.gambarProduk[0]}`}
                                     alt={product.namaProduk}
                                     className="w-full max-w-[130px] h-auto rounded-md mx-auto"
                                 />

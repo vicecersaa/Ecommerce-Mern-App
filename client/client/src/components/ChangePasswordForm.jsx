@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { API_URL } from '../config';
 
 const ChangePasswordForm = (props) => {
     const [oldPassword, setOldPassword] = useState('');
@@ -7,9 +8,10 @@ const ChangePasswordForm = (props) => {
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
 
+
     const handleChangePassword = async () => {
         try {
-            const response = await axios.post('http://localhost:5000/change-password', {
+            const response = await axios.post(`${API_URL}/change-password`, {
                 oldPassword,
                 newPassword
             }, {

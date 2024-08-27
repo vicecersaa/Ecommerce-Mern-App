@@ -24,10 +24,7 @@ import MobileAccount from "./MobileAccount.jsx";
 export default function Main() {
 
   const { products } = useContext(ProductContext);
-
-  const navigate = useNavigate();
-
-       
+   
  
         const images = [
             BANNER1,

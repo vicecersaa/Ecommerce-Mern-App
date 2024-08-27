@@ -1,15 +1,18 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
+import { API_URL, HOST_PORT } from '../config';
 
 export default function AdminList() {
     const [admins, setAdmins] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
+
+
     useEffect(() => {
         const fetchAdmins = async () => {
             try {
-                const response = await axios.get('http://localhost:5000/admin-users');
+                const response = await axios.get(`${API_URL}/admin-users`);
                 setAdmins(response.data);
             } catch (err) {
                 setError(err.message);

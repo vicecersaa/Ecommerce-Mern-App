@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
 import axios from 'axios';
 import moment from 'moment';
+import { API_URL } from '../config';
 
-const PORT = 'http://localhost:5000';
+
 
 export default function AdminOrderHistory() {
     const [orders, setOrders] = useState([]);
@@ -12,7 +13,7 @@ export default function AdminOrderHistory() {
 useEffect(() => {
     const fetchOrders = async () => {
         try {
-            const response = await axios.get(`${PORT}/get-orders`);
+            const response = await axios.get(`${API_URL}/get-orders`);
             setOrders(response.data.reverse());  
         } catch (error) {
             console.error('Error fetching orders:', error);

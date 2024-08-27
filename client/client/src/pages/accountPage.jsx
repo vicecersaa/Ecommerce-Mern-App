@@ -16,6 +16,7 @@ import LOGO from '../assets/img/LOGO1.jpg';
 import { Link } from "react-router-dom";
 import AdminOrderHistory from "../components/AdminOrderHistory";
 import MobileTab from "../components/MobileTab";
+import { API_URL } from "../config";
 
 
 export default function AccountPage() {
@@ -62,10 +63,6 @@ export default function AccountPage() {
     const handleEdit = (id) => {
         navigate(`/account/product-edit/${id}`);
     };
-
-    
-    const PORT = 'http://localhost:5000'
-
         
         
         useEffect(() => {
@@ -77,7 +74,7 @@ export default function AccountPage() {
               }
           
               try {
-                const response = await axios.get(`${PORT}/get-cart`, {
+                const response = await axios.get(`${API_URL}/get-cart`, {
                   params: { userId: user._id }
                 });
           
@@ -109,7 +106,7 @@ export default function AccountPage() {
    
     async function logout() {
         try {
-            const response = await axios.post(`${PORT}/logout`, null, { withCredentials: true });
+            const response = await axios.post(`${API_URL}/logout`, null, { withCredentials: true });
             
             
             setUser(null);
@@ -217,7 +214,7 @@ export default function AccountPage() {
       const handleDelete = async (productId) => {
         if (window.confirm('Are you sure you want to delete this product?')) {
             try {
-                const response = await fetch(`http://localhost:5000/products/${productId}`, {
+                const response = await fetch(`${API_URL}/products/${productId}`, {
                     method: 'DELETE',
                     headers: {
                         'Content-Type': 'application/json',
@@ -244,7 +241,7 @@ export default function AccountPage() {
      
      const handleEditProfile = async (field, value) => {
         try {
-            const response = await axios.patch(`${PORT}/profile/update-profile/${user._id}`, { [field]: value }, { withCredentials: true });
+            const response = await axios.patch(`${API_URL}/profile/update-profile/${user._id}`, { [field]: value }, { withCredentials: true });
             if (response.status === 200) {
                 setUser(prevUser => ({ ...prevUser, [field]: value }));
                 
@@ -620,7 +617,7 @@ export default function AccountPage() {
 
                                 {visibleProducts.map((product) => (
                                     <div key={product._id} className="flex border-gray-500 border-[1px] align-middle vp-4 mb-4 rounded-lg gap-5 p-[20px] mt-10">
-                                        <img className="w-full max-w-[100px] h-full min-h-[80px] rounded-md" src={`http://localhost:5000${product.gambarProduk[0]}`} alt={product.namaProduk} />
+                                        <img className="w-full max-w-[100px] h-full min-h-[80px] rounded-md" src={`${API_URL}${product.gambarProduk[0]}`} alt={product.namaProduk} />
                                         
                                         <div className="flex flex-col align-middle justify-center w-full">
                                             <h2 className="text-lg font-medium font-sans mb-1">{product.namaProduk}</h2>

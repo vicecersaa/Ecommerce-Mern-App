@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
+import { API_URL } from '../config';
 import LoadingSpinner from '../components/LoadingSpinner';
 
 export default function RegisterPage() {
@@ -10,6 +11,7 @@ export default function RegisterPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
+  
 
   async function registerUser(e) {
     e.preventDefault();
@@ -27,7 +29,7 @@ export default function RegisterPage() {
 
     setTimeout(async () => {
       try {
-        await axios.post('http://localhost:5000/register', {
+        await axios.post(`${API_URL}/register`, {
           name,
           email,
           password,

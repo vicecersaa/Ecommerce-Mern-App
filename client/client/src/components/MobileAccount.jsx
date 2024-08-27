@@ -4,6 +4,7 @@ import { useContext, useState, useEffect } from "react";
 import { UserContext } from "../UserContext";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { API_URL } from "../config";
 
 
 
@@ -14,13 +15,13 @@ export default function MobileAccount() {
     const [editingField, setEditingField] = useState(null);
     const [editValue, setEditValue] = useState('');
 
-    const PORT = 'http://localhost:5000'
+    
 
     const navigate = useNavigate();
 
     async function logout() {
         try {
-            const response = await axios.post(`${PORT}/logout`, null, { withCredentials: true });
+            const response = await axios.post(`${API_URL}/logout`, null, { withCredentials: true });
             
             
             setUser(null);
@@ -33,7 +34,7 @@ export default function MobileAccount() {
 
     const handleEditProfile = async (field, value) => {
         try {
-            const response = await axios.patch(`${PORT}/profile/update-profile/${user._id}`, { [field]: value }, { withCredentials: true });
+            const response = await axios.patch(`${API_URL}/profile/update-profile/${user._id}`, { [field]: value }, { withCredentials: true });
             if (response.status === 200) {
                 setUser(prevUser => ({ ...prevUser, [field]: value }));
                 

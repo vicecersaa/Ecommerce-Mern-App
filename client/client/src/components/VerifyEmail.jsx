@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import axios from 'axios';
+import { API_URL } from '../config';
 
 const VerifyEmail = () => {
   const location = useLocation();
@@ -11,7 +12,7 @@ const VerifyEmail = () => {
   useEffect(() => {
     const verifyToken = async () => {
       try {
-        const { data } = await axios.get('http://localhost:5000/verify-email', { params: { token } });
+        const { data } = await axios.get(`${API_URL}/verify-email`, { params: { token } });
         
         setMessage(data.message);
       } catch (error) {

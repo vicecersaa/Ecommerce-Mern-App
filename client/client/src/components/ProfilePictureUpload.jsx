@@ -2,6 +2,7 @@ import React, { useState, useContext } from 'react';
 import axios from 'axios';
 import BLANKPROFILE from '../assets/img/blank.png';
 import { UserContext } from "../UserContext";
+import { API_URL } from '../config';
 
 const ProfilePictureUpload = () => {
   const [selectedFile, setSelectedFile] = useState(null); 
@@ -23,7 +24,7 @@ const ProfilePictureUpload = () => {
     formData.append('image', selectedFile);
   
     try {
-      const response = await axios.post('http://localhost:5000/upload-profilePicture', formData, {
+      const response = await axios.post(`${API_URL}/upload-profilePicture`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
@@ -41,12 +42,12 @@ const ProfilePictureUpload = () => {
   };
 
   return (
-    <div className=''>
-      <div className="w-full max-w-[250px] h-full max-h-[300px] hidden md:flex flex-col justify-center items-center mt-4 mb-4 border-[#E4EBF5] border-2 p-5 rounded-xl shadow-xl">
+    <div className='p-5'>
+      <div className="w-full min-w-[250px] h-full max-h-[300px] hidden md:flex flex-col justify-center items-center mt-4 mb-4 border-[#E4EBF5] border-2 p-5 rounded-xl shadow-xl">
         {user.profilePicture ? (
           <img
-            className="w-full max-w-[250px] my-2"
-            src={`http://localhost:5000${user.profilePicture}`}
+            className="w-full max-w-[150px] my-2"
+            src={`${API_URL}${user.profilePicture}`}
             alt="Profile"
             id="profileImage"
           />
@@ -80,7 +81,7 @@ const ProfilePictureUpload = () => {
         {user.profilePicture ? (
           <img
             className="w-[80px] h-[80px] rounded-full object-cover"
-            src={`http://localhost:5000${user.profilePicture}`}
+            src={`${API_URL}${user.profilePicture}`}
             alt="Profile"
             id="profileImage"
           />

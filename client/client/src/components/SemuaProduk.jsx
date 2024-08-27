@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
 import ProdukCard from "../properties/produkCard";
+import { API_URL } from "../config";
+
 
 export default function SemuaProduk({ products }) {
     
@@ -25,6 +27,9 @@ export default function SemuaProduk({ products }) {
         return `Rp${parseFloat(num).toLocaleString('id-ID', { minimumFractionDigits: 0 })}`;
     };
 
+    console.log('API_URL:', API_URL);
+
+
     return (
         <>
         <div className="hidden w-full justify-center m-auto md:flex">
@@ -34,7 +39,7 @@ export default function SemuaProduk({ products }) {
                         <ProdukCard
                             key={product._id.toString()}
                             id={product._id.toString()}
-                            img={`http://localhost:5000${product.gambarProduk[0]}`}
+                            img={`${API_URL}${product.gambarProduk[0]}`}
                             namaProduk={product.namaProduk}
                             hargaProduk={formatPrice(product.hargaProduk)}
                             kondisiProduk={product.kondisi}
@@ -50,7 +55,7 @@ export default function SemuaProduk({ products }) {
                 <div key={product._id.toString()} className="rounded-xl">
                     <ProdukCard
                         id={product._id.toString()}
-                        img={`http://localhost:5000${product.gambarProduk[0]}`}
+                        img={`${API_URL}${product.gambarProduk[0]}`}
                         namaProduk={product.namaProduk}
                         hargaProduk={formatPrice(product.hargaProduk)}
                         kondisiProduk={product.kondisi}

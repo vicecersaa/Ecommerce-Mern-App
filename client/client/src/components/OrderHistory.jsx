@@ -4,8 +4,9 @@ import { UserContext } from '../UserContext';
 import BLANK from '../assets/img/blankPicture.png';
 import LOGO from '../assets/img/LOGO1.jpg';
 import { Link } from 'react-router-dom';
+import { API_URL } from '../config';
 
-const PORT = 'http://localhost:5000';
+
 
 export default function OrderHistory() {
     const { user } = useContext(UserContext);
@@ -15,7 +16,7 @@ export default function OrderHistory() {
     
     const fetchOrderHistory = async () => {
         try {
-            const response = await axios.get(`${PORT}/order-history`, {
+            const response = await axios.get(`${API_URL}/order-history`, {
                 params: { userId: user._id }
             });
     
