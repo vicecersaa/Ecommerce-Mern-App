@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import axios from 'axios';
 import { UserContext } from '../UserContext';
 import BLANK from '../assets/img/blankPicture.png';
-import LOGO from '../assets/img/LOGO1.jpg';
+import LOGO from '../assets/img/LOGO1.webp';
 import { Link } from 'react-router-dom';
 import { API_URL } from '../config';
 

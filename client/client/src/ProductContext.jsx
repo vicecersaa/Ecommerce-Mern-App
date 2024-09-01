@@ -1,16 +1,17 @@
 import axios from "axios";
+import { API_URL } from "./config";
 
 const { createContext, Children, useState, useEffect } = require("react");
 
 export const ProductContext = createContext({});
 
 export function ProductContextProvider({ children }) {
-    const PORT = 'http://localhost:5000';
+    
     const [products, setProducts] = useState([]);
     const [searchResults, setSearchResults] = useState([]);
   
     useEffect(() => {
-      axios.get(`${PORT}/products`).then(({ data }) => {
+      axios.get(`${API_URL}/products`).then(({ data }) => {
         setProducts(data);
       });
     }, []);
@@ -22,7 +23,7 @@ export function ProductContextProvider({ children }) {
       }
 
       try {
-          const { data } = await axios.get(`${PORT}/search`, { params: { query } });
+          const { data } = await axios.get(`${API_URL}/search`, { params: { query } });
           setSearchResults(data);
       }   catch (error) {
           console.error('Error fetching search results', error);
@@ -31,7 +32,7 @@ export function ProductContextProvider({ children }) {
 
     const fetchDefaultProducts = async () => {
       try {
-          const { data } = await axios.get(`${PORT}/search`, { params: { query: '' } });
+          const { data } = await axios.get(`${API_URL}/search`, { params: { query: '' } });
           setSearchResults(data);
       } catch (error) {
           console.error('Error fetching default products', error);

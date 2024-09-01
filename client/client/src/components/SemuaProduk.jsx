@@ -50,7 +50,7 @@ export default function SemuaProduk({ products }) {
                 </div>
             </div>
         </div>
-        <div className="grid grid-cols-2 gap-2 w-full mt-4 pb-[30px] md:hidden">
+        <div className="grid grid-cols-2 gap-2 w-full mx-auto mt-4 md:hidden p-2">
             {shuffledProducts.map((product) => (
                 <div key={product._id.toString()} className="rounded-xl">
                     <ProdukCard

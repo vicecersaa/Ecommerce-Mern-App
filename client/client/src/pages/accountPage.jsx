@@ -12,7 +12,7 @@ import OrderHistory from '../components/OrderHistory';
 import AccountSettings from '../pages/AccountSettings';
 import { ProductContext} from '../ProductContext';
 import AdminList from "../components/AdminList";
-import LOGO from '../assets/img/LOGO1.jpg';
+import LOGO from '../assets/img/LOGO1.webp';
 import { Link } from "react-router-dom";
 import AdminOrderHistory from "../components/AdminOrderHistory";
 import MobileTab from "../components/MobileTab";

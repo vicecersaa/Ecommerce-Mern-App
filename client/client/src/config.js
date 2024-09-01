@@ -1,9 +1,7 @@
 const isDevelopment = process.env.REACT_APP_NODE_ENV === 'production';
 
 export const API_URL = isDevelopment
-    ? process.env.REACT_APP_PROD_PORT
-    : process.env.REACT_APP_DEV_PORT;
+    ? process.env.REACT_APP_API_URL
+    : process.env.REACT_APP_API_URL
 
-export const HOST_PORT = isDevelopment
-    ? process.env.REACT_APP_PROD_HOST_PORT
-    : process.env.REACT_APP_DEV_HOST_PORT;
+

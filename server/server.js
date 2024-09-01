@@ -63,10 +63,12 @@ app.use(helmet());
 
 
 const corsOptions = {
-    origin: process.env.NODE_ENV === 'development' ? 'http://localhost:3000' : 'https://forlandliving.com',
+    origin: process.env.NODE_ENV === 'development' ? 'https://forlandliving.com' : 'http://localhost:3000',
     credentials: true, 
     optionsSuccessStatus: 200 
 };
+
+console.log("Current NODE_ENV:", process.env.NODE_ENV);
 
 app.use(cors(corsOptions));
 app.use(bodyParser.json());  
@@ -118,9 +120,9 @@ app.post('/register', async (req, res) => {
   }
 
   
-  const passwordRegex = /^(?=.*[A-Z])(?=.*\d)/;
+  const passwordRegex = /^[\S]{8,}$/;
   if (!passwordRegex.test(password)) {
-      return res.status(400).json({ message: 'Password harus mengandung setidaknya satu huruf besar dan satu angka.' });
+      return res.status(400).json({ message: 'Password harus memiliki minimal 8 kata.' });
   }
 
   try {
@@ -912,7 +914,7 @@ app.patch('/update-product/:id', authenticateUser, authenticateAdmin, (req, res)
 
 //PORT SETTINGS :
 
-const PORT = process.env.PORT_PROD || 5000;
+const PORT = process.env.PORT || 5000;
 
 
 // PORT SETTING

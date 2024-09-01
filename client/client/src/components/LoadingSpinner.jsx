@@ -1,5 +1,5 @@
 import React from 'react';
-import FORLANDLOGO from '../assets/img/LOGO1.jpg';
+import FORLANDLOGO from '../assets/img/LOGO1.webp';
 
 const LoadingSpinner = () => {
   return (

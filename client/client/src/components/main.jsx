@@ -20,6 +20,8 @@ import MobileCart from "./MobileCart.jsx";
 import MobileHistory from "./MobileHistory.jsx";
 import { useNavigate } from "react-router-dom";
 import MobileAccount from "./MobileAccount.jsx";
+import Social from "./Social.jsx";
+import WHATSAPP from '../assets/img/whatsapp.png'
 
 export default function Main() {
 
@@ -73,27 +75,27 @@ export default function Main() {
      
       const handleCartClick = () => {
         setActiveTab('cart')
-        console.log(activeTab)
+        
       };
 
       const handleHomeClick = () => {
         setActiveTab('home')
-        console.log(activeTab)
+        
       };
 
       const handleAkunClick = () => {
         setActiveTab('akun')
-        console.log(activeTab)
+        
       };
 
       const handleProdukClick = () => {
         setActiveTab('produk')
-        console.log(activeTab)
+        
       }
 
       const handleTransaksiClick = () => {
         setActiveTab('transaksi')
-        console.log(activeTab)
+        
       }
 
     return(
@@ -101,7 +103,7 @@ export default function Main() {
 
         {activeTab === 'home' && 
           (
-            <div className="container mx-auto w-full max-w-[1200px] pt-[75px]">
+            <div className="container mx-auto w-full max-w-[1200px] pt-[75px] relative">
 
               <SliderComponent
                   images={images}
@@ -129,7 +131,7 @@ export default function Main() {
                   </div>
               </div>
 
-            <div className="flex flex-col items-center gap-1 mb-10 justify-center align-middle w-full m-auto">
+            <div className="flex flex-col items-center gap-1 justify-center align-middle w-full m-auto">
               <div className="hidden md:flex w-full max-w-[1200px] flex-wrap justify-center gap-4 mb-10">
                 <button
                   onClick={() => handleCategoryClick('Semua')}
@@ -156,11 +158,11 @@ export default function Main() {
                 </button>
 
                 <button
-                  onClick={() => handleCategoryClick('Multibed')}
-                  className={`${selectedCategory === 'Multibed' ? 'bg-gradient-to-r from-emerald-900 to-emerald-600 text-white' : 'bg-slate-100 border border-slate-200'} flex items-center justify-center py-2 px-4 md:py-3 md:px-6 border rounded-md transition-transform transform hover:scale-105`}
+                  onClick={() => handleCategoryClick('Sorong')}
+                  className={`${selectedCategory === 'Sorong' ? 'bg-gradient-to-r from-emerald-900 to-emerald-600 text-white' : 'bg-slate-100 border border-slate-200'} flex items-center justify-center py-2 px-4 md:py-3 md:px-6 border rounded-md transition-transform transform hover:scale-105`}
                 >
                   <img className="w-6 h-6 mr-2" src={MULTIBED} alt="" />
-                  <span className="hidden sm:inline">Multibed</span>
+                  <span className="hidden sm:inline">Sorong</span>
                 </button>
 
                 <button
@@ -212,11 +214,11 @@ export default function Main() {
                         <span>Springbed</span>
                     </button>
                     <button 
-                        onClick={() => handleCategoryClick('Multibed')} 
-                        className={`${selectedCategory === 'Multibed' ? 'bg-gradient-to-r from-emerald-900 to-emerald-600 text-white' : 'bg-white border border-slate-200'} flex items-center flex-shrink-0 max-w-[150px] py-2 px-4 border-[1px] rounded-full`}
+                        onClick={() => handleCategoryClick('Sorong')} 
+                        className={`${selectedCategory === 'Sorong' ? 'bg-gradient-to-r from-emerald-900 to-emerald-600 text-white' : 'bg-white border border-slate-200'} flex items-center flex-shrink-0 max-w-[150px] py-2 px-4 border-[1px] rounded-full`}
                     >
                         <img className="w-full max-w-[22px] mr-2" src={MULTIBED} alt="" />
-                        <span>Multibed</span>
+                        <span>Sorong</span>
                     </button>
                     <button 
                         onClick={() => handleCategoryClick('Matras')} 
@@ -253,11 +255,23 @@ export default function Main() {
                   </div>
 
                   
+
+                  
                 </div>
 
-                
+                <Social />
                
-               
+                <div className="hidden bottom-4 right-4 md:flex md:fixed z-[9999]">
+                    <a href="https://wa.link/0jdldi" target="_blank">
+                        <img  className="w-[40px] cursor-pointer" src={WHATSAPP} alt="Forland Living Whatsapp" />
+                    </a>
+                </div>
+
+                <div className="flex fixed bottom-4 right-4 md:hidden pb-14 z-[9999]">
+                    <a href="https://wa.link/0jdldi" target="_blank">
+                        <img  className="w-[40px] cursor-pointer" src={WHATSAPP} alt="Forland Living Whatsapp" />
+                    </a>
+                </div>
 
           </div>
           )
@@ -298,7 +312,7 @@ export default function Main() {
                 </div>
             </div>
 
-          <div className="flex flex-col items-center gap-1 mb-10 justify-center align-middle w-full m-auto">
+          <div className="flex flex-col items-center gap-1 justify-center align-middle w-full m-auto">
             <div className="hidden md:flex w-full max-w-[1200px] flex-wrap justify-center gap-4 mb-10">
               <button
                 onClick={() => handleCategoryClick('Semua')}
@@ -325,11 +339,11 @@ export default function Main() {
               </button>
 
               <button
-                onClick={() => handleCategoryClick('Multibed')}
-                className={`${selectedCategory === 'Multibed' ? 'bg-gradient-to-r from-emerald-900 to-emerald-600 text-white' : 'bg-slate-100 border border-slate-200'} flex items-center justify-center py-2 px-4 md:py-3 md:px-6 border rounded-md transition-transform transform hover:scale-105`}
+                onClick={() => handleCategoryClick('Sorong')}
+                className={`${selectedCategory === 'Sorong' ? 'bg-gradient-to-r from-emerald-900 to-emerald-600 text-white' : 'bg-slate-100 border border-slate-200'} flex items-center justify-center py-2 px-4 md:py-3 md:px-6 border rounded-md transition-transform transform hover:scale-105`}
               >
                 <img className="w-6 h-6 mr-2" src={MULTIBED} alt="" />
-                <span className="hidden sm:inline">Multibed</span>
+                <span className="hidden sm:inline">Sorong</span>
               </button>
 
               <button
@@ -381,11 +395,11 @@ export default function Main() {
                       <span>Springbed</span>
                   </button>
                   <button 
-                      onClick={() => handleCategoryClick('Multibed')} 
-                      className={`${selectedCategory === 'Multibed' ? 'bg-gradient-to-r from-emerald-900 to-emerald-600 text-white' : 'bg-white border border-slate-200'} flex items-center flex-shrink-0 max-w-[150px] py-2 px-4 border-[1px] rounded-full`}
+                      onClick={() => handleCategoryClick('Sorong')} 
+                      className={`${selectedCategory === 'Sorong' ? 'bg-gradient-to-r from-emerald-900 to-emerald-600 text-white' : 'bg-white border border-slate-200'} flex items-center flex-shrink-0 max-w-[150px] py-2 px-4 border-[1px] rounded-full`}
                   >
                       <img className="w-full max-w-[22px] mr-2" src={MULTIBED} alt="" />
-                      <span>Multibed</span>
+                      <span>Sorong</span>
                   </button>
                   <button 
                       onClick={() => handleCategoryClick('Matras')} 
@@ -409,6 +423,8 @@ export default function Main() {
                       <span>Aksesoris</span>
                   </button>
               </div>
+
+              
           </div>
 
 
@@ -424,25 +440,14 @@ export default function Main() {
                 
               </div>
 
-              <div className="hidden w-full max-w-[800px] mx-auto md:flex">
-                  <div>
-                    <p className="text-center text-xl">- Follow Us</p>
-                    <h2 className="text-4xl font-sans font-medium text-center mt-2">Follow Kita Di <span className="text-[#194719]">Instagram</span></h2>
-                  </div>
-                  <div className="flex flex-wrap gap-4 mt-8 justify-center">
-                    <img className="w-full max-w-[250px] rounded-md" src="https://instagram.fcgk31-1.fna.fbcdn.net/v/t39.30808-6/440445439_18028032743059396_2877836332051300367_n.jpg?stp=dst-jpg_e35&amp;efg=eyJ2ZW5jb2RlX3RhZyI6ImltYWdlX3VybGdlbi4xMDgweDEwODAuc2RyLmYzMDgwOCJ9&amp;_nc_ht=instagram.fcgk31-1.fna.fbcdn.net&amp;_nc_cat=104&amp;_nc_ohc=mF97jRiIS1UQ7kNvgG5pNoA&amp;edm=APs17CUAAAAA&amp;ccb=7-5&amp;ig_cache_key=MzM2MDkyMjkyNTI4NzgzNDA0OQ%3D%3D.2-ccb7-5&amp;oh=00_AYDiWn8PrWvoSjxkynd5oiruQ30Xf8njrb1eNffcYicfjQ&amp;oe=66B7A35E&amp;_nc_sid=10d13b"/>
-                    <img className="w-full max-w-[250px] rounded-md" src="https://instagram.fcgk31-1.fna.fbcdn.net/v/t39.30808-6/444482903_18030064232059396_7697780094494666767_n.jpg?stp=dst-jpg_e35&amp;efg=eyJ2ZW5jb2RlX3RhZyI6ImltYWdlX3VybGdlbi4xMDgweDEwODAuc2RyLmYzMDgwOCJ9&amp;_nc_ht=instagram.fcgk31-1.fna.fbcdn.net&amp;_nc_cat=104&amp;_nc_ohc=FPponJIBaLEQ7kNvgHeiS_y&amp;edm=APs17CUAAAAA&amp;ccb=7-5&amp;ig_cache_key=MzM3NDA4MTg2NDY2MTUwNDE4NA%3D%3D.2-ccb7-5&amp;oh=00_AYCyfvqQrkBgaYVYk25rCycCxRCkD70kxfsgbpQb39atyQ&amp;oe=66B7A615&amp;_nc_sid=10d13b"></img>
-                    <img className="w-full max-w-[250px] rounded-md" src="https://instagram.fcgk31-1.fna.fbcdn.net/v/t39.30808-6/440113439_18027145511059396_3075250420791859734_n.jpg?stp=dst-jpg_e35&amp;efg=eyJ2ZW5jb2RlX3RhZyI6ImltYWdlX3VybGdlbi4xMDgweDEwODAuc2RyLmYzMDgwOCJ9&amp;_nc_ht=instagram.fcgk31-1.fna.fbcdn.net&amp;_nc_cat=104&amp;_nc_ohc=kL6_CbMhRHAQ7kNvgGOYIBd&amp;edm=APs17CUAAAAA&amp;ccb=7-5&amp;ig_cache_key=MzM1MzY3MDEyMDU4MzkyNjk5MQ%3D%3D.2-ccb7-5&amp;oh=00_AYC_3L8QlMhyJlJEKpXrqXfnDF1hHFGlIF81oW2WWz0egw&amp;oe=66B7AEDB&amp;_nc_sid=10d13b"></img>
-                    <img className="w-full max-w-[250px] rounded-md" src="https://instagram.fcgk31-1.fna.fbcdn.net/v/t39.30808-6/436301994_18026618222059396_7764280160470062101_n.jpg?stp=dst-jpg_e35&amp;efg=eyJ2ZW5jb2RlX3RhZyI6ImltYWdlX3VybGdlbi4xMDgweDEwODAuc2RyLmYzMDgwOCJ9&amp;_nc_ht=instagram.fcgk31-1.fna.fbcdn.net&amp;_nc_cat=104&amp;_nc_ohc=ggMijAYiRrsQ7kNvgFw3p9O&amp;edm=APs17CUAAAAA&amp;ccb=7-5&amp;ig_cache_key=MzM0OTA3OTM1ODY3MjAxMjI4OQ%3D%3D.2-ccb7-5&amp;oh=00_AYAsV9ayhLYWRrQ8ssr_OR7xreCyksVBnM1rOt-6moFMSQ&amp;oe=66B7AFFE&amp;_nc_sid=10d13b"></img>
-                    <img className="w-full max-w-[250px] rounded-md" src="https://instagram.fcgk31-1.fna.fbcdn.net/v/t39.30808-6/440367003_18027144809059396_5118538823498032477_n.jpg?stp=dst-jpg_e35&amp;efg=eyJ2ZW5jb2RlX3RhZyI6ImltYWdlX3VybGdlbi4xMDgweDEwODAuc2RyLmYzMDgwOCJ9&amp;_nc_ht=instagram.fcgk31-1.fna.fbcdn.net&amp;_nc_cat=104&amp;_nc_ohc=016zh_OQTWEQ7kNvgEVUn0v&amp;edm=APs17CUAAAAA&amp;ccb=7-5&amp;ig_cache_key=MzM1MzAxNjM0NzkwMTQzODE0NA%3D%3D.2-ccb7-5&amp;oh=00_AYD9Dlo0DqcxafxBtDCSsRnuVoQcXfy9Nqas0Br4TFmlkw&amp;oe=66B7C88C&amp;_nc_sid=10d13b"></img>
-                    <img className="w-full max-w-[250px] rounded-md"src="https://instagram.fcgk31-1.fna.fbcdn.net/v/t39.30808-6/436270607_18026293181059396_9164350759498850734_n.jpg?stp=dst-jpg_e35&amp;efg=eyJ2ZW5jb2RlX3RhZyI6ImltYWdlX3VybGdlbi4xMDgweDEwODAuc2RyLmYzMDgwOCJ9&amp;_nc_ht=instagram.fcgk31-1.fna.fbcdn.net&amp;_nc_cat=104&amp;_nc_ohc=0r9F8C4zcTsQ7kNvgFfreYo&amp;edm=APs17CUAAAAA&amp;ccb=7-5&amp;ig_cache_key=MzM0Nzg4OTM5NTY3MDY0ODIxOA%3D%3D.2-ccb7-5&amp;oh=00_AYDnDOmKEQ6ljHeseGxrMuVrAP7wPkgBgrz6G77PQQYByg&amp;oe=66B7C9A0&amp;_nc_sid=10d13b"></img>
-                  </div>
-              </div>
-            
+              
+
             
 
           </div>
         )}
+
+            
 
         
 

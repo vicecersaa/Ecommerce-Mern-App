@@ -1,7 +1,7 @@
 import { useEffect, useState,useContext } from "react";
 import KeranjangCard from "./KeranjangCard";
 import { Link } from "react-router-dom";
-import LOGO from '../assets/img/LOGO1.jpg'
+import LOGO from '../assets/img/LOGO1.webp'
 import axios from "axios";
 import { UserContext } from "../UserContext";
 import { API_URL } from "../config";
